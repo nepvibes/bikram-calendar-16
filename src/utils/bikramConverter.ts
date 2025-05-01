@@ -126,4 +126,3 @@ export const getNepaliDigits = (num: number): string => {
     return nepaliDigits[parseInt(digit)];
   }).join('');
 };
-

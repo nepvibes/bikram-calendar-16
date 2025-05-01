@@ -108,7 +108,18 @@ export class BikramDate {
   private day: number;
   private readonly englishDate: Date;
 
+  // Astronomical calculation constants (from the C++ implementation)
+  private readonly YugaRotation_star = 1582237828;
+  private readonly YugaRotation_sun = 4320000;
+  private readonly YugaCivilDays: number;
+  private readonly PlanetApogee_sun = 77 + 17.0 / 60;
+  private readonly PlanetCircumm_sun = 13 + 50.0 / 60;
+  private readonly rad = 57.2957795; // 180 / pi
+
   constructor(year?: number, month?: number, day?: number) {
+    // Initialize constants
+    this.YugaCivilDays = this.YugaRotation_star - this.YugaRotation_sun;
+    
     if (year !== undefined && month !== undefined && day !== undefined) {
       this.year = year;
       this.month = month;
@@ -210,20 +221,13 @@ export class BikramDate {
         }
         bsYear++;
       }
-    } else {
-      // For dates before the reference date, we'll use a simplified approach
-      // (This is a simplification and may not be accurate for all historical dates)
-      bsYear = 1999;
-      bsMonth = 12;
-      bsDay = 30 + daysDiff;
       
-      if (bsDay <= 0) {
-        bsMonth = 11;
-        bsDay = 30 + bsDay;
-      }
+      // If we're outside our data range, use the fallback astronomical calculation
+      return this.fromGregorianAstronomical(gYear, gMonth, gDay);
+    } else {
+      // For dates before the reference date, we'll use the astronomical calculation
+      return this.fromGregorianAstronomical(gYear, gMonth, gDay);
     }
-    
-    return { bsYear, bsMonth, bsDay };
   }
 
   // Convert BS (Bikram Sambat) date to AD (Gregorian)
@@ -231,43 +235,41 @@ export class BikramDate {
     // Reference date: 1 Baisakh 2000 BS = 14 April 1943 AD
     const refDate = new Date(1943, 3, 14); // Month is 0-indexed in JS Date
     
-    let totalDays = 0;
-    
-    // Add days from years
-    for (let year = BS_START_YEAR; year < bsYear; year++) {
-      const yearIdx = year - BS_START_YEAR;
+    // Check if the date is within our data range
+    if (bsYear >= BS_START_YEAR && bsYear <= BS_END_YEAR) {
+      let totalDays = 0;
+      
+      // Add days from years
+      for (let year = BS_START_YEAR; year < bsYear; year++) {
+        const yearIdx = year - BS_START_YEAR;
+        if (yearIdx >= 0 && yearIdx < NP_MONTHS_DATA.length) {
+          totalDays += NP_MONTHS_DATA[yearIdx][12]; // Total days in that year (at index 12)
+        }
+      }
+      
+      // Add days from months
+      const yearIdx = bsYear - BS_START_YEAR;
       if (yearIdx >= 0 && yearIdx < NP_MONTHS_DATA.length) {
-        totalDays += NP_MONTHS_DATA[yearIdx][12]; // Total days in that year (at index 12)
-      } else {
-        // Fallback for years outside our data range
-        totalDays += 365;
+        for (let month = 0; month < bsMonth - 1; month++) {
+          totalDays += NP_MONTHS_DATA[yearIdx][month];
+        }
       }
-    }
-    
-    // Add days from months
-    const yearIdx = bsYear - BS_START_YEAR;
-    if (yearIdx >= 0 && yearIdx < NP_MONTHS_DATA.length) {
-      for (let month = 0; month < bsMonth - 1; month++) {
-        totalDays += NP_MONTHS_DATA[yearIdx][month];
-      }
+      
+      // Add days from current month
+      totalDays += (bsDay - 1);
+      
+      // Calculate Gregorian date
+      const targetDate = new Date(refDate.getTime() + totalDays * 24 * 60 * 60 * 1000);
+      
+      return {
+        gYear: targetDate.getFullYear(),
+        gMonth: targetDate.getMonth() + 1, // Convert from 0-indexed to 1-indexed
+        gDay: targetDate.getDate()
+      };
     } else {
-      // Fallback for years outside our data range
-      for (let month = 0; month < bsMonth - 1; month++) {
-        totalDays += 30; // Assume 30 days per month as fallback
-      }
+      // Use fallback method for dates outside our range
+      return this.toGregorianAstronomical(bsYear, bsMonth, bsDay);
     }
-    
-    // Add days from current month
-    totalDays += (bsDay - 1);
-    
-    // Calculate Gregorian date
-    const targetDate = new Date(refDate.getTime() + totalDays * 24 * 60 * 60 * 1000);
-    
-    return {
-      gYear: targetDate.getFullYear(),
-      gMonth: targetDate.getMonth() + 1, // Convert from 0-indexed to 1-indexed
-      gDay: targetDate.getDate()
-    };
   }
 
   // Helper function to get days in month (matching C++ implementation)
@@ -298,5 +300,108 @@ export class BikramDate {
     const b = 2 - a + Math.floor(a / 4.0);
     return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + b - 1524.5;
   }
-}
 
+  // Convert Julian date to Gregorian date
+  private fromJulianDate(julian_date: number): { year: number; month: number; day: number } {
+    const a = Math.floor(julian_date + 0.5);
+    const b = a + 1537;
+    const c = Math.floor((b - 122.1) / 365.25);
+    const d = Math.floor(365.25 * c);
+    const e = Math.floor((b - d) / 30.6001);
+    const f = b - d - Math.floor(30.6001 * e) + (julian_date + 0.5 - a);
+    
+    const day = Math.floor(f);
+    const month = (e < 14) ? (e - 1) : (e - 13);
+    const year = (month > 2) ? (c - 4716) : (c - 4715);
+    
+    return { year, month, day };
+  }
+
+  // Astronomical calculation methods from the C++ implementation
+  private getSauraMasaDay(ahar: number): { m: number; d: number } {
+    if (this.todaySauraMasaFirstP(ahar)) {
+      const day = 1;
+      const tslong_tomorrow = this.getTslong(ahar + 1);
+      let month = Math.floor(tslong_tomorrow / 30) % 12;
+      month = (month + 12) % 12;
+      return { m: month, d: day };
+    } else {
+      const yesterday = this.getSauraMasaDay(ahar - 1);
+      return { m: yesterday.m, d: yesterday.d + 1 };
+    }
+  }
+
+  private todaySauraMasaFirstP(ahar: number): boolean {
+    let tslong_today = this.getTslong(ahar);
+    let tslong_tomorrow = this.getTslong(ahar + 1);
+    tslong_today -= Math.floor(tslong_today / 30) * 30;
+    tslong_tomorrow -= Math.floor(tslong_tomorrow / 30) * 30;
+    return (25 < tslong_today && tslong_tomorrow < 5) ? true : false;
+  }
+
+  private getTslong(ahar: number): number {
+    let t1 = (this.YugaRotation_sun * ahar / this.YugaCivilDays);
+    t1 -= Math.floor(t1);
+    const mslong = 360 * t1;
+    const x1 = mslong - this.PlanetApogee_sun;
+    const y1 = this.PlanetCircumm_sun / 360;
+    const y2 = Math.sin(x1 / this.rad);
+    const y3 = y1 * y2;
+    const x2 = Math.asin(y3) * this.rad;
+    const x3 = mslong - x2;
+    return x3;
+  }
+
+  // Fallback astronomical calculation methods
+  private fromGregorianAstronomical(y: number, m: number, d: number): { bsYear: number; bsMonth: number; bsDay: number } {
+    const julian = this.getJulianDate(y, m, d);
+    const ahar = julian - 588465.5;
+    
+    const sauraMasaResult = this.getSauraMasaDay(ahar);
+    const saura_masa_num = sauraMasaResult.m;
+    const saura_masa_day = sauraMasaResult.d;
+    
+    const YearKali = Math.floor(ahar * this.YugaRotation_sun / this.YugaCivilDays);
+    const YearSaka = YearKali - 3179;
+    const nepalimonth = (saura_masa_num) % 12;
+    const year = YearSaka + 135 + Math.floor((saura_masa_num - nepalimonth) / 12);
+    const month = (saura_masa_num + 12) % 12 + 1;
+    
+    return {
+      bsYear: year,
+      bsMonth: month,
+      bsDay: saura_masa_day
+    };
+  }
+
+  private toGregorianAstronomical(bsYear: number, bsMonth: number, bsDay: number): { gYear: number; gMonth: number; gDay: number } {
+    const YearSaka = bsYear - 135;
+    const YearKali = YearSaka + 3179;
+    let ahar = Math.floor((YearKali * this.YugaCivilDays) / this.YugaRotation_sun);
+    
+    // Adjust bsMonth to 0-11 for calculation
+    const targetMonth = (bsMonth + 11) % 12;
+    
+    // Find the exact day
+    let currentDay = this.getSauraMasaDay(ahar);
+    
+    // Try to find the exact date by moving forward or backward
+    while (currentDay.m !== targetMonth || currentDay.d !== bsDay) {
+      if (currentDay.m < targetMonth || (currentDay.m === targetMonth && currentDay.d < bsDay)) {
+        ahar += 1;
+      } else {
+        ahar -= 1;
+      }
+      currentDay = this.getSauraMasaDay(ahar);
+    }
+    
+    const julian_date = ahar + 588465.5;
+    const gregorian = this.fromJulianDate(julian_date);
+    
+    return {
+      gYear: gregorian.year,
+      gMonth: gregorian.month, 
+      gDay: gregorian.day
+    };
+  }
+}
