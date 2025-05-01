@@ -61,18 +61,21 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   return (
     <div className="border border-nepali-yellow/30 rounded-lg bg-white shadow-md overflow-hidden">
       {/* Days of week header */}
-      <div className="grid grid-cols-7 gap-px bg-nepali-red text-white font-bold py-2">
+      <div className="grid grid-cols-7 bg-nepali-blue text-white font-semibold">
         {weekDays.map((day, idx) => (
-          <div key={idx} className="text-center">
+          <div 
+            key={idx} 
+            className={`text-center py-2 px-1 ${idx === 6 ? 'bg-nepali-red/90' : ''}`}
+          >
             {day}
           </div>
         ))}
       </div>
       
       {/* Calendar grid */}
-      <div className="bg-white">
+      <div className="bg-white grid grid-cols-7 gap-px border-t border-nepali-yellow/10">
         {weeks.map((week, weekIdx) => (
-          <div key={weekIdx} className="grid grid-cols-7 gap-px border-t border-nepali-yellow/20 hover:border-nepali-yellow/40 transition-colors">
+          <React.Fragment key={weekIdx}>
             {week.map((day, dayIdx) => {
               // Check if this is current day, selected day, and if it has an event
               const isCurrentDay = currentDate && day === currentDate.day && 
@@ -84,17 +87,16 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               const eventName = day ? hasHoliday(month, day) : null;
               const hasEvent = !!eventName;
               
-              // Whether it's a weekend (Saturday or Sunday)
-              const isWeekend = dayIdx === 0 || dayIdx === 6;
+              // Whether it's a weekend (Saturday)
+              const isSaturday = dayIdx === 6;
               
               // Combine classes based on conditions
               const dayClasses = `
-                relative flex flex-col p-1 md:p-2 min-h-[60px] md:min-h-[80px] transition-all
+                relative aspect-square flex flex-col p-1 transition-all
                 ${day === null ? 'bg-gray-50/50' : 'hover:bg-nepali-yellow/10'}
-                ${isCurrentDay ? 'bg-nepali-red/10 text-nepali-red font-bold' : ''}
-                ${isSelectedDay ? 'bg-nepali-yellow/20 text-nepali-dark font-bold ring-2 ring-nepali-yellow ring-inset' : ''}
-                ${hasEvent ? 'border-b-2 border-nepali-blue/30' : ''}
-                ${isWeekend && day !== null ? 'bg-nepali-red/5' : ''}
+                ${isCurrentDay ? 'bg-nepali-red/10' : ''}
+                ${isSelectedDay ? 'ring-2 ring-nepali-yellow ring-inset' : ''}
+                ${isSaturday && day !== null ? 'bg-nepali-red/5' : ''}
                 ${day !== null ? 'cursor-pointer' : ''}
               `;
               
@@ -107,17 +109,19 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                   {day !== null && (
                     <>
                       <div className="flex justify-between items-start w-full">
-                        <span className={`inline-flex justify-center items-center text-sm md:text-base ${isCurrentDay ? 'text-nepali-red' : ''}`}>
-                          {useNepaliLanguage ? getNepaliDigits(day) : day}
-                        </span>
-                        
-                        {(isCurrentDay || isSelectedDay) && (
-                          <span className="w-2 h-2 rounded-full bg-nepali-red"></span>
-                        )}
+                        <div className={`
+                          flex justify-center items-center 
+                          ${isCurrentDay ? 'w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-red text-white' : ''}
+                          ${isSelectedDay && !isCurrentDay ? 'w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-yellow text-nepali-dark' : ''}
+                        `}>
+                          <span className="text-sm md:text-base">
+                            {useNepaliLanguage ? getNepaliDigits(day) : day}
+                          </span>
+                        </div>
                       </div>
                       
                       {hasEvent && (
-                        <div className="mt-1 md:mt-2">
+                        <div className="mt-1">
                           <span className="text-[8px] md:text-[9px] px-1 py-0.5 bg-nepali-blue/10 text-nepali-blue rounded-sm block truncate max-w-full text-center">
                             {eventName}
                           </span>
@@ -128,7 +132,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 </div>
               );
             })}
-          </div>
+          </React.Fragment>
         ))}
       </div>
     </div>

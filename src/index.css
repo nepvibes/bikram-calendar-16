@@ -72,29 +72,67 @@
     bottom: 0;
     background-image: url('/border-bottom.png');
   }
+}
+
+/* Calendar Day Styling */
+@layer components {
+  .calendar-container {
+    @apply bg-white rounded-xl shadow-lg border border-nepali-yellow/30 overflow-hidden;
+  }
+  
+  .calendar-header {
+    @apply bg-nepali-red text-white p-3 flex justify-between items-center;
+  }
+  
+  .calendar-weekdays {
+    @apply grid grid-cols-7 bg-nepali-blue text-white font-semibold;
+  }
+  
+  .calendar-weekday {
+    @apply text-center py-2;
+  }
+  
+  .calendar-weekday-saturday {
+    @apply bg-nepali-red/90;
+  }
+  
+  .calendar-grid {
+    @apply grid grid-cols-7 gap-px bg-gray-100;
+  }
   
   .calendar-day {
-    @apply relative flex flex-col items-center justify-center p-1 transition-all rounded-md;
+    @apply bg-white p-2 min-h-[60px] md:min-h-[80px] flex flex-col relative transition-all;
   }
   
-  .calendar-day.outside-month {
-    @apply text-nepali-dark/30;
+  .calendar-day-number {
+    @apply text-sm md:text-base font-medium;
   }
   
-  .calendar-day.current {
-    @apply bg-nepali-red text-white font-bold;
+  .calendar-day-current {
+    @apply bg-nepali-red/10;
   }
   
-  .calendar-day.selected {
-    @apply bg-nepali-yellow text-nepali-dark font-bold;
+  .calendar-day-selected {
+    @apply ring-2 ring-nepali-yellow;
   }
   
-  .calendar-day.has-event:after {
-    content: "";
-    @apply absolute bottom-1 w-1.5 h-1.5 rounded-full bg-nepali-blue;
+  .calendar-day-saturday {
+    @apply bg-nepali-red/5;
   }
   
-  .calendar-day.current.has-event:after {
-    @apply bg-white;
+  .calendar-day-outside {
+    @apply bg-gray-50/50 text-gray-400;
+  }
+  
+  .calendar-day-event {
+    @apply mt-1 text-[9px] px-1 py-0.5 bg-nepali-blue/10 text-nepali-blue rounded-sm truncate text-center;
+  }
+  
+  .calendar-day-today-marker {
+    @apply w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-red text-white flex items-center justify-center;
+  }
+  
+  .calendar-day-selected-marker {
+    @apply w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-yellow text-nepali-dark flex items-center justify-center;
   }
 }
