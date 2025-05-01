@@ -1,7 +1,7 @@
 
 import { BikramDate } from './bikram';
 
-export type BikramDate = {
+export type BikramDateObj = {
   year: number;
   month: number; // 1-12
   day: number; // 1-32
@@ -62,26 +62,25 @@ export const nepaliHolidays: {[key: string]: string} = {
 };
 
 // Get Today's Bikram Date
-export const getToday = (): BikramDate => {
-  const today = new Date();
-  const nepDate = new BikramDate(); // Current date
+export const getToday = (): BikramDateObj => {
+  const bikramDate = new BikramDate();
   
   return {
-    year: nepDate.getYear(),
-    month: nepDate.getMonth(), // Already returns 1-12
-    day: nepDate.getDate(),
-    englishDate: today,
+    year: bikramDate.getYear(),
+    month: bikramDate.getMonth(),
+    day: bikramDate.getDate(),
+    englishDate: bikramDate.toJsDate(),
   };
 };
 
 // Get Bikram Month Information
 export const getBikramMonth = (year: number, month: number): BikramMonth => {
   // Create first day of the month
-  const nepDate = new BikramDate(year, month, 1);
-  const englishDate = nepDate.toJsDate();
+  const bikramDate = new BikramDate(year, month, 1);
+  const englishDate = bikramDate.toJsDate();
   
   // Get total days in month
-  const totalDays = nepDate.getMonthDays();
+  const totalDays = bikramDate.getMonthDays();
   
   // Get the day of week (0-6) for the first day
   const startWeekDay = englishDate.getDay();
@@ -96,21 +95,21 @@ export const getBikramMonth = (year: number, month: number): BikramMonth => {
 };
 
 // Convert English Date to Bikram Date
-export const convertToBikram = (date: Date): BikramDate => {
-  const nepDate = BikramDate.fromDate(date);
+export const convertToBikram = (date: Date): BikramDateObj => {
+  const bikramDate = BikramDate.fromDate(date);
   
   return {
-    year: nepDate.getYear(),
-    month: nepDate.getMonth(), // Already returns 1-12
-    day: nepDate.getDate(),
+    year: bikramDate.getYear(),
+    month: bikramDate.getMonth(),
+    day: bikramDate.getDate(),
     englishDate: date,
   };
 };
 
 // Convert Bikram Date to English Date
-export const convertToEnglish = (bsDate: BikramDate): Date => {
-  const nepDate = new BikramDate(bsDate.year, bsDate.month, bsDate.day);
-  return nepDate.toJsDate();
+export const convertToEnglish = (bsDate: BikramDateObj): Date => {
+  const bikramDate = new BikramDate(bsDate.year, bsDate.month, bsDate.day);
+  return bikramDate.toJsDate();
 };
 
 // Check if a date has a holiday or event
@@ -127,3 +126,4 @@ export const getNepaliDigits = (num: number): string => {
     return nepaliDigits[parseInt(digit)];
   }).join('');
 };
+

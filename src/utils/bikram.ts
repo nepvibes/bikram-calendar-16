@@ -1,3 +1,4 @@
+
 /**
  * TypeScript implementation of Bikram calendar conversion
  * Converted from C++ implementation
@@ -102,10 +103,10 @@ export const NP_MONTHS_DATA: number[][] = [
 ];
 
 export class BikramDate {
-  private year: number = 0;
-  private month: number = 0; // 1-12
-  private day: number = 0;
-  private englishDate: Date;
+  private year: number;
+  private month: number; // 1-12
+  private day: number;
+  private readonly englishDate: Date;
 
   constructor(year?: number, month?: number, day?: number) {
     if (year !== undefined && month !== undefined && day !== undefined) {
@@ -139,7 +140,6 @@ export class BikramDate {
     bikramDate.year = bsYear;
     bikramDate.month = bsMonth;
     bikramDate.day = bsDay;
-    bikramDate.englishDate = date;
     return bikramDate;
   }
 
@@ -165,13 +165,13 @@ export class BikramDate {
 
   // Get days in a specific month
   getMonthDays(): number {
-    if (this.year >= BS_START_YEAR && this.year < BS_END_YEAR) {
+    if (this.year >= BS_START_YEAR && this.year <= BS_END_YEAR) {
       const yearIdx = this.year - BS_START_YEAR;
       if (yearIdx >= 0 && yearIdx < NP_MONTHS_DATA.length) {
         return NP_MONTHS_DATA[yearIdx][this.month - 1];
       }
     }
-    return 30; // Default fallback
+    return this.daysInMonth(this.year, this.month);
   }
 
   // Get the day of week (0-6, 0 = Sunday)
@@ -269,4 +269,34 @@ export class BikramDate {
       gDay: targetDate.getDate()
     };
   }
+
+  // Helper function to get days in month (matching C++ implementation)
+  daysInMonth(bsYear: number, bsMonth: number): number {
+    if (bsYear >= BS_START_YEAR && bsYear < BS_END_YEAR) {
+      return NP_MONTHS_DATA[bsYear - BS_START_YEAR][bsMonth - 1];
+    }
+    // Fallback method
+    const nextMonth = (bsMonth % 12) + 1;
+    const nextYear = (bsMonth === 12) ? bsYear + 1 : bsYear;
+    
+    const { gYear: gYear1, gMonth: gMonth1, gDay: gDay1 } = this.toGregorian(bsYear, bsMonth, 1);
+    const julian_date_start = this.getJulianDate(gYear1, gMonth1, gDay1);
+    
+    const { gYear: gYear2, gMonth: gMonth2, gDay: gDay2 } = this.toGregorian(nextYear, nextMonth, 1);
+    const julian_date_end = this.getJulianDate(gYear2, gMonth2, gDay2);
+    
+    return Math.floor(julian_date_end - julian_date_start);
+  }
+  
+  // Helper function to calculate Julian date (matching C++ implementation)
+  private getJulianDate(year: number, month: number, day: number): number {
+    if (month <= 2) {
+      year -= 1;
+      month += 12;
+    }
+    const a = Math.floor(year / 100.0);
+    const b = 2 - a + Math.floor(a / 4.0);
+    return Math.floor(365.25 * (year + 4716)) + Math.floor(30.6001 * (month + 1)) + day + b - 1524.5;
+  }
 }
+

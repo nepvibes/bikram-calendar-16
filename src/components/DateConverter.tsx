@@ -1,99 +1,130 @@
 
 import React, { useState } from 'react';
-import { BikramDate, convertToBikram, convertToEnglish, getNepaliDigits } from '../utils/bikramConverter';
+import { BikramDateObj, convertToBikram, convertToEnglish, getToday, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 
 interface DateConverterProps {
   useNepaliLanguage: boolean;
 }
 
 const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage }) => {
-  // States for the converter
-  const [englishDate, setEnglishDate] = useState<Date>(new Date());
-  const [bikramDate, setBikramDate] = useState<BikramDate>(convertToBikram(new Date()));
+  // State for Bikram date
+  const [bikramDate, setBikramDate] = useState<BikramDateObj>(getToday());
   
-  // Handle English date change
-  const handleEnglishChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // State for English (Gregorian) date
+  const [englishDate, setEnglishDate] = useState<Date>(new Date());
+
+  // Handle change of Bikram date inputs
+  const handleBikramDateChange = (field: 'year' | 'month' | 'day', value: number) => {
+    setBikramDate(prev => {
+      const newDate = { ...prev, [field]: value };
+      const convertedDate = convertToEnglish(newDate);
+      setEnglishDate(convertedDate);
+      return { ...newDate, englishDate: convertedDate };
+    });
+  };
+
+  // Handle change of English date
+  const handleEnglishDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(e.target.value);
     if (!isNaN(newDate.getTime())) {
       setEnglishDate(newDate);
-      setBikramDate(convertToBikram(newDate));
+      const newBikramDate = convertToBikram(newDate);
+      setBikramDate(newBikramDate);
     }
   };
-  
-  // Handle Bikram date change (simplified)
-  const handleBikramChange = (field: 'year' | 'month' | 'day', value: number) => {
-    const newBikramDate = { ...bikramDate, [field]: value };
-    setBikramDate(newBikramDate);
-    
-    try {
-      const newEnglishDate = convertToEnglish(newBikramDate);
-      setEnglishDate(newEnglishDate);
-    } catch (error) {
-      console.error('Invalid Bikram date');
-    }
+
+  const formatDay = (day: number) => {
+    return useNepaliLanguage ? getNepaliDigits(day) : day;
   };
-  
+
   return (
-    <div className="bg-white border border-nepali-yellow/30 rounded-lg shadow-md p-4 my-4 animate-fade-in">
-      <h3 className="text-lg font-bold text-center mb-4 text-nepali-dark">
-        {useNepaliLanguage ? 'मिति रूपान्तरण' : 'Date Converter'}
+    <div className="mt-8 p-4 border border-nepali-yellow/30 rounded-lg bg-white/50">
+      <h3 className="text-lg font-bold mb-4">
+        {useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
       </h3>
-      
-      <div className="space-y-4">
-        {/* English Date Input */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-nepali-dark">
-            {useNepaliLanguage ? 'ग्रेगोरियन मिति' : 'Gregorian Date'}
-          </label>
-          <input
-            type="date"
-            value={englishDate.toISOString().split('T')[0]}
-            onChange={handleEnglishChange}
-            className="block w-full rounded-md border-nepali-yellow/30 shadow-sm focus:border-nepali-yellow focus:ring focus:ring-nepali-yellow/20 py-2 px-3"
-          />
-        </div>
-        
-        {/* Bikram Date Display */}
-        <div className="space-y-2">
-          <label className="block text-sm font-medium text-nepali-dark">
-            {useNepaliLanguage ? 'नेपाली मिति' : 'Bikram Sambat'}
-          </label>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Bikram Date Inputs */}
+        <div>
+          <h4 className="font-medium mb-2">
+            {useNepaliLanguage ? 'बिक्रम सम्बत' : 'Bikram Sambat (BS)'}
+          </h4>
           <div className="grid grid-cols-3 gap-2">
-            <select
-              value={bikramDate.year}
-              onChange={(e) => handleBikramChange('year', parseInt(e.target.value))}
-              className="rounded-md border-nepali-yellow/30 shadow-sm focus:border-nepali-yellow focus:ring focus:ring-nepali-yellow/20"
-            >
-              {Array.from({ length: 100 }, (_, i) => bikramDate.year - 50 + i).map(year => (
-                <option key={year} value={year}>
-                  {useNepaliLanguage ? getNepaliDigits(year) : year}
-                </option>
-              ))}
-            </select>
-            <select
-              value={bikramDate.month}
-              onChange={(e) => handleBikramChange('month', parseInt(e.target.value))}
-              className="rounded-md border-nepali-yellow/30 shadow-sm focus:border-nepali-yellow focus:ring focus:ring-nepali-yellow/20"
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map(month => (
-                <option key={month} value={month}>
-                  {useNepaliLanguage ? getNepaliDigits(month) : month}
-                </option>
-              ))}
-            </select>
-            <select
-              value={bikramDate.day}
-              onChange={(e) => handleBikramChange('day', parseInt(e.target.value))}
-              className="rounded-md border-nepali-yellow/30 shadow-sm focus:border-nepali-yellow focus:ring focus:ring-nepali-yellow/20"
-            >
-              {Array.from({ length: 32 }, (_, i) => i + 1).map(day => (
-                <option key={day} value={day}>
-                  {useNepaliLanguage ? getNepaliDigits(day) : day}
-                </option>
-              ))}
-            </select>
+            <div>
+              <label className="block text-sm mb-1">
+                {useNepaliLanguage ? 'वर्ष' : 'Year'}
+              </label>
+              <input
+                type="number"
+                min="1900"
+                max="2100"
+                value={bikramDate.year}
+                onChange={(e) => handleBikramDateChange('year', parseInt(e.target.value) || 2000)}
+                className="w-full p-2 border rounded"
+              />
+            </div>
+            <div>
+              <label className="block text-sm mb-1">
+                {useNepaliLanguage ? 'महिना' : 'Month'}
+              </label>
+              <select
+                value={bikramDate.month}
+                onChange={(e) => handleBikramDateChange('month', parseInt(e.target.value))}
+                className="w-full p-2 border rounded"
+              >
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <option key={i} value={i + 1}>
+                    {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm mb-1">
+                {useNepaliLanguage ? 'दिन' : 'Day'}
+              </label>
+              <input
+                type="number"
+                min="1"
+                max="32"
+                value={bikramDate.day}
+                onChange={(e) => handleBikramDateChange('day', parseInt(e.target.value) || 1)}
+                className="w-full p-2 border rounded"
+              />
+            </div>
           </div>
         </div>
+
+        {/* English Date Input */}
+        <div>
+          <h4 className="font-medium mb-2">
+            {useNepaliLanguage ? 'ग्रेगोरियन' : 'Gregorian (AD)'}
+          </h4>
+          <div>
+            <label className="block text-sm mb-1">
+              {useNepaliLanguage ? 'मिति' : 'Date'}
+            </label>
+            <input
+              type="date"
+              value={englishDate.toISOString().split('T')[0]}
+              onChange={handleEnglishDateChange}
+              className="w-full p-2 border rounded"
+            />
+          </div>
+          <div className="mt-2 text-sm text-gray-600">
+            {useNepaliLanguage ? 'फरम्याट: ' : 'Format: '}
+            {englishDate.toLocaleDateString()}
+          </div>
+        </div>
+      </div>
+
+      {/* Display Result */}
+      <div className="mt-4 p-2 bg-nepali-yellow/10 border border-nepali-yellow/20 rounded text-center">
+        <p>
+          {useNepaliLanguage ? 
+            `${getNepaliDigits(bikramDate.day)} ${nepaliMonthsNp[bikramDate.month - 1]} ${getNepaliDigits(bikramDate.year)} बि.सं. = ${englishDate.toLocaleDateString()}` :
+            `${bikramDate.day} ${nepaliMonthsEn[bikramDate.month - 1]} ${bikramDate.year} BS = ${englishDate.toLocaleDateString()}`}
+        </p>
       </div>
     </div>
   );
