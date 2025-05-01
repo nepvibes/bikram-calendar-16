@@ -1,5 +1,5 @@
 
-import NepaliDate from 'nepali-date-converter';
+import { BikramDate } from './bikram';
 
 export type BikramDate = {
   year: number;
@@ -64,11 +64,11 @@ export const nepaliHolidays: {[key: string]: string} = {
 // Get Today's Bikram Date
 export const getToday = (): BikramDate => {
   const today = new Date();
-  const nepDate = new NepaliDate(today);
+  const nepDate = new BikramDate(); // Current date
   
   return {
     year: nepDate.getYear(),
-    month: nepDate.getMonth() + 1, // NepaliDate returns 0-11
+    month: nepDate.getMonth(), // Already returns 1-12
     day: nepDate.getDate(),
     englishDate: today,
   };
@@ -77,7 +77,7 @@ export const getToday = (): BikramDate => {
 // Get Bikram Month Information
 export const getBikramMonth = (year: number, month: number): BikramMonth => {
   // Create first day of the month
-  const nepDate = new NepaliDate(year, month - 1, 1);
+  const nepDate = new BikramDate(year, month, 1);
   const englishDate = nepDate.toJsDate();
   
   // Get total days in month
@@ -97,11 +97,11 @@ export const getBikramMonth = (year: number, month: number): BikramMonth => {
 
 // Convert English Date to Bikram Date
 export const convertToBikram = (date: Date): BikramDate => {
-  const nepDate = new NepaliDate(date);
+  const nepDate = BikramDate.fromDate(date);
   
   return {
     year: nepDate.getYear(),
-    month: nepDate.getMonth() + 1, // NepaliDate returns 0-11
+    month: nepDate.getMonth(), // Already returns 1-12
     day: nepDate.getDate(),
     englishDate: date,
   };
@@ -109,7 +109,7 @@ export const convertToBikram = (date: Date): BikramDate => {
 
 // Convert Bikram Date to English Date
 export const convertToEnglish = (bsDate: BikramDate): Date => {
-  const nepDate = new NepaliDate(bsDate.year, bsDate.month - 1, bsDate.day);
+  const nepDate = new BikramDate(bsDate.year, bsDate.month, bsDate.day);
   return nepDate.toJsDate();
 };
 
