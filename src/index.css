@@ -103,7 +103,7 @@
   }
   
   .printable-calendar-day {
-    @apply border border-gray-200 p-2 min-h-[80px] relative;
+    @apply border border-gray-200 p-2 min-h-[60px] sm:min-h-[80px] relative;
   }
   
   .printable-calendar-day-empty {
@@ -111,7 +111,7 @@
   }
   
   .printable-date-number {
-    @apply text-2xl font-bold;
+    @apply text-lg sm:text-xl lg:text-2xl font-bold;
   }
   
   .printable-date-number-saturday {
@@ -123,15 +123,15 @@
   }
   
   .printable-english-date {
-    @apply text-xs text-gray-500;
+    @apply text-[8px] sm:text-xs text-gray-500;
   }
   
   .printable-holiday {
-    @apply text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded mt-1 inline-block;
+    @apply text-[8px] sm:text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded mt-1 inline-block;
   }
   
   .printable-tithi {
-    @apply text-xs text-blue-600 mt-1;
+    @apply text-[8px] sm:text-xs text-blue-600 mt-1;
   }
 }
 
@@ -150,7 +150,7 @@
   }
   
   .calendar-weekday {
-    @apply text-center py-2 border-r border-white/20 last:border-r-0;
+    @apply text-center py-1 sm:py-2 border-r border-white/20 last:border-r-0 text-xs sm:text-sm;
   }
   
   .calendar-weekday-saturday {
@@ -166,11 +166,11 @@
   }
   
   .calendar-day {
-    @apply bg-white p-2 min-h-[80px] border-l border-t border-gray-300 relative;
+    @apply bg-white p-0 sm:p-1 md:p-2 min-h-[50px] sm:min-h-[60px] md:min-h-[80px] border-l border-t border-gray-300 relative;
   }
   
   .calendar-day-number {
-    @apply text-2xl font-bold;
+    @apply text-base sm:text-lg lg:text-2xl font-bold;
   }
   
   .calendar-day-current {
@@ -194,14 +194,23 @@
   }
   
   .calendar-day-event {
-    @apply mt-1 text-[9px] px-1 py-0.5 bg-red-100 text-red-800 rounded-sm truncate text-center;
+    @apply mt-1 text-[7px] sm:text-[9px] px-1 py-0.5 bg-red-100 text-red-800 rounded-sm truncate text-center;
   }
   
   .calendar-day-tithi {
-    @apply text-[10px] text-blue-600 mt-1;
+    @apply text-[7px] sm:text-[10px] text-blue-600 mt-1;
   }
   
   .calendar-day-english-date {
-    @apply text-xs text-gray-500;
+    @apply text-[6px] sm:text-xs text-gray-500;
+  }
+}
+
+/* Responsive fixes */
+@layer utilities {
+  .xs\:inline {
+    @media (min-width: 480px) {
+      display: inline;
+    }
   }
 }
