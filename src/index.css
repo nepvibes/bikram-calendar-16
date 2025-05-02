@@ -74,65 +74,134 @@
   }
 }
 
+/* Printable Calendar Styles */
+@layer components {
+  .printable-calendar {
+    @apply grid grid-cols-7 border border-gray-300 bg-white;
+    page-break-inside: avoid;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .printable-calendar-header {
+    @apply bg-red-700 text-white font-bold text-center py-2 px-4 col-span-7;
+  }
+  
+  .printable-weekday-header {
+    @apply py-2 text-center font-bold;
+  }
+  
+  .printable-weekday-sun {
+    @apply bg-blue-800 text-white;
+  }
+  
+  .printable-weekday-sat {
+    @apply bg-red-700 text-white;
+  }
+  
+  .printable-weekday-regular {
+    @apply bg-blue-700 text-white;
+  }
+  
+  .printable-calendar-day {
+    @apply border border-gray-200 p-2 min-h-[80px] relative;
+  }
+  
+  .printable-calendar-day-empty {
+    @apply bg-gray-100;
+  }
+  
+  .printable-date-number {
+    @apply text-2xl font-bold;
+  }
+  
+  .printable-date-number-saturday {
+    @apply text-red-600;
+  }
+  
+  .printable-date-number-sunday {
+    @apply text-blue-800;
+  }
+  
+  .printable-english-date {
+    @apply text-xs text-gray-500;
+  }
+  
+  .printable-holiday {
+    @apply text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded mt-1 inline-block;
+  }
+  
+  .printable-tithi {
+    @apply text-xs text-blue-600 mt-1;
+  }
+}
+
 /* Calendar Day Styling */
 @layer components {
   .calendar-container {
-    @apply bg-white rounded-xl shadow-lg border border-nepali-yellow/30 overflow-hidden;
+    @apply bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden print:shadow-none print:border;
   }
   
   .calendar-header {
-    @apply bg-nepali-red text-white p-3 flex justify-between items-center;
+    @apply bg-red-700 text-white p-3 flex justify-between items-center;
   }
   
   .calendar-weekdays {
-    @apply grid grid-cols-7 bg-nepali-blue text-white font-semibold;
+    @apply grid grid-cols-7 bg-blue-700 text-white font-semibold border-b border-gray-300;
   }
   
   .calendar-weekday {
-    @apply text-center py-2;
+    @apply text-center py-2 border-r border-white/20 last:border-r-0;
   }
   
   .calendar-weekday-saturday {
-    @apply bg-nepali-red/90;
+    @apply bg-red-700;
+  }
+  
+  .calendar-weekday-sunday {
+    @apply bg-blue-800;
   }
   
   .calendar-grid {
-    @apply grid grid-cols-7 gap-px bg-gray-100;
+    @apply grid grid-cols-7 border-b border-r border-gray-300;
   }
   
   .calendar-day {
-    @apply bg-white p-2 min-h-[60px] md:min-h-[80px] flex flex-col relative transition-all;
+    @apply bg-white p-2 min-h-[80px] border-l border-t border-gray-300 relative;
   }
   
   .calendar-day-number {
-    @apply text-sm md:text-base font-medium;
+    @apply text-2xl font-bold;
   }
   
   .calendar-day-current {
-    @apply bg-nepali-red/10;
+    @apply bg-yellow-50;
   }
   
   .calendar-day-selected {
-    @apply ring-2 ring-nepali-yellow;
+    @apply ring-2 ring-yellow-500;
   }
   
   .calendar-day-saturday {
-    @apply bg-nepali-red/5;
+    @apply bg-red-50;
+  }
+  
+  .calendar-day-sunday {
+    @apply bg-blue-50;
   }
   
   .calendar-day-outside {
-    @apply bg-gray-50/50 text-gray-400;
+    @apply bg-gray-100 text-gray-400;
   }
   
   .calendar-day-event {
-    @apply mt-1 text-[9px] px-1 py-0.5 bg-nepali-blue/10 text-nepali-blue rounded-sm truncate text-center;
+    @apply mt-1 text-[9px] px-1 py-0.5 bg-red-100 text-red-800 rounded-sm truncate text-center;
   }
   
-  .calendar-day-today-marker {
-    @apply w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-red text-white flex items-center justify-center;
+  .calendar-day-tithi {
+    @apply text-[10px] text-blue-600 mt-1;
   }
   
-  .calendar-day-selected-marker {
-    @apply w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-yellow text-nepali-dark flex items-center justify-center;
+  .calendar-day-english-date {
+    @apply text-xs text-gray-500;
   }
 }

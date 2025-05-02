@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
 import LanguageToggle from './LanguageToggle';
-import { Card, CardContent } from './ui/card';
+import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
 import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
@@ -22,6 +22,7 @@ import {
 } from "./ui/popover";
 import { Calendar } from "./ui/calendar";
 import { format } from 'date-fns';
+import { Input } from './ui/input';
 
 const BikramCalendar: React.FC = () => {
   // Today's date in Bikram Sambat
@@ -102,6 +103,23 @@ const BikramCalendar: React.FC = () => {
     setCurrentView(prev => getBikramMonth(year, prev.month));
   };
   
+  // Handler for direct year input
+  const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setYearInput(e.target.value);
+  };
+  
+  // Handle year input submit
+  const handleYearSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const year = parseInt(yearInput);
+    if (!isNaN(year) && year >= 1900 && year <= 2100) {
+      setCurrentView(prev => getBikramMonth(year, prev.month));
+    } else {
+      toast.error("Please enter a valid year between 1900 and 2100");
+      setYearInput(currentView.year.toString());
+    }
+  };
+  
   // Handle date selection
   const handleDateSelect = (day: number) => {
     const newSelectedDate: BikramDateObj = {
@@ -137,168 +155,165 @@ const BikramCalendar: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen py-8 px-4 bg-nepali-offwhite">
+    <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-4">
       <Toaster richColors position="top-center" />
       
       {/* Calendar Container */}
-      <div className="max-w-4xl mx-auto">
-        {/* Header with title and design elements */}
-        <div className="mb-8 text-center relative nepali-decoration pt-10 pb-8">
-          <div className="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-8 bg-nepali-red rounded-b-lg shadow-lg flex items-center justify-center">
-            <span className="text-white font-bold">
-              {useNepaliLanguage ? '२०८१' : '2024'}
-            </span>
+      <div className="max-w-4xl mx-auto px-4">
+        {/* Top header with month/year */}
+        <div className="bg-red-700 text-white p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden">
+          <div className="flex justify-between items-center">
+            <h2 className="text-3xl font-bold">
+              {useNepaliLanguage ? 
+                `विक्रम संवत् ${getNepaliDigits(currentView.year)}` : 
+                `Bikram Sambat ${currentView.year}`
+              }
+            </h2>
+            
+            <div className="flex flex-col items-end">
+              <span className="text-xl font-bold">
+                {useNepaliLanguage ? 
+                  `${nepaliMonthsNp[currentView.month - 1]}` : 
+                  `${nepaliMonthsEn[currentView.month - 1]}`
+                }
+              </span>
+              <span className="text-sm opacity-75">
+                {format(currentView.englishStartDate, 'MMMM yyyy')} AD
+              </span>
+            </div>
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-nepali-red relative inline-block">
-            {useNepaliLanguage ? 'बिक्रम सम्वत पात्रो' : 'Bikram Sambat Calendar'}
-            <div className="absolute w-full h-1 bg-nepali-yellow bottom-0 left-0 mt-2"></div>
-          </h1>
+          
+          {/* Decorative element */}
+          <div className="absolute -right-16 -top-16 w-32 h-32 bg-yellow-500 rounded-full opacity-20"></div>
+          <div className="absolute -left-16 -bottom-16 w-32 h-32 bg-blue-500 rounded-full opacity-20"></div>
         </div>
         
-        <Card className="bg-white border-nepali-yellow/30 shadow-lg rounded-xl overflow-hidden">
-          <div className="bg-nepali-red text-white py-3 px-4 flex justify-between items-center">
+        {/* Navigation controls */}
+        <div className="bg-blue-800 text-white p-2 flex flex-wrap gap-2 justify-between items-center">
+          {/* Month and Year selectors */}
+          <div className="flex gap-2">
+            {/* Month selector */}
+            <Select 
+              value={currentView.month.toString()} 
+              onValueChange={handleMonthChange}
+            >
+              <SelectTrigger className="w-32 bg-white text-blue-900 border-none">
+                <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
+              </SelectTrigger>
+              <SelectContent className="bg-white">
+                {[...Array(12)].map((_, i) => (
+                  <SelectItem key={i+1} value={(i+1).toString()}>
+                    {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            
+            {/* Year selector - Direct input */}
+            <form onSubmit={handleYearSubmit} className="flex">
+              <Input 
+                type="number"
+                value={yearInput}
+                onChange={handleYearInputChange}
+                className="w-24 bg-white text-blue-900 border-none"
+                min={1900}
+                max={2100}
+              />
+            </form>
+          </div>
+          
+          {/* Navigation buttons */}
+          <div className="flex items-center gap-1">
             <Button 
               onClick={handleTodayClick}
-              variant="ghost" 
-              className="text-white hover:bg-nepali-red/80 hover:text-white"
+              variant="outline" 
+              className="bg-transparent border-white text-white hover:bg-white/20"
             >
               {useNepaliLanguage ? 'आज' : 'Today'}
             </Button>
             
-            <div className="flex items-center gap-3">
-              <Button
-                onClick={handlePrevMonth}
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-nepali-red/80 hover:text-white"
-              >
-                <ChevronLeft className="h-5 w-5" />
-              </Button>
-              
-              <h2 className="text-xl md:text-2xl font-bold">
-                {useNepaliLanguage ? 
-                  `${nepaliMonthsNp[currentView.month - 1]} ${getNepaliDigits(currentView.year)}` : 
-                  `${nepaliMonthsEn[currentView.month - 1]} ${currentView.year} BS`
-                }
-              </h2>
-              
-              <Button
-                onClick={handleNextMonth}
-                variant="ghost"
-                size="icon"
-                className="text-white hover:bg-nepali-red/80 hover:text-white"
-              >
-                <ChevronRight className="h-5 w-5" />
-              </Button>
-            </div>
+            <Button
+              onClick={handlePrevMonth}
+              variant="outline"
+              size="icon"
+              className="bg-transparent border-white text-white hover:bg-white/20 h-8 w-8"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </Button>
             
-            <div className="flex items-center gap-2">
-              <Popover>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    className="text-white hover:bg-nepali-red/80 hover:text-white gap-2"
-                  >
-                    <CalendarIcon className="h-4 w-4" />
-                    <span className="hidden md:inline">{useNepaliLanguage ? 'मिति छान्नुहोस्' : 'Pick Date'}</span>
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0 bg-white" align="end">
-                  <Calendar
-                    mode="single"
-                    selected={new Date()}
-                    onSelect={handleEnglishDateSelect}
-                    initialFocus
-                  />
-                </PopoverContent>
-              </Popover>
-              
-              <LanguageToggle
-                useNepaliLanguage={useNepaliLanguage}
-                onToggle={toggleLanguage}
-              />
-            </div>
+            <Button
+              onClick={handleNextMonth}
+              variant="outline"
+              size="icon"
+              className="bg-transparent border-white text-white hover:bg-white/20 h-8 w-8"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </Button>
+            
+            <LanguageToggle
+              useNepaliLanguage={useNepaliLanguage}
+              onToggle={toggleLanguage}
+            />
+            
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant="outline"
+                  className="bg-transparent border-white text-white hover:bg-white/20 gap-1"
+                >
+                  <CalendarIcon className="h-4 w-4" />
+                  <span className="hidden md:inline">{useNepaliLanguage ? 'मिति छान्नुहोस्' : 'Pick Date'}</span>
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0 bg-white" align="end">
+                <Calendar
+                  mode="single"
+                  selected={new Date()}
+                  onSelect={handleEnglishDateSelect}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
           </div>
-          
-          <CardContent className="p-0">
-            <div className="p-4 bg-nepali-blue/5 border-b border-nepali-blue/10 flex flex-wrap gap-3 justify-center md:justify-between">
-              {/* Year Selection */}
-              <Select 
-                value={yearInput} 
-                onValueChange={handleYearChange}
-              >
-                <SelectTrigger className="w-28 bg-white border-nepali-yellow hover:border-nepali-yellow/80">
-                  <SelectValue placeholder={useNepaliLanguage ? "वर्ष" : "Year"} />
-                </SelectTrigger>
-                <SelectContent className="max-h-60 bg-white">
-                  {availableYears.map((year) => (
-                    <SelectItem key={year} value={year.toString()}>
-                      {useNepaliLanguage ? getNepaliDigits(year) : year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              {/* Month Selection */}
-              <Select 
-                value={currentView.month.toString()} 
-                onValueChange={handleMonthChange}
-              >
-                <SelectTrigger className="w-40 bg-white border-nepali-yellow hover:border-nepali-yellow/80">
-                  <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
-                </SelectTrigger>
-                <SelectContent className="bg-white">
-                  {[...Array(12)].map((_, i) => (
-                    <SelectItem key={i+1} value={(i+1).toString()}>
-                      {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              
-              <p className="text-sm text-nepali-dark/60 self-center hidden md:block">
-                {format(currentView.englishStartDate, 'MMMM yyyy')} {useNepaliLanguage ? 'अङ्ग्रेजी' : 'AD'}
+        </div>
+        
+        {/* Calendar Grid */}
+        <div className="bg-white border-l border-r border-b border-gray-300">
+          <CalendarGrid
+            year={currentView.year}
+            month={currentView.month}
+            days={currentView.days}
+            startWeekDay={currentView.startWeekDay}
+            currentDate={today.year === currentView.year && today.month === currentView.month ? today : undefined}
+            selectedDate={selectedDate || undefined}
+            onDateSelect={handleDateSelect}
+            useNepaliLanguage={useNepaliLanguage}
+          />
+        </div>
+        
+        {/* Current Selection Info */}
+        {selectedDate && (
+          <div className="mt-4 p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center">
+            <h3 className="font-medium text-yellow-800">
+              {useNepaliLanguage ? 'छनौट मिति:' : 'Selected Date:'}
+            </h3>
+            <div className="flex justify-center items-center gap-4 mt-1">
+              <p className="font-bold text-lg">
+                {useNepaliLanguage ? 
+                  `${nepaliMonthsNp[selectedDate.month - 1]} ${getNepaliDigits(selectedDate.day)}, ${getNepaliDigits(selectedDate.year)}` : 
+                  `${nepaliMonthsEn[selectedDate.month - 1]} ${selectedDate.day}, ${selectedDate.year} BS`
+                }
+              </p>
+              <span className="text-gray-500">|</span>
+              <p className="text-gray-600">
+                {format(selectedDate.englishDate, 'PP')}
               </p>
             </div>
-            
-            {/* Calendar Grid */}
-            <div className="p-5">
-              <CalendarGrid
-                year={currentView.year}
-                month={currentView.month}
-                days={currentView.days}
-                startWeekDay={currentView.startWeekDay}
-                currentDate={today.year === currentView.year && today.month === currentView.month ? today : undefined}
-                selectedDate={selectedDate || undefined}
-                onDateSelect={handleDateSelect}
-                useNepaliLanguage={useNepaliLanguage}
-              />
-            </div>
-            
-            {/* Current Selection Info */}
-            {selectedDate && (
-              <div className="m-5 p-4 bg-nepali-red/5 border border-nepali-red/20 rounded-lg">
-                <h3 className="font-medium text-nepali-red">
-                  {useNepaliLanguage ? 'छनौट मिति:' : 'Selected Date:'}
-                </h3>
-                <div className="flex justify-between items-center mt-1">
-                  <p className="font-bold">
-                    {useNepaliLanguage ? 
-                      `${nepaliMonthsNp[selectedDate.month - 1]} ${getNepaliDigits(selectedDate.day)}, ${getNepaliDigits(selectedDate.year)}` : 
-                      `${nepaliMonthsEn[selectedDate.month - 1]} ${selectedDate.day}, ${selectedDate.year} BS`
-                    }
-                  </p>
-                  <p className="text-sm text-nepali-dark/70">
-                    {format(selectedDate.englishDate, 'PP')}
-                  </p>
-                </div>
-              </div>
-            )}
-          </CardContent>
-        </Card>
+          </div>
+        )}
         
         {/* Footer */}
-        <div className="mt-6 text-center text-sm text-nepali-dark/70">
+        <div className="mt-6 text-center text-sm text-gray-500 pb-6">
           <p>{useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}</p>
         </div>
       </div>

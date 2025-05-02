@@ -59,21 +59,24 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   const weekDays = useNepaliLanguage ? nepaliDaysNp : nepaliDaysEn;
   
   return (
-    <div className="border border-nepali-yellow/30 rounded-lg bg-white shadow-md overflow-hidden">
+    <div className="border border-gray-300 overflow-hidden rounded-none">
       {/* Days of week header */}
-      <div className="grid grid-cols-7 bg-nepali-blue text-white font-semibold">
+      <div className="grid grid-cols-7 divide-x divide-gray-300">
         {weekDays.map((day, idx) => (
           <div 
             key={idx} 
-            className={`text-center py-2 px-1 ${idx === 6 ? 'bg-nepali-red/90' : ''}`}
+            className={`text-center py-2 px-1 font-bold ${idx === 0 ? 'bg-blue-800 text-white' : idx === 6 ? 'bg-red-700 text-white' : 'bg-blue-700 text-white'}`}
           >
             {day}
+            <div className="text-xs font-normal">
+              {useNepaliLanguage ? '' : (idx === 0 ? 'Sunday' : idx === 1 ? 'Monday' : idx === 2 ? 'Tuesday' : idx === 3 ? 'Wednesday' : idx === 4 ? 'Thursday' : idx === 5 ? 'Friday' : 'Saturday')}
+            </div>
           </div>
         ))}
       </div>
       
       {/* Calendar grid */}
-      <div className="bg-white grid grid-cols-7 gap-px border-t border-nepali-yellow/10">
+      <div className="bg-white grid grid-cols-7 divide-x divide-y divide-gray-300">
         {weeks.map((week, weekIdx) => (
           <React.Fragment key={weekIdx}>
             {week.map((day, dayIdx) => {
@@ -87,47 +90,48 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               const eventName = day ? hasHoliday(month, day) : null;
               const hasEvent = !!eventName;
               
-              // Whether it's a weekend (Saturday)
+              // Whether it's a weekend (Saturday or Sunday)
               const isSaturday = dayIdx === 6;
-              
-              // Combine classes based on conditions
-              const dayClasses = `
-                relative aspect-square flex flex-col p-1 transition-all
-                ${day === null ? 'bg-gray-50/50' : 'hover:bg-nepali-yellow/10'}
-                ${isCurrentDay ? 'bg-nepali-red/10' : ''}
-                ${isSelectedDay ? 'ring-2 ring-nepali-yellow ring-inset' : ''}
-                ${isSaturday && day !== null ? 'bg-nepali-red/5' : ''}
-                ${day !== null ? 'cursor-pointer' : ''}
-              `;
+              const isSunday = dayIdx === 0;
               
               return (
                 <div 
                   key={dayIdx} 
-                  className={dayClasses}
+                  className={`min-h-[80px] relative ${day === null ? 'bg-gray-100' : 'hover:bg-gray-50'} ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''}`}
                   onClick={() => day !== null && onDateSelect(day)}
                 >
                   {day !== null && (
-                    <>
-                      <div className="flex justify-between items-start w-full">
-                        <div className={`
-                          flex justify-center items-center 
-                          ${isCurrentDay ? 'w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-red text-white' : ''}
-                          ${isSelectedDay && !isCurrentDay ? 'w-7 h-7 md:w-8 md:h-8 rounded-full bg-nepali-yellow text-nepali-dark' : ''}
-                        `}>
-                          <span className="text-sm md:text-base">
+                    <div className="h-full p-1 relative">
+                      <div className={`flex justify-between ${isSelectedDay ? 'bg-yellow-100' : ''}`}>
+                        <div className="flex flex-col items-start">
+                          {/* Bikram date - larger and bold */}
+                          <span className={`text-2xl font-bold 
+                            ${isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
+                            ${isCurrentDay ? 'ring-2 ring-red-500 px-1 rounded-full' : ''}`}
+                          >
                             {useNepaliLanguage ? getNepaliDigits(day) : day}
                           </span>
+                          
+                          {/* Event name */}
+                          {hasEvent && (
+                            <span className="text-[9px] px-1 py-0.5 bg-blue-100 text-blue-800 rounded mt-1 block break-words w-full">
+                              {eventName}
+                            </span>
+                          )}
                         </div>
+                        
+                        {/* English date - smaller and lighter */}
+                        <span className="text-xs text-gray-500">
+                          {/* This would be the equivalent English date */}
+                          {useNepaliLanguage ? '' : (month === 4 && day === 1 ? 'Jul 17' : '')}
+                        </span>
                       </div>
                       
-                      {hasEvent && (
-                        <div className="mt-1">
-                          <span className="text-[8px] md:text-[9px] px-1 py-0.5 bg-nepali-blue/10 text-nepali-blue rounded-sm block truncate max-w-full text-center">
-                            {eventName}
-                          </span>
-                        </div>
-                      )}
-                    </>
+                      {/* Tithi or lunar day - in small blue text */}
+                      <div className="text-[10px] text-blue-600 mt-1">
+                        {useNepaliLanguage ? 'चतुर्थी' : 'Chaturthi'}
+                      </div>
+                    </div>
                   )}
                 </div>
               );
