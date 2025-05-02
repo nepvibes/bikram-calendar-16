@@ -154,10 +154,10 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               const tithi = getTithiForDay(day);
               
               // Format English date
-              const englishDateStr = englishDate.toLocaleDateString('en-US', { 
-                month: 'short', 
-                day: 'numeric' 
-              });
+              const englishDateStr = day === 1 ? englishDate.toLocaleDateString('en-US', { 
+              month: 'short', 
+              day: 'numeric' 
+              }) : englishDate.getDate().toString();
               
               // Check for events
               const dayHasEvents = hasEvents(
