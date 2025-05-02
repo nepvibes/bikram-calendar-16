@@ -4,7 +4,7 @@ import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, n
 import CalendarGrid from './CalendarGrid';
 import LanguageToggle from './LanguageToggle';
 import EventModal from './EventModal';
-import { CalendarEvent } from '../types/events';
+import { CalendarEvent, EventModalData, EventData} from '../types/events';
 import { loadEventsForYear } from '../utils/eventsHandler';
 import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
@@ -56,11 +56,10 @@ const BikramCalendar: React.FC = () => {
     gregorianEvents: [],
     bikramRecurringEvents: []
   });
-  
-  // Event modal state
-  const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
-  const [eventModalData, setEventModalData] = useState<any>(null);
-  
+
+// Event modal state
+const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
+const [eventModalData, setEventModalData] = useState<EventModalData | null>(null);
   // Flag to indicate if the calendar is using approximation
   const [usingApproximation, setUsingApproximation] = useState<boolean>(false);
   
@@ -170,30 +169,30 @@ const BikramCalendar: React.FC = () => {
     }
   };
   
-  // Handle date selection
-  const handleDateSelect = (day: number) => {
-    const newSelectedDate: BikramDateObj = {
-      year: currentView.year,
-      month: currentView.month,
-      day: day,
-      englishDate: new Date(),
-    };
-    
-    setSelectedDate(newSelectedDate);
-    toast(useNepaliLanguage ?
-      `छनौट गरिएको: ${nepaliMonthsNp[newSelectedDate.month - 1]} ${getNepaliDigits(newSelectedDate.day)}, ${getNepaliDigits(newSelectedDate.year)} बि.सं.` :
-      `Selected: ${nepaliMonthsEn[newSelectedDate.month - 1]} ${newSelectedDate.day}, ${newSelectedDate.year} BS`);
+ // Handle date selection
+const handleDateSelect = (day: number): void => {
+  const newSelectedDate: EventModalData = {
+    year: currentView.year,
+    month: currentView.month,
+    day,
+    englishDate: new Date(),
+    tithiName: '', 
+    tithiPaksha: '', 
+    eventText: '', 
+    eventDetail: '',
   };
-  
-  // Handle event click
-  const handleEventClick = (eventData: any) => {
-    setEventModalData({
-      ...eventData,
-      year: currentView.year,
-      month: currentView.month
-    });
-    setEventModalOpen(true);
-  };
+
+  setSelectedDate(newSelectedDate);
+  setEventModalData(newSelectedDate);
+  setEventModalOpen(true);
+};
+
+// Handle event click
+const handleEventClick = (eventData: EventData): void => {
+  const updatedEventData = { ...eventData, year: currentView.year, month: currentView.month };
+  setEventModalData(updatedEventData);
+  setEventModalOpen(true);
+};
   
   // Toggle language
   const toggleLanguage = () => {
@@ -376,32 +375,15 @@ const BikramCalendar: React.FC = () => {
           />
         </div>
         
-        {/* Current Selection Info */}
-        {selectedDate && (
-          <div className="mt-4 p-2 sm:p-4 bg-yellow-50 border border-yellow-300 rounded-lg text-center">
-            <h3 className="font-medium text-yellow-800 text-sm sm:text-base">
-              {useNepaliLanguage ? 'छनौट मिति:' : 'Selected Date:'}
-            </h3>
-            <div className="flex flex-col sm:flex-row justify-center items-center sm:gap-4 mt-1">
-              <p className="font-bold text-sm sm:text-lg">
-                {useNepaliLanguage ? 
-                  `${nepaliMonthsNp[selectedDate.month - 1]} ${getNepaliDigits(selectedDate.day)}, ${getNepaliDigits(selectedDate.year)}` : 
-                  `${nepaliMonthsEn[selectedDate.month - 1]} ${selectedDate.day}, ${selectedDate.year} BS`
-                }
-              </p>
-              <span className="hidden sm:inline text-gray-500">|</span>
-              <p className="text-gray-600 text-xs sm:text-base">
-                {format(selectedDate.englishDate, 'PP')}
-              </p>
-            </div>
-          </div>
-        )}
+        
         
         {/* Footer */}
         <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 pb-4 sm:pb-6">
           <p>{useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}</p>
         </div>
       </div>
+
+      
       
       {/* Event Modal */}
       <EventModal
