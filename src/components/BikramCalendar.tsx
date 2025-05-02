@@ -224,18 +224,22 @@ const handleEventClick = (eventData: EventData): void => {
     <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">
       <Toaster richColors position="top-center" />
       
-            {/* Calendar Container */}
+      {/* Calendar Container */}
       <div className="mx-auto px-2 sm:px-4 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
         {/* Top header with month/year */}
         <div className="bg-red-700 text-white p-2 sm:p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
             <div className="flex flex-col">
             <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center sm:text-left">
-                {useNepaliLanguage ? 
+                {/* {useNepaliLanguage ? 
                   `विक्रम संवत् ${getNepaliDigits(currentView.year)} ${
                     nepaliMonthsNp[currentView.month - 1]
                   }` : 
                   `Bikram Sambat ${currentView.year}`
+                } */}
+                {useNepaliLanguage ? 
+                  `विक्रम संवत् क्यालेन्डर` : 
+                  `Bikram Sambat calendar `
                 }
               </h2>
               
@@ -253,8 +257,8 @@ const handleEventClick = (eventData: EventData): void => {
             <div className="flex flex-col items-center sm:items-end mt-2 sm:mt-0">
               <span className="text-lg sm:text-xl font-bold">
                 {useNepaliLanguage ? 
-                  `${nepaliMonthsNp[currentView.month - 1]}` : 
-                  `${nepaliMonthsEn[currentView.month - 1]}`
+                  `${nepaliMonthsNp[currentView.month - 1]} ${getNepaliDigits(currentView.year)}` : 
+                  `${nepaliMonthsEn[currentView.month - 1]} $`
                 }
               </span>
               <span className="text-xs sm:text-sm opacity-75">
