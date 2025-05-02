@@ -26,6 +26,7 @@ import {
 import { Calendar } from "./ui/calendar";
 import { format } from 'date-fns';
 import { Input } from './ui/input';
+import { BS_START_YEAR, BS_END_YEAR } from '../utils/bikram';
 
 const BikramCalendar: React.FC = () => {
   // Today's date in Bikram Sambat
@@ -60,13 +61,16 @@ const BikramCalendar: React.FC = () => {
   const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
   const [eventModalData, setEventModalData] = useState<any>(null);
   
-  // Available years for dropdown (from 1900 BS to 2100 BS for wider range)
-  const availableYears = Array.from({ length: 201 }, (_, i) => 1900 + i);
+  // Flag to indicate if the calendar is using approximation
+  const [usingApproximation, setUsingApproximation] = useState<boolean>(false);
   
   // Initialize or update calendar when the current view changes
   useEffect(() => {
     const newMonthData = getBikramMonth(currentView.year, currentView.month);
     setCurrentView(newMonthData);
+    
+    // Check if we're using approximation
+    setUsingApproximation(currentView.year < BS_START_YEAR || currentView.year > BS_END_YEAR);
     
     // Load events for the current year
     loadEventsForYear(currentView.year).then(loadedEvents => {
@@ -149,12 +153,19 @@ const BikramCalendar: React.FC = () => {
     
     const year = parseInt(processedInput);
     
-    if (!isNaN(year) && year >= 1900 && year <= 2100) {
+    if (!isNaN(year)) {
       setCurrentView(prev => getBikramMonth(year, prev.month));
+      
+      // If we're outside the precomputed data range, show a toast notification
+      if (year < BS_START_YEAR || year > BS_END_YEAR) {
+        toast.info(useNepaliLanguage ? 
+          `${getNepaliDigits(BS_START_YEAR)}–${getNepaliDigits(BS_END_YEAR)} भन्दा बाहिरको मिति अनुमानित हो` : 
+          `Calendar data outside ${BS_START_YEAR}–${BS_END_YEAR} is approximated`);
+      }
     } else {
       toast.error(useNepaliLanguage ? 
-        "कृपया १९०० र २१०० बीचको वैध वर्ष प्रविष्ट गर्नुहोस्" : 
-        "Please enter a valid year between 1900 and 2100");
+        "कृपया वैध वर्ष प्रविष्ट गर्नुहोस्" : 
+        "Please enter a valid year");
       setYearInput(useNepaliLanguage ? getNepaliDigits(currentView.year) : currentView.year.toString());
     }
   };
@@ -219,12 +230,24 @@ const BikramCalendar: React.FC = () => {
         {/* Top header with month/year */}
         <div className="bg-red-700 text-white p-2 sm:p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
-            <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center sm:text-left">
-              {useNepaliLanguage ? 
-                `विक्रम संवत् ${getNepaliDigits(currentView.year)}` : 
-                `Bikram Sambat ${currentView.year}`
-              }
-            </h2>
+            <div className="flex flex-col">
+              <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-center sm:text-left">
+                {useNepaliLanguage ? 
+                  `विक्रम संवत् ${getNepaliDigits(currentView.year)}` : 
+                  `Bikram Sambat ${currentView.year}`
+                }
+              </h2>
+              
+              {/* Show approximation indicator if needed */}
+              {usingApproximation && (
+                <div className="text-xs text-yellow-200 mt-1 text-center sm:text-left">
+                  {useNepaliLanguage ? 
+                    `(अनुमानित डाटा)` : 
+                    `(Approximated data)`
+                  }
+                </div>
+              )}
+            </div>
             
             <div className="flex flex-col items-center sm:items-end mt-2 sm:mt-0">
               <span className="text-lg sm:text-xl font-bold">
@@ -349,6 +372,7 @@ const BikramCalendar: React.FC = () => {
             useNepaliLanguage={useNepaliLanguage}
             events={events}
             onEventClick={handleEventClick}
+            usingApproximation={usingApproximation}
           />
         </div>
         

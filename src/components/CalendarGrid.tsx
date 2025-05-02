@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
@@ -36,6 +35,7 @@ interface CalendarGridProps {
     eventText: string,
     eventDetail: string
   }) => void;
+  usingApproximation?: boolean;
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -49,7 +49,8 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   onDateSelect,
   useNepaliLanguage,
   events = { bikramFixedEvents: [], gregorianEvents: [], bikramRecurringEvents: [] },
-  onEventClick
+  onEventClick,
+  usingApproximation = false
 }) => {
   // Generate the days array
   const daysArray = [];
@@ -268,6 +269,15 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
           </React.Fragment>
         ))}
       </div>
+      
+      {/* Approximation notice */}
+      {usingApproximation && (
+        <div className="bg-yellow-50 text-yellow-800 text-xs p-2 text-center border-t border-yellow-200">
+          {useNepaliLanguage ? 
+            'यो मिति अनुमानित गणनाबाट प्राप्त गरिएको हो।' : 
+            'This calendar data is calculated using approximation.'}
+        </div>
+      )}
     </div>
   );
 };

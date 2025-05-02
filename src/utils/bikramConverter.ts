@@ -1,5 +1,5 @@
 
-import { BikramDate } from './bikram';
+import { BikramDate, BS_START_YEAR, BS_END_YEAR } from './bikram';
 
 export type BikramDateObj = {
   year: number;
@@ -61,6 +61,9 @@ export const nepaliHolidays: {[key: string]: string} = {
   '10-15': 'Tamu Lhosar',
 };
 
+// Export the BS_START_YEAR and BS_END_YEAR constants for use elsewhere
+export { BS_START_YEAR, BS_END_YEAR };
+
 // Get Today's Bikram Date
 export const getToday = (): BikramDateObj => {
   const bikramDate = new BikramDate();
@@ -75,11 +78,11 @@ export const getToday = (): BikramDateObj => {
 
 // Get Bikram Month Information
 export const getBikramMonth = (year: number, month: number): BikramMonth => {
-  // Create first day of the month
+  // Create first day of the month - now works for any year with fallback method
   const bikramDate = new BikramDate(year, month, 1);
   const englishDate = bikramDate.toJsDate();
   
-  // Get total days in month
+  // Get total days in month - will use fallback astronomical method if outside data range
   const totalDays = bikramDate.getMonthDays();
   
   // Get the day of week (0-6) for the first day
