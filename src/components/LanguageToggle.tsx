@@ -12,7 +12,7 @@ const LanguageToggle: React.FC<LanguageToggleProps> = ({ useNepaliLanguage, onTo
     <Button 
       onClick={onToggle} 
       variant="outline"
-      className="text-xs sm:text-sm bg-nepali-blue/10 border-nepali-blue hover:bg-nepali-blue hover:text-white h-8 sm:h-10 py-0 px-2 sm:px-3"
+      className="text-xs sm:text-sm bg-nepali-blue/10 border-white text-white hover:bg-white/20 h-8 sm:h-10 py-0 px-2 sm:px-3"
     >
       {useNepaliLanguage ? 'English' : 'नेपाली'}
     </Button>

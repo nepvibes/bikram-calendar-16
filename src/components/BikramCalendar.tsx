@@ -220,12 +220,12 @@ const BikramCalendar: React.FC = () => {
               value={currentView.month.toString()} 
               onValueChange={handleMonthChange}
             >
-              <SelectTrigger className="w-24 sm:w-32 bg-white text-blue-900 border-none h-8 sm:h-10">
+              <SelectTrigger className="w-24 sm:w-32 bg-white text-blue-900 border-none h-8 sm:h-10 text-xs sm:text-sm">
                 <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {[...Array(12)].map((_, i) => (
-                  <SelectItem key={i+1} value={(i+1).toString()}>
+                  <SelectItem key={i+1} value={(i+1).toString()} className="text-xs sm:text-sm">
                     {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
                   </SelectItem>
                 ))}
@@ -238,7 +238,7 @@ const BikramCalendar: React.FC = () => {
                 type="text"
                 value={yearInput}
                 onChange={handleYearInputChange}
-                className="w-16 sm:w-24 bg-white text-blue-900 border-none h-8 sm:h-10 px-1 sm:px-3 text-sm"
+                className="w-16 sm:w-24 bg-white text-blue-900 border-none h-8 sm:h-10 px-1 sm:px-3 text-xs sm:text-sm"
                 onBlur={(e) => {
                   // Also submit on blur
                   handleYearSubmit(e);
@@ -309,6 +309,7 @@ const BikramCalendar: React.FC = () => {
             month={currentView.month}
             days={currentView.days}
             startWeekDay={currentView.startWeekDay}
+            englishStartDate={currentView.englishStartDate}
             currentDate={today.year === currentView.year && today.month === currentView.month ? today : undefined}
             selectedDate={selectedDate || undefined}
             onDateSelect={handleDateSelect}
