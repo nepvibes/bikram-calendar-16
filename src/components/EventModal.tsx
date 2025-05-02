@@ -11,23 +11,7 @@ import {
 import { Button } from './ui/button';
 import { format } from 'date-fns';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
-
-interface EventModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  eventData: {
-    day: number;
-    year: number;
-    month: number;
-    tithiName: string;
-    tithiPaksha: string;
-    englishDate: Date;
-    eventText: string;
-    eventDetail: string;
-  } | null;
-  useNepaliLanguage: boolean;
-}
-
+import { EventModalProps } from '../types/events';
 const EventModal: React.FC<EventModalProps> = ({
   isOpen,
   onClose,
