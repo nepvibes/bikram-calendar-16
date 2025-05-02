@@ -1,7 +1,9 @@
 
 import React from 'react';
-import { nepaliDaysEn, nepaliDaysNp, hasHoliday, getNepaliDigits } from '../utils/bikramConverter';
+import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
+import { CalendarEvent } from '../types/events';
+import { hasEvents, getAllEventText } from '../utils/eventsHandler';
 
 interface CalendarGridProps {
   year: number;
@@ -21,6 +23,19 @@ interface CalendarGridProps {
   englishStartDate: Date;
   onDateSelect: (day: number) => void;
   useNepaliLanguage: boolean;
+  events?: {
+    bikramFixedEvents: CalendarEvent[];
+    gregorianEvents: CalendarEvent[];
+    bikramRecurringEvents: CalendarEvent[];
+  };
+  onEventClick?: (eventData: {
+    day: number,
+    tithiName: string,
+    tithiPaksha: string,
+    englishDate: Date,
+    eventText: string,
+    eventDetail: string
+  }) => void;
 }
 
 const CalendarGrid: React.FC<CalendarGridProps> = ({
@@ -32,7 +47,9 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   selectedDate,
   englishStartDate,
   onDateSelect,
-  useNepaliLanguage
+  useNepaliLanguage,
+  events = { bikramFixedEvents: [], gregorianEvents: [], bikramRecurringEvents: [] },
+  onEventClick
 }) => {
   // Generate the days array
   const daysArray = [];
@@ -70,15 +87,17 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
   };
   
   // Function to get tithi for a given day
-  const getTithiForDay = (day: number): { name: string, nameEn: string } => {
-    if (!day) return { name: '', nameEn: '' };
+  const getTithiForDay = (day: number): { name: string, nameEn: string, paksha: string, pakshaEn: string } => {
+    if (!day) return { name: '', nameEn: '', paksha: '', pakshaEn: '' };
     
     const englishDate = getEnglishDate(day);
     const tithiData = calculateTithi(englishDate);
     
     return {
       name: tithiData.tithiName,
-      nameEn: tithiData.tithiNameEn
+      nameEn: tithiData.tithiNameEn,
+      paksha: tithiData.paksha,
+      pakshaEn: tithiData.pakshaEn
     };
   };
   
@@ -111,63 +130,138 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
               const isSelectedDay = selectedDate && day === selectedDate.day && 
                 month === selectedDate.month && year === selectedDate.year;
                 
-              const eventName = day ? hasHoliday(month, day) : null;
-              const hasEvent = !!eventName;
-              
               // Whether it's a weekend (Saturday or Sunday)
               const isSaturday = dayIdx === 6;
               const isSunday = dayIdx === 0;
               
+              if (day === null) {
+                return (
+                  <div 
+                    key={dayIdx} 
+                    className="min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 bg-gray-100"
+                  ></div>
+                );
+              }
+              
+              // Get English date for this day
+              const englishDate = getEnglishDate(day);
+              const englishDay = englishDate.getDate();
+              const englishMonth = englishDate.getMonth() + 1;
+              const englishYear = englishDate.getFullYear();
+              
               // Get tithi for this day
-              const tithi = day ? getTithiForDay(day) : { name: '', nameEn: '' };
+              const tithi = getTithiForDay(day);
               
               // Format English date
-              const englishDateStr = day ? (() => {
-                const engDate = getEnglishDate(day);
-                return engDate.toLocaleDateString('en-US', { 
-                  month: 'short', 
-                  day: 'numeric' 
-                });
-              })() : '';
+              const englishDateStr = englishDate.toLocaleDateString('en-US', { 
+                month: 'short', 
+                day: 'numeric' 
+              });
+              
+              // Check for events
+              const dayHasEvents = hasEvents(
+                events.bikramFixedEvents,
+                events.gregorianEvents,
+                events.bikramRecurringEvents,
+                year,
+                month,
+                day,
+                englishYear,
+                englishMonth,
+                englishDay
+              );
+              
+              // Get event text if there's an event
+              const eventText = dayHasEvents ? getAllEventText(
+                events.bikramFixedEvents,
+                events.gregorianEvents,
+                events.bikramRecurringEvents,
+                year,
+                month,
+                day,
+                englishYear,
+                englishMonth,
+                englishDay,
+                useNepaliLanguage
+              ) : '';
+              
+              // Special rendering for purnima and amavasya
+              const isPurnima = tithi.nameEn === 'Purnima';
+              const isAmavasya = tithi.nameEn === 'Amavasya';
+              const specialTithi = isPurnima || isAmavasya;
               
               return (
                 <div 
                   key={dayIdx} 
-                  className={`min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 ${day === null ? 'bg-gray-100' : 'cursor-pointer hover:bg-gray-50'} ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''} ${isCurrentDay ? 'bg-yellow-50' : ''}`}
-                  onClick={() => day !== null && onDateSelect(day)}
+                  className={`min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 
+                    cursor-pointer hover:bg-gray-50 
+                    ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''} 
+                    ${isCurrentDay ? 'bg-yellow-50' : ''}`}
+                  onClick={() => {
+                    onDateSelect(day);
+                    
+                    // If there's an event and onEventClick handler
+                    if (dayHasEvents && onEventClick) {
+                      onEventClick({
+                        day,
+                        tithiName: useNepaliLanguage ? tithi.name : tithi.nameEn,
+                        tithiPaksha: useNepaliLanguage ? tithi.paksha : tithi.pakshaEn,
+                        englishDate: englishDate,
+                        eventText,
+                        eventDetail: dayHasEvents ? getAllEventText(
+                          events.bikramFixedEvents,
+                          events.gregorianEvents,
+                          events.bikramRecurringEvents,
+                          year,
+                          month,
+                          day,
+                          englishYear,
+                          englishMonth,
+                          englishDay
+                        ) : ''
+                      });
+                    }
+                  }}
                 >
-                  {day !== null && (
-                    <div className="h-full relative">
-                      <div className={`flex justify-between ${isSelectedDay ? 'bg-yellow-100 rounded-sm' : ''}`}>
-                        <div className="flex flex-col items-start p-0.5 sm:p-1">
-                          {/* Bikram date - larger and bold */}
-                          <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold 
-                            ${isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
-                            ${isCurrentDay ? 'ring-1 ring-red-500 px-0.5 sm:px-1 rounded-full' : ''}`}
-                          >
-                            {useNepaliLanguage ? getNepaliDigits(day) : day}
-                          </span>
-                        </div>
-                        
-                        {/* English date - smaller and lighter */}
-                        <span className="text-[6px] sm:text-[8px] md:text-xs text-gray-500 p-0.5">
-                          {englishDateStr}
+                  <div className="h-full relative">
+                    <div className={`flex justify-between ${isSelectedDay ? 'bg-yellow-100 rounded-sm' : ''}`}>
+                      <div className="flex flex-col items-start p-0.5 sm:p-1">
+                        {/* Bikram date - larger and bold */}
+                        <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold 
+                          ${isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
+                          ${isCurrentDay ? 'ring-1 ring-red-500 px-0.5 sm:px-1 rounded-full' : ''}`}
+                        >
+                          {useNepaliLanguage ? getNepaliDigits(day) : day}
                         </span>
                       </div>
                       
-                      {/* Event name */}
-                      {hasEvent && (
-                        <span className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 bg-red-100 text-red-800 rounded-sm mt-0.5 block truncate w-full text-center">
-                          {eventName}
-                        </span>
-                      )}
-                      
-                      {/* Tithi or lunar day - in small blue text */}
+                      {/* English date - smaller and lighter */}
+                      <span className="text-[6px] sm:text-[8px] md:text-xs text-gray-500 p-0.5">
+                        {englishDateStr}
+                      </span>
+                    </div>
+                    
+                    {/* Event display */}
+                    {dayHasEvents && (
+                      <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 bg-red-100 text-red-800 rounded-sm mt-0.5 block truncate w-full text-center">
+                        {eventText}
+                      </div>
+                    )}
+                    
+                    {/* Special tithi display (purnima/amavasya) */}
+                    {specialTithi && !dayHasEvents && (
+                      <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 bg-yellow-100 text-yellow-800 rounded-sm mt-0.5 block truncate w-full text-center">
+                        {useNepaliLanguage ? tithi.name : tithi.nameEn}
+                      </div>
+                    )}
+                    
+                    {/* Regular tithi display */}
+                    {!specialTithi && !dayHasEvents && (
                       <div className="text-[7px] sm:text-[8px] md:text-[10px] text-blue-600 mt-0.5 px-1">
                         {useNepaliLanguage ? tithi.name : tithi.nameEn}
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </div>
               );
             })}

@@ -3,6 +3,9 @@ import React, { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
 import LanguageToggle from './LanguageToggle';
+import EventModal from './EventModal';
+import { CalendarEvent } from '../types/events';
+import { loadEventsForYear } from '../utils/eventsHandler';
 import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
@@ -36,11 +39,26 @@ const BikramCalendar: React.FC = () => {
   // Selected date
   const [selectedDate, setSelectedDate] = useState<BikramDateObj | null>(null);
   
-  // Language toggle - now default is Nepali
+  // Language toggle - default is Nepali
   const [useNepaliLanguage, setUseNepaliLanguage] = useState<boolean>(true);
   
   // Custom year input
   const [yearInput, setYearInput] = useState<string>(useNepaliLanguage ? getNepaliDigits(today.year) : today.year.toString());
+  
+  // Event data
+  const [events, setEvents] = useState<{
+    bikramFixedEvents: CalendarEvent[];
+    gregorianEvents: CalendarEvent[];
+    bikramRecurringEvents: CalendarEvent[];
+  }>({
+    bikramFixedEvents: [],
+    gregorianEvents: [],
+    bikramRecurringEvents: []
+  });
+  
+  // Event modal state
+  const [eventModalOpen, setEventModalOpen] = useState<boolean>(false);
+  const [eventModalData, setEventModalData] = useState<any>(null);
   
   // Available years for dropdown (from 1900 BS to 2100 BS for wider range)
   const availableYears = Array.from({ length: 201 }, (_, i) => 1900 + i);
@@ -49,6 +67,11 @@ const BikramCalendar: React.FC = () => {
   useEffect(() => {
     const newMonthData = getBikramMonth(currentView.year, currentView.month);
     setCurrentView(newMonthData);
+    
+    // Load events for the current year
+    loadEventsForYear(currentView.year).then(loadedEvents => {
+      setEvents(loadedEvents);
+    });
   }, [currentView.year, currentView.month]);
   
   // Handler for "Previous Month" button
@@ -149,6 +172,16 @@ const BikramCalendar: React.FC = () => {
     toast(useNepaliLanguage ?
       `छनौट गरिएको: ${nepaliMonthsNp[newSelectedDate.month - 1]} ${getNepaliDigits(newSelectedDate.day)}, ${getNepaliDigits(newSelectedDate.year)} बि.सं.` :
       `Selected: ${nepaliMonthsEn[newSelectedDate.month - 1]} ${newSelectedDate.day}, ${newSelectedDate.year} BS`);
+  };
+  
+  // Handle event click
+  const handleEventClick = (eventData: any) => {
+    setEventModalData({
+      ...eventData,
+      year: currentView.year,
+      month: currentView.month
+    });
+    setEventModalOpen(true);
   };
   
   // Toggle language
@@ -314,6 +347,8 @@ const BikramCalendar: React.FC = () => {
             selectedDate={selectedDate || undefined}
             onDateSelect={handleDateSelect}
             useNepaliLanguage={useNepaliLanguage}
+            events={events}
+            onEventClick={handleEventClick}
           />
         </div>
         
@@ -343,6 +378,14 @@ const BikramCalendar: React.FC = () => {
           <p>{useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}</p>
         </div>
       </div>
+      
+      {/* Event Modal */}
+      <EventModal
+        isOpen={eventModalOpen}
+        onClose={() => setEventModalOpen(false)}
+        eventData={eventModalData}
+        useNepaliLanguage={useNepaliLanguage}
+      />
     </div>
   );
 };
