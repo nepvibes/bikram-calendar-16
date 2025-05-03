@@ -14,6 +14,14 @@ const bikramFixedEvents: CalendarEvent[] = [
     event: "महाशिवरात्री",
     detail: "शिवको पूजा गर्ने पवित्र दिन",
     type: "bikram"
+  },
+  {
+    date: "2080/12/30",
+    event: "वार्षिक समारोह",
+    detail: "२०७५ देखि २०८० सम्म मनाइने विशेष समारोह",
+    startYear: 2075,
+    endYear: 2080,
+    type: "bikram"
   }
 ];
 

@@ -14,6 +14,14 @@ const bikramFixedEvents: CalendarEvent[] = [
     event: "जनै पूर्णिमा",
     detail: "जनै फेर्ने दिन, रक्षा बन्धन",
     type: "bikram"
+  },
+  {
+    date: "2081/7/1",
+    event: "वार्षिक उत्सव",
+    detail: "२०८१-२०८३ सम्म मनाइने विशेष उत्सव",
+    startYear: 2081,
+    endYear: 2083,
+    type: "bikram"
   }
 ];
 

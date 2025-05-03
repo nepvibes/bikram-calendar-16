@@ -25,6 +25,7 @@ export function checkEvent(
   
   let hasEvent = false;
   events.forEach(event => {
+    // Skip events that are outside of the specified year range
     if ((event.startYear && year < event.startYear) || 
         (event.endYear && year > event.endYear) || 
         event.showOnDay === false) {
@@ -197,19 +198,27 @@ export async function loadEventsForYear(year: number): Promise<{
       }};
     });
     
+    // Filter events based on startYear and endYear
+    const filterByYearRange = (events: CalendarEvent[]): CalendarEvent[] => {
+      return events.filter(event => 
+        (!event.startYear || year >= event.startYear) && 
+        (!event.endYear || year <= event.endYear)
+      );
+    };
+    
     // Merge year-specific and common events
     return {
       bikramFixedEvents: [
-        ...commonModule.default.bikramFixedEvents || [],
-        ...yearModule.default.bikramFixedEvents || []
+        ...filterByYearRange(commonModule.default.bikramFixedEvents || []),
+        ...filterByYearRange(yearModule.default.bikramFixedEvents || [])
       ],
       gregorianEvents: [
-        ...commonModule.default.gregorianEvents || [],
-        ...yearModule.default.gregorianEvents || []
+        ...filterByYearRange(commonModule.default.gregorianEvents || []),
+        ...filterByYearRange(yearModule.default.gregorianEvents || [])
       ],
       bikramRecurringEvents: [
-        ...commonModule.default.bikramRecurringEvents || [],
-        ...yearModule.default.bikramRecurringEvents || []
+        ...filterByYearRange(commonModule.default.bikramRecurringEvents || []),
+        ...filterByYearRange(yearModule.default.bikramRecurringEvents || [])
       ]
     };
   } catch (error) {
