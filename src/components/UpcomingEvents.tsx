@@ -2,7 +2,7 @@
 import React from 'react';
 import { CalendarEvent } from '@/types/events';
 import { getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
-import { hasEvents, getAllEventText, getAllEventDetails } from '@/utils/eventsHandler';
+import { hasEvents, getAllEventText, getAllEventDetails, isHoliday } from '@/utils/events';
 import { BikramDateObj } from '@/utils/bikramConverter';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';

@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
 import { CalendarEvent } from '../types/events';
-import { hasEvents, getAllEventText, isHoliday } from '../utils/eventsHandler';
+import { hasEvents, getAllEventText, isHoliday } from '../utils/events';
 
 interface CalendarGridProps {
   year: number;

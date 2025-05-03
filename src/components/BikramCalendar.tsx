@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
@@ -5,7 +6,7 @@ import LanguageToggle from './LanguageToggle';
 import EventModal from './EventModal';
 import UpcomingEvents from './UpcomingEvents';
 import { CalendarEvent, EventModalData, EventData} from '../types/events';
-import { loadEventsForYear } from '../utils/eventsHandler';
+import { loadEventsForYear } from '../utils/events';
 import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
