@@ -238,7 +238,7 @@ const BikramCalendar: React.FC = () => {
         <div className="text-white p-2 sm:p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden bg-[#3787a9]">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
             <div className="flex flex-col">
-            <h2 className="text-xl sm:text-2xl font-bold text-center mx-0 my-0 sm:text-left md:text-4xl">
+            <h2 className="text-xl sm:text-2xl font-bold text-center my-0 sm:text-left md:text-4xl mx-0 px-0">
                 {/* {useNepaliLanguage ? 
                   `विक्रम संवत् ${getNepaliDigits(currentView.year)} ${
                     nepaliMonthsNp[currentView.month - 1]
