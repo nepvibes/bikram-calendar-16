@@ -4,9 +4,8 @@ import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, n
 import CalendarGrid from './CalendarGrid';
 import LanguageToggle from './LanguageToggle';
 import EventModal from './EventModal';
-import UpcomingEvents from './UpcomingEvents';
 import { CalendarEvent, EventModalData, EventData} from '../types/events';
-import { loadEventsForYear } from '../utils/events';
+import { loadEventsForYear } from '../utils/eventsHandler';
 import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
@@ -137,7 +136,7 @@ const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const inputValue = e.target.value;
   let nepaliInputValue = inputValue;
 
-  if (useNepaliLanguage) {
+  if (useNepaliLanguage && inputValue !== '') {
     const englishInputValue = inputValue
       .split('')
       .map(char => {
@@ -148,6 +147,8 @@ const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       .join('');
 
     nepaliInputValue = getNepaliDigits(parseInt(englishInputValue));
+  } else if (inputValue === '') {
+    nepaliInputValue = '';
   }
 
   setYearInput(nepaliInputValue);
@@ -236,33 +237,6 @@ const handleEventClick = (eventData: EventData): void => {
     }
   };
   
-  // New function to navigate to a specific date when clicking on an upcoming event
-  const handleUpcomingEventClick = (year: number, month: number, day: number) => {
-    // Set the calendar view to the event's month and year
-    setCurrentView(getBikramMonth(year, month));
-    
-    // Create a date object for the event
-    const eventDate: BikramDateObj = {
-      year,
-      month,
-      day,
-      englishDate: new Date() // This is a placeholder, will be updated by the system
-    };
-    
-    // Update the selected date
-    setSelectedDate(eventDate);
-    
-    // Update the year input
-    setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
-    
-    // Show a notification
-    toast.info(
-      useNepaliLanguage ? 
-      `${nepaliMonthsNp[month - 1]} ${getNepaliDigits(day)}, ${getNepaliDigits(year)} मा भएको कार्यक्रम देखाउँदै` : 
-      `Showing event on ${nepaliMonthsEn[month - 1]} ${day}, ${year}`
-    );
-  };
-  
   return (
     <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">
       <Toaster richColors position="top-center" />
@@ -325,7 +299,7 @@ const handleEventClick = (eventData: EventData): void => {
               onValueChange={handleMonthChange}
             >
               <SelectTrigger className="w-24 sm:w-32 bg-white text-blue-900 border-none h-8 sm:h-10 text-xs sm:text-sm">
-                <SelectValue placeholder={useNepaliLanguage ? "मह���ना" : "Month"} />
+                <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
               </SelectTrigger>
               <SelectContent className="bg-white">
                 {[...Array(12)].map((_, i) => (
@@ -424,14 +398,7 @@ const handleEventClick = (eventData: EventData): void => {
           />
         </div>
         
-        {/* Upcoming Events List */}
-        <UpcomingEvents 
-          events={events}
-          currentDate={today}
-          useNepaliLanguage={useNepaliLanguage}
-          onEventClick={handleUpcomingEventClick}
-          maxEvents={5}
-        />
+        
         
         {/* Footer */}
         <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 pb-4 sm:pb-6">
