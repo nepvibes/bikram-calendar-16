@@ -131,11 +131,26 @@ const [eventModalData, setEventModalData] = useState<EventModalData | null>(null
     setCurrentView(prev => getBikramMonth(year, prev.month));
   };
   
-  // Handler for direct year input
-  const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const inputValue = e.target.value;
-    setYearInput(inputValue);
-  };
+// Handler for direct year input
+const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const inputValue = e.target.value;
+  let nepaliInputValue = inputValue;
+
+  if (useNepaliLanguage) {
+    const englishInputValue = inputValue
+      .split('')
+      .map(char => {
+        const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+        const index = nepaliDigits.indexOf(char);
+        return index !== -1 ? index.toString() : char;
+      })
+      .join('');
+
+    nepaliInputValue = getNepaliDigits(parseInt(englishInputValue));
+  }
+
+  setYearInput(nepaliInputValue);
+};
   
   // Handle year input submit
   const handleYearSubmit = (e: React.FormEvent) => {
