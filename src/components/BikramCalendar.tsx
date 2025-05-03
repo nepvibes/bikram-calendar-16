@@ -325,7 +325,7 @@ const BikramCalendar: React.FC = () => {
         </div>
         
         {/* Calendar Grid */}
-        <div className="bg-white border-l border-r border-b border-gray-300">
+        <div className="border-l border-r border-b border-gray-300 bg-white rounded-none">
           <CalendarGrid year={currentView.year} month={currentView.month} days={currentView.days} startWeekDay={currentView.startWeekDay} englishStartDate={currentView.englishStartDate} currentDate={today.year === currentView.year && today.month === currentView.month ? today : undefined} selectedDate={selectedDate || undefined} onDateSelect={handleDateSelect} useNepaliLanguage={useNepaliLanguage} events={events} onEventClick={handleEventClick} usingApproximation={usingApproximation} />
         </div>
         
