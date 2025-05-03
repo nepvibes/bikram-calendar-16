@@ -7,13 +7,15 @@ const bikramRecurringEvents: CalendarEvent[] = [
     date: "1/1",  // Month/Day format for recurring events
     event: "नयाँ वर्ष",
     detail: "बिक्रम संवत् नयाँ वर्षको पहिलो दिन",
-    type: "recurring"
+    type: "recurring",
+    isHoliday: true
   },
   {
     date: "9/11",
     event: "तिहार",
     detail: "दिपावली, उज्यालोको पर्व",
-    type: "recurring"
+    type: "recurring",
+    isHoliday: true
   },
   {
     date: "12/1",
@@ -21,7 +23,8 @@ const bikramRecurringEvents: CalendarEvent[] = [
     detail: "रङको पर्व",
     startYear: 2080,
     endYear: 2085,
-    type: "recurring"
+    type: "recurring",
+    isHoliday: true
   }
 ];
 
@@ -30,7 +33,8 @@ const gregorianEvents: CalendarEvent[] = [
     date: "1/1",
     event: "अङ्ग्रेजी नयाँ वर्ष",
     detail: "अङ्ग्रेजी नयाँ वर्षको पहिलो दिन",
-    type: "gregorian"
+    type: "gregorian",
+    isHoliday: true
   },
   {
     date: "12/25",
@@ -38,7 +42,8 @@ const gregorianEvents: CalendarEvent[] = [
     detail: "इसाई धर्मावलम्बीहरुको मुख्य पर्व",
     startYear: 2024,
     endYear: 2030,
-    type: "gregorian"
+    type: "gregorian",
+    isHoliday: true
   }
 ];
 

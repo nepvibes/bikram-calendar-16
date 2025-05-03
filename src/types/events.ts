@@ -1,4 +1,3 @@
-
 export interface CalendarEvent {
   date: string; // Format: "YYYY/MM/DD" for fixed events or "MM/DD" for recurring
   event: string;
@@ -7,6 +6,7 @@ export interface CalendarEvent {
   endYear?: number;
   showOnDay?: boolean;
   type?: 'bikram' | 'gregorian' | 'recurring';
+  isHoliday?: boolean;
 }
 
 export interface EventModalProps {

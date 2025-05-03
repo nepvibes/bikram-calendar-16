@@ -1,4 +1,3 @@
-
 import { CalendarEvent } from "../types/events";
 import { getNepaliDigits } from "./bikramConverter";
 
@@ -173,6 +172,63 @@ export function getAllEventDetails(
     getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring');
   
   return eventDetail;
+}
+
+// Function to check if a date is a holiday
+export function isHoliday(
+  bikramFixedEvents: CalendarEvent[],
+  gregorianEvents: CalendarEvent[],
+  bikramRecurringEvents: CalendarEvent[],
+  bikramYear: number,
+  bikramMonth: number,
+  bikramDay: number,
+  gregorianYear: number,
+  gregorianMonth: number,
+  gregorianDay: number
+): boolean {
+  let holiday = false;
+  
+  // Check bikram fixed events
+  bikramFixedEvents.forEach(event => {
+    if ((event.startYear && bikramYear < event.startYear) || 
+        (event.endYear && bikramYear > event.endYear)) {
+      return;
+    }
+    const [eventYear, eventMonth, eventDay] = event.date.split('/').map(Number);
+    if (bikramYear === eventYear && bikramMonth === eventMonth && bikramDay === eventDay && event.isHoliday) {
+      holiday = true;
+    }
+  });
+  
+  // If not found in bikram events, check gregorian events
+  if (!holiday) {
+    gregorianEvents.forEach(event => {
+      if ((event.startYear && gregorianYear < event.startYear) || 
+          (event.endYear && gregorianYear > event.endYear)) {
+        return;
+      }
+      const [eventMonth, eventDay] = event.date.split('/').map(Number);
+      if (gregorianMonth === eventMonth && gregorianDay === eventDay && event.isHoliday) {
+        holiday = true;
+      }
+    });
+  }
+  
+  // If not found in gregorian events, check bikram recurring events
+  if (!holiday) {
+    bikramRecurringEvents.forEach(event => {
+      if ((event.startYear && bikramYear < event.startYear) || 
+          (event.endYear && bikramYear > event.endYear)) {
+        return;
+      }
+      const [eventMonth, eventDay] = event.date.split('/').map(Number);
+      if (bikramMonth === eventMonth && bikramDay === eventDay && event.isHoliday) {
+        holiday = true;
+      }
+    });
+  }
+  
+  return holiday;
 }
 
 // Function to load events for a specific year

@@ -1,8 +1,9 @@
+
 import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
 import { CalendarEvent } from '../types/events';
-import { hasEvents, getAllEventText } from '../utils/eventsHandler';
+import { hasEvents, getAllEventText, isHoliday } from '../utils/eventsHandler';
 
 interface CalendarGridProps {
   year: number;
@@ -172,6 +173,19 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 englishDay
               );
               
+              // Check if this day is a holiday
+              const dayIsHoliday = isHoliday(
+                events.bikramFixedEvents,
+                events.gregorianEvents,
+                events.bikramRecurringEvents,
+                year,
+                month,
+                day,
+                englishYear,
+                englishMonth,
+                englishDay
+              );
+              
               // Get event text if there's an event
               const eventText = dayHasEvents ? getAllEventText(
                 events.bikramFixedEvents,
@@ -229,7 +243,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                       <div className="flex flex-col items-start p-0.5 sm:p-1">
                         {/* Bikram date - larger and bold */}
                         <span className={`text-base sm:text-lg md:text-xl lg:text-2xl font-bold 
-                          ${isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
+                          ${dayIsHoliday ? 'text-red-600' : isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
                           ${isCurrentDay ? 'ring-1 ring-red-500 px-0.5 sm:px-1 rounded-full' : ''}`}
                         >
                           {useNepaliLanguage ? getNepaliDigits(day) : day}
