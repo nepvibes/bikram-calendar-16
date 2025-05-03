@@ -270,7 +270,7 @@ const BikramCalendar: React.FC = () => {
         </div>
         
         {/* Navigation controls */}
-        <div className="bg-blue-800 text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center">
+        <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-[#3285e9]">
           {/* Month and Year selectors */}
           <div className="flex gap-1 sm:gap-2">
             {/* Month selector */}
