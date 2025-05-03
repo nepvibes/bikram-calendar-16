@@ -12,6 +12,7 @@ import { Button } from './ui/button';
 import { format } from 'date-fns';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import { EventModalProps } from '../types/events';
+
 const EventModal: React.FC<EventModalProps> = ({
   isOpen,
   onClose,

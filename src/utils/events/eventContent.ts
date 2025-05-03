@@ -7,7 +7,8 @@ export function getEventText(
   year: number, 
   month: number, 
   day: number, 
-  dateType: 'bikram' | 'gregorian' | 'recurring'
+  dateType: 'bikram' | 'gregorian' | 'recurring',
+  useNepaliLanguage: boolean = true
 ): string {
   if (!events || events.length === 0) return '';
   
@@ -22,12 +23,12 @@ export function getEventText(
     if (dateType === 'bikram') {
       const [eventYear, eventMonth, eventDay] = event.date.split('/').map(Number);
       if (year === eventYear && month === eventMonth && day === eventDay) {
-        eventText += event.event;
+        eventText += useNepaliLanguage ? event.event : (event.eventEn || event.event);
       }
     } else if (dateType === 'gregorian' || dateType === 'recurring') {
       const [eventMonth, eventDay] = event.date.split('/').map(Number);
       if (month === eventMonth && day === eventDay) {
-        eventText += event.event;
+        eventText += useNepaliLanguage ? event.event : (event.eventEn || event.event);
       }
     }
   });
@@ -41,7 +42,8 @@ export function getEventDetail(
   year: number, 
   month: number, 
   day: number, 
-  dateType: 'bikram' | 'gregorian' | 'recurring'
+  dateType: 'bikram' | 'gregorian' | 'recurring',
+  useNepaliLanguage: boolean = true
 ): string {
   if (!events || events.length === 0) return '';
   
@@ -55,12 +57,12 @@ export function getEventDetail(
     if (dateType === 'bikram') {
       const [eventYear, eventMonth, eventDay] = event.date.split('/').map(Number);
       if (year === eventYear && month === eventMonth && day === eventDay) {
-        eventDetail += event.detail;
+        eventDetail += useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
       }
     } else if (dateType === 'gregorian' || dateType === 'recurring') {
       const [eventMonth, eventDay] = event.date.split('/').map(Number);
       if (month === eventMonth && day === eventDay) {
-        eventDetail += event.detail;
+        eventDetail += useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
       }
     }
   });
@@ -82,9 +84,9 @@ export function getAllEventText(
   useNepaliLanguage: boolean = true
 ): string {
   let eventText = 
-    getEventText(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram') ||
-    getEventText(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian') ||
-    getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring');
+    getEventText(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage) ||
+    getEventText(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage) ||
+    getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage);
   
   return eventText;
 }
@@ -99,12 +101,13 @@ export function getAllEventDetails(
   bikramDay: number,
   gregorianYear: number,
   gregorianMonth: number,
-  gregorianDay: number
+  gregorianDay: number,
+  useNepaliLanguage: boolean = true
 ): string {
   let eventDetail = 
-    getEventDetail(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram') ||
-    getEventDetail(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian') ||
-    getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring');
+    getEventDetail(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage) ||
+    getEventDetail(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage) ||
+    getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage);
   
   return eventDetail;
 }
