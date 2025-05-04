@@ -1,18 +1,9 @@
-
 import React from 'react';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "./ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { Button } from './ui/button';
 import { format } from 'date-fns';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import { EventModalProps } from '../types/events';
-
 const EventModal: React.FC<EventModalProps> = ({
   isOpen,
   onClose,
@@ -20,26 +11,17 @@ const EventModal: React.FC<EventModalProps> = ({
   useNepaliLanguage
 }) => {
   if (!eventData) return null;
-
-  const bikramDateFormatted = useNepaliLanguage
-    ? `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}`
-    : `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
-
+  const bikramDateFormatted = useNepaliLanguage ? `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}` : `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
   const gregorianDateFormatted = format(eventData.englishDate, 'PPP');
   const weekday = format(eventData.englishDate, 'EEEE');
-  
-  return (
-    <Dialog open={isOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-md">
+  return <Dialog open={isOpen} onOpenChange={() => onClose()}>
+      <DialogContent className="sm:max-w-md mx-0 bg-teal-100 rounded-none">
         <DialogHeader>
           <DialogTitle className="text-center">
             {useNepaliLanguage ? "दिन विवरण" : "Day Details"}
           </DialogTitle>
           <DialogDescription className="text-center pt-2">
-            {useNepaliLanguage ? 
-              <span className="font-bold text-lg">{bikramDateFormatted} बि.सं.</span> :
-              <span className="font-bold text-lg">{bikramDateFormatted} BS</span>
-            }
+            {useNepaliLanguage ? <span className="font-bold text-lg">{bikramDateFormatted} बि.सं.</span> : <span className="font-bold text-lg">{bikramDateFormatted} BS</span>}
           </DialogDescription>
         </DialogHeader>
         
@@ -53,21 +35,17 @@ const EventModal: React.FC<EventModalProps> = ({
               {gregorianDateFormatted} ({weekday})
             </div>
             
-            {eventData.eventText && (
-              <div className="mt-4 pt-4 border-t">
+            {eventData.eventText && <div className="mt-4 pt-4 border-t">
                 <div className="font-bold">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
                 </div>
                 <div className="text-sm mt-1 font-medium text-red-600">
                   {eventData.eventText}
                 </div>
-                {eventData.eventDetail && (
-                  <div className="text-xs mt-2 text-gray-600">
+                {eventData.eventDetail && <div className="text-xs mt-2 text-gray-600">
                     {eventData.eventDetail}
-                  </div>
-                )}
-              </div>
-            )}
+                  </div>}
+              </div>}
           </div>
         </div>
         
@@ -77,8 +55,6 @@ const EventModal: React.FC<EventModalProps> = ({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
-
 export default EventModal;
