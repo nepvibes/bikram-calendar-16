@@ -50,7 +50,7 @@ const EventModal: React.FC<EventModalProps> = ({
         </div>
         
         <DialogFooter>
-          <Button onClick={onClose} className="w-full">
+          <Button onClick={onClose} className="w-full text-sky-800 font-bold rounded-xl bg-violet-400 hover:bg-violet-300 mx-0 px-0 py-0 text-base">
             {useNepaliLanguage ? "बन्द गर्नुहोस्" : "Close"}
           </Button>
         </DialogFooter>
