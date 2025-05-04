@@ -8,7 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from '@/components/ui/input';
 import LanguageToggle from '@/components/LanguageToggle';
-import { nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
+import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '@/utils/bikramConverter';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;

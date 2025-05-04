@@ -108,8 +108,23 @@ export function useCalendarState() {
   const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
     
-    // Always set the raw input value whether it's Nepali or English digits
+    // Always set the input value directly for immediate feedback
     setYearInput(inputValue);
+    
+    // If using Nepali language and input contains English digits, convert them on-the-fly
+    if (useNepaliLanguage && /[0-9]/.test(inputValue) && !containsNepaliDigits(inputValue)) {
+      // Convert the English digits to Nepali digits during typing
+      const convertedInput = getNepaliDigits(parseInt(inputValue) || 0);
+      if (convertedInput !== '०') { // Don't set as '०' if the input would result in 0
+        setYearInput(convertedInput);
+      }
+    }
+    
+    // If not using Nepali language and input contains Nepali digits, convert them on-the-fly
+    if (!useNepaliLanguage && containsNepaliDigits(inputValue)) {
+      const englishDigits = getEnglishDigits(inputValue);
+      setYearInput(englishDigits);
+    }
   };
 
   // Handle year input submit
