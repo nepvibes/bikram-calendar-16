@@ -123,6 +123,8 @@ const BikramCalendar: React.FC = () => {
   // Handler for direct year input
   const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
+    
+    // Always set the raw input value whether it's Nepali or English digits
     setYearInput(inputValue);
   };
 
@@ -138,18 +140,17 @@ const BikramCalendar: React.FC = () => {
     // If using Nepali digits, convert back to English digits for processing
     let processedInput = yearInput;
     
-    if (useNepaliLanguage) {
-      processedInput = yearInput.split('').map(char => {
-        const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
-        const index = nepaliDigits.indexOf(char);
-        return index !== -1 ? index.toString() : char;
-      }).join('');
+    if (containsNepaliDigits(yearInput)) {
+      processedInput = getEnglishDigits(yearInput);
     }
     
     const year = parseInt(processedInput);
     
     if (!isNaN(year)) {
       setCurrentView(prev => getBikramMonth(year, prev.month));
+      
+      // Update year input based on language setting
+      setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
 
       // If we're outside the precomputed data range, show a toast notification
       if (year < BS_START_YEAR || year > BS_END_YEAR) {
@@ -194,7 +195,11 @@ const BikramCalendar: React.FC = () => {
     setUseNepaliLanguage(prev => {
       const newValue = !prev;
       // Update yearInput format based on language
-      setYearInput(newValue ? getNepaliDigits(currentView.year) : currentView.year.toString());
+      if (newValue) {
+        setYearInput(getNepaliDigits(currentView.year));
+      } else {
+        setYearInput(currentView.year.toString());
+      }
       return newValue;
     });
   };

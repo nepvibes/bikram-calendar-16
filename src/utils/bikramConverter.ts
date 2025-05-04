@@ -121,7 +121,7 @@ export const hasHoliday = (month: number, day: number): string | null => {
   return nepaliHolidays[key] || null;
 };
 
-// Convert Nepali digits to English digits
+// Convert English digits to Nepali digits
 export const getNepaliDigits = (num: number): string => {
   const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
   return num.toString().split('').map(digit => {
@@ -129,3 +129,19 @@ export const getNepaliDigits = (num: number): string => {
     return nepaliDigits[parseInt(digit)];
   }).join('');
 };
+
+// Convert Nepali digits to English digits
+export const getEnglishDigits = (nepaliStr: string): string => {
+  const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+  return nepaliStr.split('').map(char => {
+    const index = nepaliDigits.indexOf(char);
+    return index !== -1 ? index.toString() : char;
+  }).join('');
+};
+
+// Check if a string contains Nepali digits
+export const containsNepaliDigits = (str: string): boolean => {
+  const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+  return str.split('').some(char => nepaliDigits.includes(char));
+};
+
