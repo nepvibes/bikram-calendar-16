@@ -1,257 +1,92 @@
+/* Add Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Lohit+Devanagari&display=swap');
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@layer base {
-  :root {
-    --background: 48 33% 97%;
-    --foreground: 282 11% 18%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 282 11% 18%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 282 11% 18%;
-
-    --primary: 355 75% 44%;
-    --primary-foreground: 48 33% 97%;
-
-    --secondary: 41 100% 53%;
-    --secondary-foreground: 282 11% 18%;
-
-    --muted: 220 14% 96%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --accent: 230 64% 27%;
-    --accent-foreground: 48 33% 97%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 355 75% 44%;
-
-    --radius: 0.75rem;
-  }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-@layer base {
-  * {
-    @apply border-border;
-  }
-  
-  body {
-    @apply bg-nepali-offwhite text-nepali-dark font-normal;
-    background-image: url('/subtle-pattern.png');
-    background-repeat: repeat;
-  }
-  
-  .nepali-decoration {
-    position: relative;
-  }
-  
-  .nepali-decoration::before,
-  .nepali-decoration::after {
-    content: "";
-    position: absolute;
-    height: 10px;
-    background-repeat: repeat-x;
-    background-size: 20px 10px;
-    width: 100%;
-    left: 0;
-  }
-  
-  .nepali-decoration::before {
-    top: 0;
-    background-image: url('/border-top.png');
-  }
-  
-  .nepali-decoration::after {
-    bottom: 0;
-    background-image: url('/border-bottom.png');
-  }
-
-  /* Add Devanagari font class */
-  .nepali-text {
-    font-family: 'Lohit Devanagari', sans-serif;
-  }
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-/* Printable Calendar Styles */
-@layer components {
-  .printable-calendar {
-    @apply grid grid-cols-7 border border-gray-300 bg-white;
-    page-break-inside: avoid;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  }
-  
-  .printable-calendar-header {
-    @apply bg-red-700 text-white font-bold text-center py-2 px-4 col-span-7;
-  }
-  
-  .printable-weekday-header {
-    @apply py-2 text-center font-bold;
-  }
-  
-  .printable-weekday-sun {
-    @apply bg-blue-800 text-white;
-  }
-  
-  .printable-weekday-sat {
-    @apply bg-red-700 text-white;
-  }
-  
-  .printable-weekday-regular {
-    @apply bg-blue-700 text-white;
-  }
-  
-  .printable-calendar-day {
-    @apply border border-gray-200 p-2 min-h-[60px] sm:min-h-[80px] relative;
-  }
-  
-  .printable-calendar-day-empty {
-    @apply bg-gray-100;
-  }
-  
-  .printable-date-number {
-    @apply text-lg sm:text-xl lg:text-2xl font-bold;
-  }
-  
-  .printable-date-number-saturday {
-    @apply text-red-600;
-  }
-  
-  .printable-date-number-sunday {
-    @apply text-blue-800;
-  }
-  
-  .printable-english-date {
-    @apply text-[8px] sm:text-xs text-gray-500;
-  }
-  
-  .printable-holiday {
-    @apply text-[8px] sm:text-xs bg-red-100 text-red-700 px-1 py-0.5 rounded mt-1 inline-block;
-  }
-  
-  .printable-tithi {
-    @apply text-[8px] sm:text-xs text-blue-600 mt-1;
-  }
-
-  /* Hide upcoming events when printing */
-  @media print {
-    .no-print {
-      display: none !important;
-    }
-  }
+.nepali-text {
+  font-family: 'Lohit Devanagari', sans-serif;
 }
 
-/* Calendar Day Styling */
-@layer components {
-  .calendar-container {
-    @apply bg-white rounded-xl shadow-lg border border-gray-300 overflow-hidden print:shadow-none print:border;
-  }
-  
-  .calendar-header {
-    @apply bg-gradient-to-r from-blue-700 to-blue-500 text-white p-3 flex justify-between items-center;
-  }
-  
-  .calendar-weekdays {
-    @apply grid grid-cols-7 bg-blue-700 text-white font-semibold border-b border-gray-300;
-  }
-  
-  .calendar-weekday {
-    @apply text-center py-1 sm:py-2 border-r border-white/20 last:border-r-0 text-xs sm:text-sm;
-  }
-  
-  .calendar-weekday-saturday {
-    @apply bg-red-700;
-  }
-  
-  .calendar-weekday-sunday {
-    @apply bg-blue-800;
-  }
-  
-  .calendar-grid {
-    @apply grid grid-cols-7 border-b border-r border-gray-300;
-  }
-  
-  .calendar-day {
-    @apply bg-white p-0 sm:p-1 md:p-2 min-h-[50px] sm:min-h-[60px] md:min-h-[80px] border-l border-t border-gray-300 relative;
-  }
-  
-  .calendar-day-number {
-    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
-  }
-  
-  .calendar-day-current {
-    @apply bg-yellow-50;
-  }
-  
-  .calendar-day-selected {
-    @apply ring-2 ring-yellow-500;
-  }
-  
-  .calendar-day-saturday {
-    @apply bg-red-50;
-  }
-  
-  .calendar-day-sunday {
-    @apply bg-blue-50;
-  }
-  
-  .calendar-day-outside {
-    @apply bg-gray-100 text-gray-400;
-  }
-  
-  .calendar-day-event {
-    @apply mt-1 text-[7px] sm:text-[9px] px-1 py-0.5 bg-red-100 text-red-800 rounded-sm truncate text-center;
-  }
-  
-  .calendar-day-tithi {
-    @apply text-[7px] sm:text-[10px] text-blue-600 mt-1;
-  }
-  
-  .calendar-day-english-date {
-    @apply text-[6px] sm:text-xs text-gray-500;
-  }
+.beautiful-calendar-grid {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Responsive fixes */
-@layer utilities {
-  .xs\:inline {
-    @media (min-width: 480px) {
-      display: inline;
-    }
-  }
+.beautiful-calendar-day {
+  transition: background-color 0.2s ease-in-out;
+}
 
-  .beautiful-card {
-    @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300;
-    border: 1px solid rgba(0, 0, 0, 0.1);
-  }
+.beautiful-calendar-day:hover {
+  background-color: #f5f5f5;
+}
 
-  .beautiful-header {
-    @apply bg-gradient-to-r from-blue-700 to-indigo-600 text-white rounded-t-xl overflow-hidden;
-  }
+.beautiful-header {
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  .beautiful-calendar-grid {
-    @apply border border-gray-200 overflow-hidden rounded-lg;
-  }
+.beautiful-card {
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
 
-  .beautiful-calendar-day {
-    @apply rounded-md transition-all duration-200 hover:shadow-inner;
-  }
+.bg-nepali-offwhite {
+  background-color: #f9f8f7;
+}
 
-  .upcoming-event-next {
-    @apply bg-blue-50 hover:bg-blue-100;
-  }
+.text-nepali-dark {
+  color: #333;
+}
 
-  .upcoming-event-future {
-    @apply bg-white hover:bg-gray-50;
-  }
+.bg-nepali-yellow {
+  background-color: #f0d799;
+}
 
-  .animated-hover {
-    @apply transition-transform duration-200 hover:scale-[1.02];
-  }
+.text-nepali-red {
+  color: #e44d26;
+}
+
+.border-nepali-red {
+  border-color: #e44d26;
+}
+
+.animated-hover {
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.animated-hover:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.upcoming-event-next {
+  border-left: 4px solid #4CAF50; /* Green color for next event */
+}
+
+.upcoming-event-future {
+  border-left: 4px solid #2196F3; /* Blue color for future events */
+}
+
+/* Add a subtle shadow on hover for cards */
+.card-hover:hover {
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
 }
