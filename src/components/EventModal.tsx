@@ -15,9 +15,9 @@ const EventModal: React.FC<EventModalProps> = ({
   const gregorianDateFormatted = format(eventData.englishDate, 'PPP');
   const weekday = format(eventData.englishDate, 'EEEE');
   return <Dialog open={isOpen} onOpenChange={() => onClose()}>
-      <DialogContent className="sm:max-w-md mx-0 bg-teal-100 rounded-xl">
+      <DialogContent className="sm:max-w-md mx-0 rounded-xl bg-[#e1e1f4]">
         <DialogHeader>
-          <DialogTitle className="text-center">
+          <DialogTitle className="text-center text-blue-500">
             {useNepaliLanguage ? "दिन विवरण" : "Day Details"}
           </DialogTitle>
           <DialogDescription className="text-center pt-2">
