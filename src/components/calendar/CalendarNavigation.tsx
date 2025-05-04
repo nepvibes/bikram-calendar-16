@@ -40,7 +40,7 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
   onEnglishDateSelect
 }) => {
   return (
-    <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600">
+    <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600 no-print">
       {/* Month and Year selectors */}
       <div className="flex gap-1 sm:gap-2">
         {/* Month selector */}

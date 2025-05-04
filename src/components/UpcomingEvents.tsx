@@ -7,6 +7,7 @@ import { BikramDateObj } from '@/utils/bikramConverter';
 import { Calendar as CalendarIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+
 interface UpcomingEventProps {
   events: {
     bikramFixedEvents: CalendarEvent[];
@@ -17,7 +18,21 @@ interface UpcomingEventProps {
   useNepaliLanguage: boolean;
   onEventClick: (year: number, month: number, day: number) => void;
   maxEvents?: number;
+  // Customization props
+  headerBgColor?: string;
+  headerTextColor?: string;
+  eventItemBgColor?: string;
+  eventTextColor?: string;
+  eventDateColor?: string;
+  eventBorderColor?: string;
+  todayBadgeBgColor?: string;
+  todayBadgeTextColor?: string;
+  futureBadgeBgColor?: string;
+  futureBadgeTextColor?: string;
+  borderRadius?: string;
+  boxShadow?: string;
 }
+
 interface UpcomingEventItem {
   year: number;
   month: number;
@@ -28,12 +43,26 @@ interface UpcomingEventItem {
   englishDate: Date;
   isHoliday: boolean;
 }
+
 const UpcomingEvents: React.FC<UpcomingEventProps> = ({
   events,
   currentDate,
   useNepaliLanguage,
   onEventClick,
-  maxEvents = 5
+  maxEvents = 5,
+  // Default values for customization props
+  headerBgColor = "bg-gradient-to-r from-blue-800 to-blue-600",
+  headerTextColor = "text-white",
+  eventItemBgColor = "bg-white",
+  eventTextColor = "text-black",
+  eventDateColor = "text-gray-500",
+  eventBorderColor = "border-gray-200",
+  todayBadgeBgColor = "bg-green-100",
+  todayBadgeTextColor = "text-green-800",
+  futureBadgeBgColor = "bg-blue-100",
+  futureBadgeTextColor = "text-blue-800",
+  borderRadius = "rounded-lg",
+  boxShadow = "shadow-md",
 }) => {
   // Get today's date objects
   const todayBS = currentDate;
@@ -99,6 +128,7 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
     }
     return eventsList;
   }, [events, todayBS, todayAD, useNepaliLanguage]);
+
   if (upcomingEvents.length === 0) {
     return null;
   }
@@ -122,33 +152,43 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
       return useNepaliLanguage ? `${getNepaliDigits(days)} ${days > 1 ? 'दिन बाँकी' : 'दिन बाँकी'}` : `In ${days} ${days > 1 ? 'days' : 'day'}`;
     }
   };
-  return <div className="mt-4 sm:mt-6 bg-white rounded-lg border border-gray-300 overflow-hidden beautiful-card no-print">
-      <h3 className="py-2 px-4 bg-gradient-to-r from-blue-800 to-blue-600 text-white font-bold flex justify-between items-center">
+
+  const getEventItemLeftBorderColor = (index: number, isHoliday: boolean) => {
+    if (isHoliday) return "border-red-500";
+    return index === 0 ? "border-l-4 border-l-green-500" : "border-l-4 border-l-blue-500";
+  };
+
+  return <div className={`mt-4 sm:mt-6 ${eventItemBgColor} ${borderRadius} border border-gray-300 overflow-hidden beautiful-card no-print ${boxShadow}`}>
+      <h3 className={`py-2 px-4 ${headerBgColor} ${headerTextColor} font-bold flex justify-between items-center`}>
         <span className={useNepaliLanguage ? "nepali-text" : ""}>
           {useNepaliLanguage ? 'आगामी कार्यक्रमहरू' : 'Upcoming Events'}
         </span>
       </h3>
-      <div className="divide-y divide-gray-200">
+      <div className={`divide-y ${eventBorderColor}`}>
         {upcomingEvents.map((event, index) => (
           <Card 
             key={index} 
-            className={`p-0 border-0 rounded-none ${index === 0 ? 'upcoming-event-next' : 'upcoming-event-future'} animated-hover`}
+            className={`p-0 border-0 rounded-none ${getEventItemLeftBorderColor(index, event.isHoliday)} animated-hover`}
           >
             <Button 
               variant="ghost" 
               onClick={() => onEventClick(event.year, event.month, event.day)} 
-              className="w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light"
+              className={`w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light ${eventItemBgColor}`}
             >
               <div className="flex flex-col">
-                <span className={`font-bold text-sm text-black ${useNepaliLanguage ? "nepali-text" : ""} ${event.isHoliday ? 'text-red-600' : ''}`}>
+                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : eventTextColor} ${useNepaliLanguage ? "nepali-text" : ""}`}>
                   {event.eventText}
                 </span>
-                <span className={`text-xs text-gray-500 ${useNepaliLanguage ? "nepali-text" : ""}`}>
+                <span className={`text-xs ${eventDateColor} ${useNepaliLanguage ? "nepali-text" : ""}`}>
                   {formatDate(event.month, event.day, event.year)}
                 </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className={`text-xs ${event.daysRemaining === 0 ? 'bg-green-100 text-green-800' : event.daysRemaining === 1 ? 'bg-blue-100 text-blue-800' : 'bg-blue-100 text-blue-800'} py-1 px-2 rounded ${useNepaliLanguage ? "nepali-text" : ""}`}>
+                <span className={`text-xs ${
+                  event.daysRemaining === 0 
+                    ? `${todayBadgeBgColor} ${todayBadgeTextColor}` 
+                    : `${futureBadgeBgColor} ${futureBadgeTextColor}`
+                } py-1 px-2 rounded ${useNepaliLanguage ? "nepali-text" : ""}`}>
                   {formatDaysRemaining(event.daysRemaining)}
                 </span>
                 <CalendarIcon className="h-4 w-4 text-gray-500" />
@@ -159,4 +199,5 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
       </div>
     </div>;
 };
+
 export default UpcomingEvents;

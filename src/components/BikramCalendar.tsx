@@ -94,13 +94,24 @@ const BikramCalendar: React.FC = () => {
           />
         </div>
         
-        {/* Upcoming Events List */}
+        {/* Upcoming Events List with customizable UI properties */}
         <UpcomingEvents 
           events={calendarState.events} 
           currentDate={calendarState.today} 
           useNepaliLanguage={calendarState.useNepaliLanguage} 
           onEventClick={handleUpcomingEventClick} 
-          maxEvents={5} 
+          maxEvents={5}
+          headerBgColor="bg-gradient-to-r from-blue-800 to-blue-600"
+          headerTextColor="text-white"
+          eventItemBgColor="bg-white"
+          eventTextColor="text-black"
+          eventDateColor="text-gray-500"
+          todayBadgeBgColor="bg-green-100"
+          todayBadgeTextColor="text-green-800"
+          futureBadgeBgColor="bg-blue-100"
+          futureBadgeTextColor="text-blue-800"
+          borderRadius="rounded-lg"
+          boxShadow="shadow-md"
         />
         
         {/* Footer */}

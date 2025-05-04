@@ -112,12 +112,16 @@ export function useCalendarState() {
     setYearInput(inputValue);
     
     // If using Nepali language and input contains English digits, convert them on-the-fly
-    if (useNepaliLanguage && /[0-9]/.test(inputValue) && !containsNepaliDigits(inputValue)) {
-      // Convert the English digits to Nepali digits during typing
-      const convertedInput = getNepaliDigits(parseInt(inputValue) || 0);
-      if (convertedInput !== '०') { // Don't set as '०' if the input would result in 0
-        setYearInput(convertedInput);
-      }
+    if (useNepaliLanguage && /[0-9]/.test(inputValue)) {
+      // Convert all English digits to Nepali digits
+      const convertedInput = inputValue.split('').map(char => {
+        if (/[0-9]/.test(char)) {
+          return getNepaliDigits(parseInt(char));
+        }
+        return char;
+      }).join('');
+      
+      setYearInput(convertedInput);
     }
     
     // If not using Nepali language and input contains Nepali digits, convert them on-the-fly
