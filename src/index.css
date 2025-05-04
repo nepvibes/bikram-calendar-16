@@ -72,6 +72,11 @@
     bottom: 0;
     background-image: url('/border-bottom.png');
   }
+
+  /* Add Devanagari font class */
+  .nepali-text {
+    font-family: 'Lohit Devanagari', sans-serif;
+  }
 }
 
 /* Printable Calendar Styles */
@@ -133,6 +138,13 @@
   .printable-tithi {
     @apply text-[8px] sm:text-xs text-blue-600 mt-1;
   }
+
+  /* Hide upcoming events when printing */
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
 }
 
 /* Calendar Day Styling */
@@ -142,7 +154,7 @@
   }
   
   .calendar-header {
-    @apply bg-red-700 text-white p-3 flex justify-between items-center;
+    @apply bg-gradient-to-r from-blue-700 to-blue-500 text-white p-3 flex justify-between items-center;
   }
   
   .calendar-weekdays {
@@ -170,7 +182,7 @@
   }
   
   .calendar-day-number {
-    @apply text-base sm:text-lg lg:text-2xl font-bold;
+    @apply text-xl sm:text-2xl lg:text-3xl font-bold;
   }
   
   .calendar-day-current {
@@ -212,5 +224,34 @@
     @media (min-width: 480px) {
       display: inline;
     }
+  }
+
+  .beautiful-card {
+    @apply bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .beautiful-header {
+    @apply bg-gradient-to-r from-blue-700 to-indigo-600 text-white rounded-t-xl overflow-hidden;
+  }
+
+  .beautiful-calendar-grid {
+    @apply border border-gray-200 overflow-hidden rounded-lg;
+  }
+
+  .beautiful-calendar-day {
+    @apply rounded-md transition-all duration-200 hover:shadow-inner;
+  }
+
+  .upcoming-event-next {
+    @apply bg-blue-50 hover:bg-blue-100;
+  }
+
+  .upcoming-event-future {
+    @apply bg-white hover:bg-gray-50;
+  }
+
+  .animated-hover {
+    @apply transition-transform duration-200 hover:scale-[1.02];
   }
 }

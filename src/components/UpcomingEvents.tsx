@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CalendarEvent } from '@/types/events';
 import { getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
@@ -121,25 +122,40 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
       return useNepaliLanguage ? `${getNepaliDigits(days)} ${days > 1 ? 'दिन बाँकी' : 'दिन बाँकी'}` : `In ${days} ${days > 1 ? 'days' : 'day'}`;
     }
   };
-  return <div className="mt-4 sm:mt-6 bg-white rounded-lg border border-gray-300 overflow-hidden">
-      <h3 className="py-2 px-4 bg-blue-800 text-white font-bold">
-        {useNepaliLanguage ? 'आगामी कार्यक्रमहरू' : 'Upcoming Events'}
+  return <div className="mt-4 sm:mt-6 bg-white rounded-lg border border-gray-300 overflow-hidden beautiful-card no-print">
+      <h3 className="py-2 px-4 bg-gradient-to-r from-blue-800 to-blue-600 text-white font-bold flex justify-between items-center">
+        <span className={useNepaliLanguage ? "nepali-text" : ""}>
+          {useNepaliLanguage ? 'आगामी कार्यक्रमहरू' : 'Upcoming Events'}
+        </span>
       </h3>
       <div className="divide-y divide-gray-200">
-        {upcomingEvents.map((event, index) => <Card key={index} className="p-0 border-0 rounded-none hover:bg-gray-50">
-            <Button variant="ghost" onClick={() => onEventClick(event.year, event.month, event.day)} className="w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light">
+        {upcomingEvents.map((event, index) => (
+          <Card 
+            key={index} 
+            className={`p-0 border-0 rounded-none ${index === 0 ? 'upcoming-event-next' : 'upcoming-event-future'} animated-hover`}
+          >
+            <Button 
+              variant="ghost" 
+              onClick={() => onEventClick(event.year, event.month, event.day)} 
+              className="w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light"
+            >
               <div className="flex flex-col">
-                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : ''}`}>{event.eventText}</span>
-                <span className="text-xs text-gray-500">{formatDate(event.month, event.day, event.year)}</span>
+                <span className={`font-bold text-sm text-black ${useNepaliLanguage ? "nepali-text" : ""} ${event.isHoliday ? 'text-red-600' : ''}`}>
+                  {event.eventText}
+                </span>
+                <span className={`text-xs text-gray-500 ${useNepaliLanguage ? "nepali-text" : ""}`}>
+                  {formatDate(event.month, event.day, event.year)}
+                </span>
               </div>
               <div className="flex items-center gap-1">
-                <span className="text-xs bg-blue-100 text-blue-800 py-1 px-2 rounded">
+                <span className={`text-xs ${event.daysRemaining === 0 ? 'bg-green-100 text-green-800' : event.daysRemaining === 1 ? 'bg-blue-100 text-blue-800' : 'bg-blue-100 text-blue-800'} py-1 px-2 rounded ${useNepaliLanguage ? "nepali-text" : ""}`}>
                   {formatDaysRemaining(event.daysRemaining)}
                 </span>
                 <CalendarIcon className="h-4 w-4 text-gray-500" />
               </div>
             </Button>
-          </Card>)}
+          </Card>
+        ))}
       </div>
     </div>;
 };

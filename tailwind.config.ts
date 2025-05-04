@@ -71,6 +71,9 @@ export default {
 					dark: '#2D2A32'
 				}
 			},
+			fontFamily: {
+				'devanagari': ['"Lohit Devanagari"', 'sans-serif'],
+			},
 			borderRadius: {
 				lg: 'var(--radius)',
 				md: 'calc(var(--radius) - 2px)',

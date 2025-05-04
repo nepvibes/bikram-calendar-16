@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
@@ -9,7 +10,7 @@ import { loadEventsForYear } from '../utils/events';
 import { Card } from './ui/card';
 import { Toaster } from './ui/sonner';
 import { toast } from 'sonner';
-import { Calendar as CalendarIcon, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Calendar as CalendarIcon, ChevronLeft, ChevronRight, Printer } from 'lucide-react';
 import { Button } from './ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
@@ -101,6 +102,11 @@ const BikramCalendar: React.FC = () => {
     toast(useNepaliLanguage ? `आजको मिति: ${nepaliMonthsNp[todayDate.month - 1]} ${getNepaliDigits(todayDate.day)}, ${getNepaliDigits(todayDate.year)} बि.सं.` : `Showing today: ${nepaliMonthsEn[todayDate.month - 1]} ${todayDate.day}, ${todayDate.year} BS`);
   };
 
+  // Handler for Print button
+  const handlePrint = () => {
+    window.print();
+  };
+
   // Handler for month change from dropdown
   const handleMonthChange = (value: string) => {
     const month = parseInt(value);
@@ -117,29 +123,31 @@ const BikramCalendar: React.FC = () => {
   // Handler for direct year input
   const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    let nepaliInputValue = inputValue;
-    if (useNepaliLanguage) {
-      const englishInputValue = inputValue.split('').map(char => {
-        const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
-        const index = nepaliDigits.indexOf(char);
-        return index !== -1 ? index.toString() : char;
-      }).join('');
-      nepaliInputValue = getNepaliDigits(parseInt(englishInputValue));
-    }
-    setYearInput(nepaliInputValue);
+    setYearInput(inputValue);
   };
 
   // Handle year input submit
   const handleYearSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!yearInput || yearInput.trim() === '') {
+      setYearInput(useNepaliLanguage ? getNepaliDigits(currentView.year) : currentView.year.toString());
+      return;
+    }
 
     // If using Nepali digits, convert back to English digits for processing
-    const processedInput = useNepaliLanguage ? yearInput.split('').map(char => {
-      const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
-      const index = nepaliDigits.indexOf(char);
-      return index !== -1 ? index.toString() : char;
-    }).join('') : yearInput;
+    let processedInput = yearInput;
+    
+    if (useNepaliLanguage) {
+      processedInput = yearInput.split('').map(char => {
+        const nepaliDigits = ['०', '१', '२', '३', '४', '५', '६', '७', '८', '९'];
+        const index = nepaliDigits.indexOf(char);
+        return index !== -1 ? index.toString() : char;
+      }).join('');
+    }
+    
     const year = parseInt(processedInput);
+    
     if (!isNaN(year)) {
       setCurrentView(prev => getBikramMonth(year, prev.month));
 
@@ -235,10 +243,10 @@ const BikramCalendar: React.FC = () => {
       {/* Calendar Container */}
       <div className="mx-auto px-2 sm:px-4 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
         {/* Top header with month/year */}
-        <div className="text-white p-2 sm:p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden bg-[#3787a9]">
+        <div className="text-white p-2 sm:p-4 rounded-t-lg border-b-4 border-blue-800 relative overflow-hidden bg-gradient-to-r from-[#3787a9] to-blue-700 beautiful-header shadow-lg">
           <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center">
             <div className="flex flex-col">
-            <h2 className="text-xl sm:text-2xl font-bold text-center my-0 sm:text-left md:text-4xl mx-0 px-0">
+            <h2 className={`text-xl sm:text-2xl font-bold text-center my-0 sm:text-left md:text-4xl mx-0 px-0 ${useNepaliLanguage ? "nepali-text" : ""}`}>
                 {/* {useNepaliLanguage ? 
                   `विक्रम संवत् ${getNepaliDigits(currentView.year)} ${
                     nepaliMonthsNp[currentView.month - 1]
@@ -249,14 +257,14 @@ const BikramCalendar: React.FC = () => {
               </h2>
               
               {/* Show approximation indicator if needed */}
-              {usingApproximation && <div className="text-xs text-yellow-200 mt-1 text-center sm:text-left">
+              {usingApproximation && <div className={`text-xs text-yellow-200 mt-1 text-center sm:text-left ${useNepaliLanguage ? "nepali-text" : ""}`}>
                   {useNepaliLanguage ? `(अनुमानित डाटा)` : `(Approximated data)`}
                 </div>}
             </div>
             
             <div className="flex flex-col items-center sm:items-end mt-2 sm:mt-0">
-              <span className="text-lg sm:text-xl font-bold">
-                {useNepaliLanguage ? `${nepaliMonthsNp[currentView.month - 1]} ${getNepaliDigits(currentView.year)}` : `${nepaliMonthsEn[currentView.month - 1]} $`}
+              <span className={`text-lg sm:text-xl font-bold ${useNepaliLanguage ? "nepali-text" : ""}`}>
+                {useNepaliLanguage ? `${nepaliMonthsNp[currentView.month - 1]} ${getNepaliDigits(currentView.year)}` : `${nepaliMonthsEn[currentView.month - 1]} ${currentView.year}`}
               </span>
               <span className="text-xs sm:text-sm opacity-75">
                 {format(currentView.englishStartDate, 'MMMM yyyy')} AD
@@ -270,7 +278,7 @@ const BikramCalendar: React.FC = () => {
         </div>
         
         {/* Navigation controls */}
-        <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-[#3285e9]">
+        <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600">
           {/* Month and Year selectors */}
           <div className="flex gap-1 sm:gap-2">
             {/* Month selector */}
@@ -279,7 +287,7 @@ const BikramCalendar: React.FC = () => {
                 <SelectValue placeholder={useNepaliLanguage ? "मह���ना" : "Month"} />
               </SelectTrigger>
               <SelectContent className="bg-white">
-                {[...Array(12)].map((_, i) => <SelectItem key={i + 1} value={(i + 1).toString()} className="text-xs sm:text-sm">
+                {[...Array(12)].map((_, i) => <SelectItem key={i + 1} value={(i + 1).toString()} className={`text-xs sm:text-sm ${useNepaliLanguage ? "nepali-text" : ""}`}>
                     {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
                   </SelectItem>)}
               </SelectContent>
@@ -287,7 +295,7 @@ const BikramCalendar: React.FC = () => {
             
             {/* Year selector - Direct input */}
             <form onSubmit={handleYearSubmit} className="flex">
-              <Input type="text" value={yearInput} onChange={handleYearInputChange} className="w-16 sm:w-24 bg-white text-blue-900 border-none h-8 sm:h-10 px-1 sm:px-3 text-xs sm:text-sm" onBlur={e => {
+              <Input type="text" value={yearInput} onChange={handleYearInputChange} className={`w-16 sm:w-24 bg-white text-blue-900 border-none h-8 sm:h-10 px-1 sm:px-3 text-xs sm:text-sm ${useNepaliLanguage ? "nepali-text" : ""}`} onBlur={e => {
               // Also submit on blur
               handleYearSubmit(e);
             }} />
@@ -296,8 +304,14 @@ const BikramCalendar: React.FC = () => {
           
           {/* Navigation buttons */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <Button onClick={handleTodayClick} variant="outline" className="bg-transparent border-white text-white hover:bg-white/20 text-xs sm:text-sm h-8 sm:h-10 py-0 px-2 sm:px-3">
+            <Button onClick={handleTodayClick} variant="outline" className={`bg-transparent border-white text-white hover:bg-white/20 text-xs sm:text-sm h-8 sm:h-10 py-0 px-2 sm:px-3 ${useNepaliLanguage ? "nepali-text" : ""}`}>
               {useNepaliLanguage ? 'आज' : 'Today'}
+            </Button>
+
+            {/* Print button */}
+            <Button onClick={handlePrint} variant="outline" className="bg-transparent border-white text-white hover:bg-white/20 text-xs sm:text-sm h-8 sm:h-10 py-0 px-2 sm:px-3 flex items-center gap-1">
+              <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden xs:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
             </Button>
             
             <Button onClick={handlePrevMonth} variant="outline" size="icon" className="bg-transparent border-white text-white hover:bg-white/20 h-8 w-8">
@@ -314,7 +328,7 @@ const BikramCalendar: React.FC = () => {
               <PopoverTrigger asChild>
                 <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white/20 gap-1 h-8 sm:h-10 py-0 px-2 sm:px-3 text-xs sm:text-sm">
                   <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden xs:inline">{useNepaliLanguage ? 'मिति' : 'Date'}</span>
+                  <span className={`hidden xs:inline ${useNepaliLanguage ? "nepali-text" : ""}`}>{useNepaliLanguage ? 'मिति' : 'Date'}</span>
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-auto p-0 bg-white" align="end">
@@ -325,7 +339,7 @@ const BikramCalendar: React.FC = () => {
         </div>
         
         {/* Calendar Grid */}
-        <div className="border-l border-r border-b border-gray-300 bg-white rounded-none">
+        <div className="border-l border-r border-b border-gray-300 bg-white rounded-b-xl overflow-hidden shadow-lg">
           <CalendarGrid year={currentView.year} month={currentView.month} days={currentView.days} startWeekDay={currentView.startWeekDay} englishStartDate={currentView.englishStartDate} currentDate={today.year === currentView.year && today.month === currentView.month ? today : undefined} selectedDate={selectedDate || undefined} onDateSelect={handleDateSelect} useNepaliLanguage={useNepaliLanguage} events={events} onEventClick={handleEventClick} usingApproximation={usingApproximation} />
         </div>
         
@@ -333,8 +347,8 @@ const BikramCalendar: React.FC = () => {
         <UpcomingEvents events={events} currentDate={today} useNepaliLanguage={useNepaliLanguage} onEventClick={handleUpcomingEventClick} maxEvents={5} />
         
         {/* Footer */}
-        <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 pb-4 sm:pb-6">
-          <p>{useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}</p>
+        <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 pb-4 sm:pb-6 no-print">
+          <p className={useNepaliLanguage ? "nepali-text" : ""}>{useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}</p>
         </div>
       </div>
 
