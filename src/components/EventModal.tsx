@@ -55,19 +55,6 @@ const EventModal: React.FC<EventModalProps> = ({
               <div className="text-lg font-semibold text-orange-700 dark:text-orange-400">
                 {eventData.tithiPaksha || "N/A"}, {eventData.tithiName || "N/A"}
               </div>
-              <div className="text-sm mt-2 text-gray-600 dark:text-gray-400">
-                {useNepaliLanguage ? "तिथि जानकारी" : "Tithi Information"}
-              </div>
-            </div>
-            
-            {/* Daily information - always shown */}
-            <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
-              <div className="text-sm font-medium text-blue-700 dark:text-blue-400">
-                {useNepaliLanguage ? "दिनको जानकारी" : "Day Information"}
-              </div>
-              <div className="text-base mt-1">
-                {weekday}, {gregorianDateFormatted}
-              </div>
             </div>
             
             {/* Special event information - only shown if there's an event */}
