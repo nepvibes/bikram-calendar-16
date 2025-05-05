@@ -6,7 +6,7 @@ import {
   getTithiNamesEn,
   getPakshaNames,
   type TithiResult
-} from '../bikram-calendar';
+} from '../../bikram-calendar/src/tithi';
 
 export {
   calculateTithi,

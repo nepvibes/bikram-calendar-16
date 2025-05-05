@@ -16,7 +16,7 @@ import {
   nepaliHolidays,
   type BikramDateObj,
   type BikramMonth
-} from '../bikram-calendar';
+} from '../../bikram-calendar/src/converter';
 
 export {
   getToday,
