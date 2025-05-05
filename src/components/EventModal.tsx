@@ -61,11 +61,11 @@ const EventModal: React.FC<EventModalProps> = ({
                 <div className="font-bold text-lg text-gray-800 dark:text-gray-200 mb-2">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
                 </div>
-                <div className="text-base mt-1 font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
+                <div className="text-base font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
                   {eventData.eventText}
                 </div>
-                {/* Only show event detail if it's different from the event text */}
-                {eventData.eventDetail && eventData.eventDetail !== eventData.eventText && <div className="text-sm mt-3 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
+                {/* Always show event detail below the event text */}
+                {eventData.eventDetail && <div className="text-sm mt-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
                     {eventData.eventDetail}
                   </div>}
               </div>}
