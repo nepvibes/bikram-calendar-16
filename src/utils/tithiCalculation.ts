@@ -1,12 +1,12 @@
 
-// Re-export all needed functionality from the bikram-calendar package
+// Re-export all needed functionality from the bikram-calendar source files
 import {
   calculateTithi,
   getTithiNamesNp,
   getTithiNamesEn,
   getPakshaNames,
   type TithiResult
-} from 'bikram-calendar';
+} from '../bikram-calendar/src/tithi';
 
 export {
   calculateTithi,
