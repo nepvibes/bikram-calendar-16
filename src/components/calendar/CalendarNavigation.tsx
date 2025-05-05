@@ -70,16 +70,6 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
         <Button onClick={onTodayClick} variant="outline" className={`bg-transparent/10 border border-white/40 text-white hover:bg-white/20 text-xs h-8 sm:h-9 py-0 px-2 rounded-md ${useNepaliLanguage ? "nepali-text" : ""}`}>
           {useNepaliLanguage ? 'आज' : 'Today'}
         </Button>
-        
-        <div className="flex -mx-1">
-          <Button onClick={onPrevMonth} variant="outline" size="icon" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 h-8 w-8 sm:h-9 sm:w-9 rounded-l-md rounded-r-none">
-            <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-          </Button>
-          
-          <Button onClick={onNextMonth} variant="outline" size="icon" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 h-8 w-8 sm:h-9 sm:w-9 rounded-l-none rounded-r-md">
-            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
-          </Button>
-        </div>
 
         {/* English calendar picker */}
         <Popover>
