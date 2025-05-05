@@ -56,15 +56,19 @@ const EventModal: React.FC<EventModalProps> = ({
               </div>
             </div>
             
-            {/* Special event information - only shown if there's an event */}
+            {/* Special event information */}
             {eventData.eventText && (
               <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
                 <div className="font-bold text-lg text-gray-800 dark:text-gray-200 mb-2">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
                 </div>
+                
+                {/* Event name */}
                 <div className="text-base font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
                   {eventData.eventText}
                 </div>
+                
+                {/* Event details - always shown when available */}
                 {eventData.eventDetail && (
                   <div className="text-sm mt-2 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
                     {eventData.eventDetail}
