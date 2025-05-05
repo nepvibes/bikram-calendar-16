@@ -1,5 +1,5 @@
 
-// Re-export all needed functionality from the bikram-calendar source files
+// Re-export all needed functionality from the bikram-calendar package
 import {
   getToday,
   getBikramMonth,
@@ -16,7 +16,7 @@ import {
   nepaliHolidays,
   type BikramDateObj,
   type BikramMonth
-} from '../bikram-calendar/src/converter';
+} from '../bikram-calendar';
 
 export {
   getToday,
