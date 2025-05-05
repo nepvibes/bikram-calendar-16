@@ -111,7 +111,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       pakshaEn: tithiData.pakshaEn
     };
   };
-  return <div className="beautiful-calendar-grid overflow-hidden rounded-xl shadow-md">
+  return <div className="beautiful-calendar-grid overflow-hidden  shadow-md">
       {/* Days of week header */}
       <div className="grid grid-cols-7  overflow-hidden">
         {weekDays.map((day, idx) => <div key={idx} className={`text-center py-1 sm:py-2 px-1 font-bold text-xs sm:text-sm ${idx === 0 ? 'bg-blue-800 text-white' : idx === 6 ? 'bg-red-700 text-white' : 'bg-blue-700 text-white'}`}>
