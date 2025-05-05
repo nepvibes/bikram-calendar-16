@@ -41,11 +41,20 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
 }) => {
   return (
     <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600 no-print">
-      {/* Month and Year selectors */}
-      <div className="flex gap-1 sm:gap-2">
-        {/* Month selector */}
+      <div className="flex items-center gap-1 sm:gap-2">
+        {/* Year and Month selectors - Nepali date selection first */}
+        <form onSubmit={onYearSubmit} className="flex">
+          <Input 
+            type="text" 
+            value={yearInput} 
+            onChange={onYearInputChange} 
+            className={`w-16 sm:w-20 bg-white/90 text-blue-900 border-none h-8 sm:h-9 px-1 sm:px-2 text-xs sm:text-sm rounded-l-md ${useNepaliLanguage ? "nepali-text" : ""}`} 
+            onBlur={onYearSubmit} 
+          />
+        </form>
+        
         <Select value={currentMonth.toString()} onValueChange={onMonthChange}>
-          <SelectTrigger className="w-24 sm:w-32 bg-white text-blue-900 border-none h-8 sm:h-10 text-xs sm:text-sm">
+          <SelectTrigger className="w-20 sm:w-28 bg-white/90 text-blue-900 border-none h-8 sm:h-9 text-xs sm:text-sm">
             <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
           </SelectTrigger>
           <SelectContent className="bg-white">
@@ -56,59 +65,54 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
             ))}
           </SelectContent>
         </Select>
-        
-        {/* Year selector - Direct input */}
-        <form onSubmit={onYearSubmit} className="flex">
-          <Input 
-            type="text" 
-            value={yearInput} 
-            onChange={onYearInputChange} 
-            className={`w-16 sm:w-24 bg-white text-blue-900 border-none h-8 sm:h-10 px-1 sm:px-3 text-xs sm:text-sm ${useNepaliLanguage ? "nepali-text" : ""}`} 
-            onBlur={onYearSubmit} 
-          />
-        </form>
-      </div>
-      
-      {/* Navigation buttons */}
-      <div className="flex items-center gap-1 sm:gap-2">
-        <Button onClick={onTodayClick} variant="outline" className={`bg-transparent border-white text-white hover:bg-white/20 text-xs sm:text-sm h-8 sm:h-10 py-0 px-2 sm:px-3 ${useNepaliLanguage ? "nepali-text" : ""}`}>
+
+        {/* Month navigation buttons */}
+        <Button onClick={onTodayClick} variant="outline" className={`bg-transparent/10 border border-white/40 text-white hover:bg-white/20 text-xs h-8 sm:h-9 py-0 px-2 rounded-md ${useNepaliLanguage ? "nepali-text" : ""}`}>
           {useNepaliLanguage ? 'आज' : 'Today'}
         </Button>
+        
+        <div className="flex -mx-1">
+          <Button onClick={onPrevMonth} variant="outline" size="icon" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 h-8 w-8 sm:h-9 sm:w-9 rounded-l-md rounded-r-none">
+            <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+          
+          <Button onClick={onNextMonth} variant="outline" size="icon" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 h-8 w-8 sm:h-9 sm:w-9 rounded-l-none rounded-r-md">
+            <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
+          </Button>
+        </div>
 
-        {/* Print button */}
-        <Button onClick={onPrint} variant="outline" className="bg-transparent border-white text-white hover:bg-white/20 text-xs sm:text-sm h-8 sm:h-10 py-0 px-2 sm:px-3 flex items-center gap-1">
-          <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
-          <span className="hidden xs:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
-        </Button>
-        
-        <Button onClick={onPrevMonth} variant="outline" size="icon" className="bg-transparent border-white text-white hover:bg-white/20 h-8 w-8">
-          <ChevronLeft className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Button>
-        
-        <Button onClick={onNextMonth} variant="outline" size="icon" className="bg-transparent border-white text-white hover:bg-white/20 h-8 w-8">
-          <ChevronRight className="h-3 w-3 sm:h-4 sm:w-4" />
-        </Button>
-        
-        <LanguageToggle useNepaliLanguage={useNepaliLanguage} onToggle={onToggleLanguage} />
-        
+        {/* English calendar picker */}
         <Popover>
           <PopoverTrigger asChild>
-            <Button variant="outline" className="bg-transparent border-white text-white hover:bg-white/20 gap-1 h-8 sm:h-10 py-0 px-2 sm:px-3 text-xs sm:text-sm">
+            <Button variant="outline" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 h-8 sm:h-9 py-0 px-2 rounded-md flex items-center gap-1">
               <CalendarIcon className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className={`hidden xs:inline ${useNepaliLanguage ? "nepali-text" : ""}`}>
+              <span className={`hidden xs:inline text-xs ${useNepaliLanguage ? "nepali-text" : ""}`}>
                 {useNepaliLanguage ? 'मिति' : 'Date'}
               </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-white" align="end">
+          <PopoverContent className="w-auto p-0 bg-white" align="start">
             <Calendar 
               mode="single" 
               selected={new Date()} 
               onSelect={onEnglishDateSelect} 
               initialFocus 
+              className="pointer-events-auto"
             />
           </PopoverContent>
         </Popover>
+      </div>
+      
+      {/* Right-aligned buttons */}
+      <div className="flex items-center gap-1 sm:gap-2 ml-auto">
+        {/* Print button */}
+        <Button onClick={onPrint} variant="outline" className="bg-transparent/10 border border-white/40 text-white hover:bg-white/20 text-xs h-8 sm:h-9 py-0 px-2 rounded-md flex items-center gap-1">
+          <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
+          <span className="hidden xs:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
+        </Button>
+        
+        {/* Language toggle button */}
+        <LanguageToggle useNepaliLanguage={useNepaliLanguage} onToggle={onToggleLanguage} />
       </div>
     </div>
   );

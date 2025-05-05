@@ -1,3 +1,4 @@
+
 /* Add Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Lohit+Devanagari&display=swap');
 
@@ -24,7 +25,7 @@ code {
 }
 
 .beautiful-calendar-grid {
-  border-radius: 1rem;
+  border-radius: 0 0 1rem 1rem;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -38,7 +39,7 @@ code {
 }
 
 .beautiful-header {
-  border-radius: 1rem;
+  border-radius: 1rem 1rem 0 0;
   overflow: hidden;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
@@ -90,3 +91,31 @@ code {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
 }
+
+/* Add ease-spring animation for spring effect */
+.ease-spring {
+  transition-timing-function: cubic-bezier(0.5, 1.5, 0.6, 1.0);
+}
+
+/* No print class for elements that shouldn't be printed */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Modal styling for rounded corners */
+.rounded-xl {
+  border-radius: 1rem;
+}
+
+.rounded-t-xl {
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+/* Blue text for upcoming events */
+.upcoming-event-text {
+  color: #3b82f6;
+}
+

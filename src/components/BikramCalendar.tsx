@@ -77,7 +77,7 @@ const BikramCalendar: React.FC = () => {
         />
         
         {/* Calendar Grid */}
-        <div className="border-l border-r border-b border-gray-300 bg-white rounded-b-xl overflow-hidden shadow-lg">
+        <div className="border-l border-r border-b border-gray-300 bg-white rounded-b-xl overflow-hidden shadow-lg beautiful-calendar-grid">
           <CalendarGrid 
             year={calendarState.currentView.year} 
             month={calendarState.currentView.month} 
@@ -104,7 +104,7 @@ const BikramCalendar: React.FC = () => {
           headerBgColor="bg-gradient-to-r from-blue-800 to-blue-600"
           headerTextColor="text-white"
           eventItemBgColor="bg-white"
-          eventTextColor="text-black"
+          eventTextColor="text-blue-500"
           eventDateColor="text-gray-500"
           todayBadgeBgColor="bg-green-100"
           todayBadgeTextColor="text-green-800"

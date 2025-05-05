@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CalendarEvent } from '@/types/events';
 import { getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
@@ -54,7 +53,7 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
   headerBgColor = "bg-gradient-to-r from-blue-800 to-blue-600",
   headerTextColor = "text-white",
   eventItemBgColor = "bg-white",
-  eventTextColor = "text-black",
+  eventTextColor = "text-blue-500", // Changed to light blue
   eventDateColor = "text-gray-500",
   eventBorderColor = "border-gray-200",
   todayBadgeBgColor = "bg-green-100",
@@ -176,7 +175,7 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
               className={`w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light ${eventItemBgColor}`}
             >
               <div className="flex flex-col">
-                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : eventTextColor} ${useNepaliLanguage ? "nepali-text" : ""}`}>
+                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : eventTextColor} ${useNepaliLanguage ? "nepali-text" : ""} upcoming-event-text`}>
                   {event.eventText}
                 </span>
                 <span className={`text-xs ${eventDateColor} ${useNepaliLanguage ? "nepali-text" : ""}`}>

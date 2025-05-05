@@ -39,9 +39,9 @@ const EventModal: React.FC<EventModalProps> = ({
   
   return (
     <Dialog open={isOpen} onOpenChange={() => handleClose()}>
-      <DialogContent className="sm:max-w-md overflow-hidden bg-white dark:bg-gray-800 shadow-2xl">
+      <DialogContent className="sm:max-w-md overflow-hidden bg-white dark:bg-gray-800 shadow-xl rounded-xl">
         <div
-          className={`bg-gradient-to-br from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800 -mx-6 -mt-6 p-4 text-white transition-all duration-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
+          className={`bg-gradient-to-br from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800 -mx-6 -mt-6 p-4 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
           <DialogTitle className="text-center">
             <span
@@ -60,12 +60,27 @@ const EventModal: React.FC<EventModalProps> = ({
           <div 
             className={`flex flex-col space-y-4 text-center transition-all duration-300 delay-200 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
           >
+            {/* Tithi information - always shown */}
             <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded-lg">
               <div className="text-lg font-semibold text-orange-700 dark:text-orange-400">
                 {eventData.tithiPaksha}, {eventData.tithiName}
               </div>
+              <div className="text-sm mt-2 text-gray-600 dark:text-gray-400">
+                {useNepaliLanguage ? "तिथि जानकारी" : "Tithi Information"}
+              </div>
             </div>
             
+            {/* Daily information - always shown */}
+            <div className="bg-blue-50 dark:bg-blue-950/30 p-3 rounded-lg">
+              <div className="text-sm font-medium text-blue-700 dark:text-blue-400">
+                {useNepaliLanguage ? "दिनको जानकारी" : "Day Information"}
+              </div>
+              <div className="text-base mt-1">
+                {weekday}, {gregorianDateFormatted}
+              </div>
+            </div>
+            
+            {/* Special event information - only shown if there's an event */}
             {eventData.eventText && (
               <div 
                 className={`mt-4 pt-4 border-t transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
