@@ -35,8 +35,8 @@ const EventModal: React.FC<EventModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => handleClose()}>
-      <DialogContent className="max-w-md overflow-hidden rounded-xl bg-pink-200 p-0">
-        <div className={`bg-gradient-to-br from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+      <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0">
+        <div className={`bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           <DialogTitle className="text-center">
             <span className={`inline-block text-2xl font-bold font-nepali transition-transform duration-500 ease-spring ${isAnimating ? 'scale-100' : 'scale-90'}`}>
               {useNepaliLanguage ? bikramDateFormatted : bikramDateFormatted}
@@ -72,7 +72,7 @@ const EventModal: React.FC<EventModalProps> = ({
             
             {/* Special event information - only shown if there's an event */}
             {eventData.eventText && (
-              <div className={`mt-4 pt-4 border-t transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+              <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
                 <div className="font-bold text-lg text-gray-800 dark:text-gray-200 mb-2">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
                 </div>
@@ -89,7 +89,7 @@ const EventModal: React.FC<EventModalProps> = ({
           </div>
         </div>
         
-        <DialogFooter className="p-4 border-t bg-gray-50">
+        <DialogFooter className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
           <div className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
             <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 shadow-md rounded-md">
               {useNepaliLanguage ? "बन्द गर्नुहोस्" : "Close"}
