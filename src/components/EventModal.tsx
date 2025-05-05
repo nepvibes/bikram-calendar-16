@@ -41,17 +41,11 @@ const EventModal: React.FC<EventModalProps> = ({
     <Dialog open={isOpen} onOpenChange={() => handleClose()}>
       <DialogContent className="sm:max-w-md overflow-hidden bg-white dark:bg-gray-800 shadow-2xl">
         <div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isAnimating ? 1 : 0, y: isAnimating ? 0 : 20 }}
-          transition={{ duration: 0.4 }}
-          className="bg-gradient-to-br from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800 -mx-6 -mt-6 p-4 text-white"
+          className={`bg-gradient-to-br from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800 -mx-6 -mt-6 p-4 text-white transition-all duration-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
           <DialogTitle className="text-center">
             <span
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.5, type: "spring" }}
-              className="inline-block text-2xl font-bold font-nepali"
+              className={`inline-block text-2xl font-bold font-nepali transition-transform duration-500 ease-spring ${isAnimating ? 'scale-100' : 'scale-90'}`}
             >
               {useNepaliLanguage ? bikramDateFormatted : bikramDateFormatted}
               <span className="ml-2 text-lg opacity-80">{useNepaliLanguage ? "बि.सं." : "BS"}</span>
@@ -64,10 +58,7 @@ const EventModal: React.FC<EventModalProps> = ({
         
         <div className="space-y-4 py-4">
           <div 
-            className="flex flex-col space-y-4 text-center"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2, duration: 0.4 }}
+            className={`flex flex-col space-y-4 text-center transition-all duration-300 delay-200 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
           >
             <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded-lg">
               <div className="text-lg font-semibold text-orange-700 dark:text-orange-400">
@@ -77,10 +68,7 @@ const EventModal: React.FC<EventModalProps> = ({
             
             {eventData.eventText && (
               <div 
-                className="mt-4 pt-4 border-t"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3, duration: 0.4 }}
+                className={`mt-4 pt-4 border-t transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
               >
                 <div className="font-bold text-lg text-gray-800 dark:text-gray-200 mb-2">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
@@ -100,9 +88,7 @@ const EventModal: React.FC<EventModalProps> = ({
         
         <DialogFooter>
           <div 
-            className="w-full"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+            className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]"
           >
             <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 shadow-md">
               {useNepaliLanguage ? "बन्द गर्नुहोस्" : "Close"}
