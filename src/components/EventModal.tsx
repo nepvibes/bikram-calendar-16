@@ -1,11 +1,9 @@
-
 import React, { useState } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { Button } from './ui/button';
 import { format } from 'date-fns';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
 import { EventModalProps } from '../types/events';
-
 const EventModal: React.FC<EventModalProps> = ({
   isOpen,
   onClose,
@@ -23,18 +21,14 @@ const EventModal: React.FC<EventModalProps> = ({
       setIsAnimating(true);
     }
   }, [isOpen]);
-
   const bikramDateFormatted = useNepaliLanguage ? `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}` : `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
   const gregorianDateFormatted = format(eventData.englishDate, 'PPP');
   const weekday = format(eventData.englishDate, 'EEEE');
-
   const handleClose = () => {
     setIsAnimating(false);
     setTimeout(onClose, 300); // Wait for exit animation
   };
-
-  return (
-    <Dialog open={isOpen} onOpenChange={() => handleClose()}>
+  return <Dialog open={isOpen} onOpenChange={() => handleClose()}>
       <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0">
         <div className={`bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           <DialogTitle className="text-center">
@@ -58,25 +52,21 @@ const EventModal: React.FC<EventModalProps> = ({
             </div>
             
             {/* Special event information - only shown if there's an event */}
-            {eventData.eventText && (
-              <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+            {eventData.eventText && <div className={`mt-4 pt-4 border-t border-gray-200 dark:border-gray-700 transition-all duration-300 delay-300 ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
                 <div className="font-bold text-lg text-gray-800 dark:text-gray-200 mb-2">
                   {useNepaliLanguage ? "विशेष दिन" : "Special Day"}
                 </div>
                 <div className="text-base mt-1 font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
                   {eventData.eventText}
                 </div>
-                {eventData.eventDetail && (
-                  <div className="text-sm mt-3 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
+                {eventData.eventDetail && <div className="text-sm mt-3 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
                     {eventData.eventDetail}
-                  </div>
-                )}
-              </div>
-            )}
+                  </div>}
+              </div>}
           </div>
         </div>
         
-        <DialogFooter className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900">
+        <DialogFooter className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 px-0 py-0">
           <div className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
             <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 shadow-md rounded-md">
               {useNepaliLanguage ? "बन्द गर्नुहोस्" : "Close"}
@@ -84,8 +74,6 @@ const EventModal: React.FC<EventModalProps> = ({
           </div>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
-  );
+    </Dialog>;
 };
-
 export default EventModal;
