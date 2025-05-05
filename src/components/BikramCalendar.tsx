@@ -58,7 +58,7 @@ const BikramCalendar: React.FC = () => {
   };
   
   return (
-    <div className="min-h-screen bg-[url('/subtle-pattern.png')] dark:bg-slate-900 pt-2 md:pt-4">
+    <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">
       <Toaster richColors position="top-center" />
       
       {/* Calendar Container */}
@@ -87,7 +87,7 @@ const BikramCalendar: React.FC = () => {
         />
         
         {/* Calendar Grid */}
-        <div className="border-l border-r border-b border-gray-300 dark:border-gray-700 bg-white dark:bg-slate-800 rounded-b-xl overflow-hidden shadow-lg beautiful-calendar-grid">
+        <div className="border-l border-r border-b border-gray-300 bg-white rounded-b-xl overflow-hidden shadow-lg beautiful-calendar-grid">
           <CalendarGrid 
             year={calendarState.currentView.year} 
             month={calendarState.currentView.month} 
@@ -111,21 +111,21 @@ const BikramCalendar: React.FC = () => {
           useNepaliLanguage={calendarState.useNepaliLanguage} 
           onEventClick={handleUpcomingEventClick} 
           maxEvents={5}
-          headerBgColor="bg-gradient-to-r from-blue-800 to-blue-600 dark:from-blue-900 dark:to-blue-800"
+          headerBgColor="bg-gradient-to-r from-blue-800 to-blue-600"
           headerTextColor="text-white"
-          eventItemBgColor="bg-white dark:bg-slate-800"
-          eventTextColor="text-blue-500 dark:text-blue-400"
-          eventDateColor="text-gray-500 dark:text-gray-400"
-          todayBadgeBgColor="bg-green-100 dark:bg-green-900/30"
-          todayBadgeTextColor="text-green-800 dark:text-green-300"
-          futureBadgeBgColor="bg-blue-100 dark:bg-blue-900/30"
-          futureBadgeTextColor="text-blue-800 dark:text-blue-300"
+          eventItemBgColor="bg-white"
+          eventTextColor="text-blue-500"
+          eventDateColor="text-gray-500"
+          todayBadgeBgColor="bg-green-100"
+          todayBadgeTextColor="text-green-800"
+          futureBadgeBgColor="bg-blue-100"
+          futureBadgeTextColor="text-blue-800"
           borderRadius="rounded-lg"
           boxShadow="shadow-md"
         />
         
         {/* Footer */}
-        <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 dark:text-gray-400 pb-4 sm:pb-6 no-print">
+        <div className="mt-4 sm:mt-6 text-center text-xs sm:text-sm text-gray-500 pb-4 sm:pb-6 no-print">
           <p className={calendarState.useNepaliLanguage ? "nepali-text" : ""}>
             {calendarState.useNepaliLanguage ? '© २०८१ बिक्रम सम्वत क्यालेन्डर' : '© 2024 Bikram Sambat Calendar'}
           </p>

@@ -8,7 +8,6 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 import { Input } from '@/components/ui/input';
 import LanguageToggle from '@/components/LanguageToggle';
-import { ThemeToggle } from '@/components/ThemeToggle';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '@/utils/bikramConverter';
 
 interface CalendarNavigationProps {
@@ -41,7 +40,7 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
   onEnglishDateSelect
 }) => {
   return (
-    <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600 dark:from-blue-800 dark:to-blue-900 no-print">
+    <div className="text-white p-1 sm:p-2 flex flex-wrap gap-1 sm:gap-2 justify-between items-center bg-gradient-to-r from-[#3285e9] to-blue-600 no-print">
       <div className="flex items-center gap-1 sm:gap-2">
         {/* Year and Month selectors - Nepali date selection first */}
         <form onSubmit={onYearSubmit} className="flex">
@@ -49,16 +48,16 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
             type="text" 
             value={yearInput} 
             onChange={onYearInputChange} 
-            className={`w-16 sm:w-20 bg-white/90 dark:bg-white/10 text-blue-900 dark:text-blue-100 border-none h-8 sm:h-9 px-1 sm:px-2 text-xs sm:text-sm rounded-l-md ${useNepaliLanguage ? "nepali-text" : ""}`} 
+            className={`w-16 sm:w-20 bg-white/90 text-blue-900 border-none h-8 sm:h-9 px-1 sm:px-2 text-xs sm:text-sm rounded-l-md ${useNepaliLanguage ? "nepali-text" : ""}`} 
             onBlur={onYearSubmit} 
           />
         </form>
         
         <Select value={currentMonth.toString()} onValueChange={onMonthChange}>
-          <SelectTrigger className="w-20 sm:w-28 bg-white/90 dark:bg-white/10 text-blue-900 dark:text-blue-100 border-none h-8 sm:h-9 text-xs sm:text-sm">
+          <SelectTrigger className="w-20 sm:w-28 bg-white/90 text-blue-900 border-none h-8 sm:h-9 text-xs sm:text-sm">
             <SelectValue placeholder={useNepaliLanguage ? "महिना" : "Month"} />
           </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-slate-800">
+          <SelectContent className="bg-white">
             {[...Array(12)].map((_, i) => (
               <SelectItem key={i + 1} value={(i + 1).toString()} className={`text-xs sm:text-sm ${useNepaliLanguage ? "nepali-text" : ""}`}>
                 {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
@@ -92,7 +91,7 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
               </span>
             </Button>
           </PopoverTrigger>
-          <PopoverContent className="w-auto p-0 bg-white dark:bg-slate-800" align="start">
+          <PopoverContent className="w-auto p-0 bg-white" align="start">
             <Calendar 
               mode="single" 
               selected={new Date()} 
@@ -111,9 +110,6 @@ const CalendarNavigation: React.FC<CalendarNavigationProps> = ({
           <Printer className="h-3 w-3 sm:h-4 sm:w-4" />
           <span className="hidden xs:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
         </Button>
-        
-        {/* Theme toggle button */}
-        <ThemeToggle />
         
         {/* Language toggle button */}
         <LanguageToggle useNepaliLanguage={useNepaliLanguage} onToggle={onToggleLanguage} />
