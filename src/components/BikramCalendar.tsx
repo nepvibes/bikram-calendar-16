@@ -34,13 +34,23 @@ const BikramCalendar: React.FC = () => {
   // New function to navigate to a specific date when clicking on an upcoming event
   const handleUpcomingEventClick = (year: number, month: number, day: number) => {
     // Set the calendar view to the event's month and year
-    calendarState.setSelectedDate({
+    calendarState.setCurrentView(prev => ({
+      ...prev,
+      year,
+      month
+    }));
+    
+    // Create a selected date object
+    const selectedDate = {
       year,
       month,
       day,
-      englishDate: new Date() // This is a placeholder, will be updated by the system
-    });
-
+      englishDate: new Date() // This will be updated by the system
+    };
+    
+    // Update the selected date
+    calendarState.setSelectedDate(selectedDate);
+    
     // Show a notification
     toast.info(calendarState.useNepaliLanguage ? 
       `${nepaliMonthsNp[month - 1]} ${getNepaliDigits(day)}, ${getNepaliDigits(year)} मा भएको कार्यक्रम देखाउँदै` : 

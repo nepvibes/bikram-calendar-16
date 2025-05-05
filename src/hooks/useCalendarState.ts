@@ -5,6 +5,7 @@ import { EventModalData } from '../types/events';
 import { loadEventsForYear } from '../utils/events';
 import { toast } from 'sonner';
 import { BS_START_YEAR, BS_END_YEAR } from '../utils/bikram';
+import { calculateTithi } from '../utils/tithiCalculation';
 
 export function useCalendarState() {
   // Today's date in Bikram Sambat
@@ -167,16 +168,24 @@ export function useCalendarState() {
 
   // Handle date selection
   const handleDateSelect = (day: number): void => {
+    // Get the English date for the selected day
+    const englishDate = new Date(currentView.englishStartDate);
+    englishDate.setDate(englishDate.getDate() + (day - 1));
+    
+    // Get tithi data for the selected date
+    const tithiData = calculateTithi(englishDate);
+    
     const newSelectedDate: EventModalData = {
       year: currentView.year,
       month: currentView.month,
       day,
-      englishDate: new Date(),
-      tithiName: '',
-      tithiPaksha: '',
+      englishDate,
+      tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
+      tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
       eventText: '',
       eventDetail: ''
     };
+    
     setSelectedDate(newSelectedDate);
     setEventModalData(newSelectedDate);
     setEventModalOpen(true);
@@ -234,6 +243,7 @@ export function useCalendarState() {
     handleEnglishDateSelect,
     setSelectedDate,
     setEventModalData,
-    setEventModalOpen
+    setEventModalOpen,
+    setCurrentView
   };
 }

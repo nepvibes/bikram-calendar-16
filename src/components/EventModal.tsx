@@ -24,6 +24,13 @@ const EventModal: React.FC<EventModalProps> = ({
   // Animation state
   const [isAnimating, setIsAnimating] = useState(true);
 
+  // Reset animation state when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      setIsAnimating(true);
+    }
+  }, [isOpen]);
+
   const bikramDateFormatted = useNepaliLanguage
     ? `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}`
     : `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
@@ -62,7 +69,7 @@ const EventModal: React.FC<EventModalProps> = ({
             {/* Tithi information - always shown */}
             <div className="bg-orange-50 dark:bg-orange-950/30 p-3 rounded-lg">
               <div className="text-lg font-semibold text-orange-700 dark:text-orange-400">
-                {eventData.tithiPaksha}, {eventData.tithiName}
+                {eventData.tithiPaksha || "N/A"}, {eventData.tithiName || "N/A"}
               </div>
               <div className="text-sm mt-2 text-gray-600 dark:text-gray-400">
                 {useNepaliLanguage ? "तिथि जानकारी" : "Tithi Information"}
