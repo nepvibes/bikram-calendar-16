@@ -1,5 +1,3 @@
 
-import { BikramDate, BS_START_YEAR, BS_END_YEAR } from 'bikram-calendar';
-
-// Re-export for compatibility
-export { BikramDate, BS_START_YEAR, BS_END_YEAR };
+// Re-export all from the local implementation instead of from the package
+export * from '../bikram-calendar/src/bikram';

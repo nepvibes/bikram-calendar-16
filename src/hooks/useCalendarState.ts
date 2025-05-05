@@ -91,9 +91,16 @@ export function useCalendarState() {
   };
 
   // Handler for month change from dropdown - Fixed to prevent automatic day selection
-  const handleMonthChange = (value: string) => {
-    const month = parseInt(value);
-    // Using a timeout to prevent the event from propagating to day cells
+  const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement> | string) => {
+    // Stop event propagation to prevent clicking on days beneath the dropdown
+    if (typeof e !== 'string' && e.stopPropagation) {
+      e.stopPropagation();
+    }
+    
+    // Get the month value
+    const month = typeof e === 'string' ? parseInt(e) : parseInt(e.target.value);
+    
+    // Use a timeout to prevent the event from propagating to day cells
     setTimeout(() => {
       setCurrentView(prev => getBikramMonth(prev.year, month));
     }, 50);

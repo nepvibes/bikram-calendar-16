@@ -7,8 +7,6 @@ import EventModal from './EventModal';
 import UpcomingEvents from './UpcomingEvents';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { Card } from './ui/card';
-import { Toaster } from './ui/sonner';
-import { toast } from 'sonner';
 import CalendarHeader from './calendar/CalendarHeader';
 import CalendarNavigation from './calendar/CalendarNavigation';
 
@@ -50,17 +48,10 @@ const BikramCalendar: React.FC = () => {
     
     // Update the selected date
     calendarState.setSelectedDate(selectedDate);
-    
-    // Show a notification
-    toast.info(calendarState.useNepaliLanguage ? 
-      `${nepaliMonthsNp[month - 1]} ${getNepaliDigits(day)}, ${getNepaliDigits(year)} मा भएको कार्यक्रम देखाउँदै` : 
-      `Showing event on ${nepaliMonthsEn[month - 1]} ${day}, ${year}`);
   };
   
   return (
     <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">
-      <Toaster richColors position="top-center" />
-      
       {/* Calendar Container */}
       <div className="mx-auto px-2 sm:px-4 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
         {/* Top header with month/year */}

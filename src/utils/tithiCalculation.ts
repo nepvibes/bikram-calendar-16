@@ -1,11 +1,3 @@
 
-import { calculateTithi, getTithiNamesNp, getTithiNamesEn, getPakshaNames, type TithiResult } from 'bikram-calendar';
-
-// Re-export for compatibility
-export { 
-  calculateTithi, 
-  getTithiNamesNp, 
-  getTithiNamesEn, 
-  getPakshaNames,
-  type TithiResult
-};
+// Re-export all from the local implementation
+export * from '../bikram-calendar/src/tithi';

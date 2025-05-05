@@ -37,7 +37,7 @@ const EventModal: React.FC<EventModalProps> = ({
       <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0">
         <div className={`bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           <DialogTitle className="text-center">
-            <span className={`inline-block text-2xl font-bold font-nepali transition-transform duration-500 ease-spring ${isAnimating ? 'scale-100' : 'scale-90'}`}>
+            <span className={`inline-block text-2xl font-bold font-laila transition-transform duration-500 ease-spring ${isAnimating ? 'scale-100' : 'scale-90'}`}>
               {useNepaliLanguage ? bikramDateFormatted : bikramDateFormatted}
               <span className="ml-2 text-lg opacity-80">{useNepaliLanguage ? "बि.सं." : "BS"}</span>
             </span>
@@ -64,6 +64,7 @@ const EventModal: React.FC<EventModalProps> = ({
                 <div className="text-base mt-1 font-medium text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/30 p-3 rounded-lg">
                   {eventData.eventText}
                 </div>
+                {/* Only show event detail if it's different from the event text */}
                 {eventData.eventDetail && eventData.eventDetail !== eventData.eventText && <div className="text-sm mt-3 text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-lg">
                     {eventData.eventDetail}
                   </div>}
