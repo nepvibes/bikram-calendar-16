@@ -106,12 +106,17 @@ code {
 
 /* Modal styling for rounded corners */
 .rounded-xl {
-  border-radius: 1rem;
+  border-radius: 1rem !important;
 }
 
 .rounded-t-xl {
-  border-top-left-radius: 1rem;
-  border-top-right-radius: 1rem;
+  border-top-left-radius: 1rem !important;
+  border-top-right-radius: 1rem !important;
+}
+
+.rounded-b-xl {
+  border-bottom-left-radius: 1rem !important;
+  border-bottom-right-radius: 1rem !important;
 }
 
 /* Blue text for upcoming events */
@@ -119,3 +124,8 @@ code {
   color: #3b82f6;
 }
 
+/* Override for dialog content to ensure rounded corners */
+[data-radix-dialog-content] {
+  border-radius: 1rem !important;
+  overflow: hidden;
+}
