@@ -73,6 +73,8 @@ export default {
 			},
 			fontFamily: {
 				'devanagari': ['"Lohit Devanagari"', 'sans-serif'],
+				'laila': ['"Laila"', 'sans-serif'],
+				'nepali': ['"Laila"', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

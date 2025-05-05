@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
 import { loadEventsForYear } from '../utils/events';
-import { toast } from 'sonner';
 import { BS_START_YEAR, BS_END_YEAR } from '../utils/bikram';
 import { calculateTithi } from '../utils/tithiCalculation';
 
@@ -89,13 +88,15 @@ export function useCalendarState() {
     setCurrentView(getBikramMonth(todayDate.year, todayDate.month));
     setSelectedDate(todayDate);
     setYearInput(useNepaliLanguage ? getNepaliDigits(todayDate.year) : todayDate.year.toString());
-    toast(useNepaliLanguage ? `आजको मिति: ${todayDate.month} ${getNepaliDigits(todayDate.day)}, ${getNepaliDigits(todayDate.year)} बि.सं.` : `Showing today: ${todayDate.month} ${todayDate.day}, ${todayDate.year} BS`);
   };
 
-  // Handler for month change from dropdown
+  // Handler for month change from dropdown - Fixed to prevent automatic day selection
   const handleMonthChange = (value: string) => {
     const month = parseInt(value);
-    setCurrentView(prev => getBikramMonth(prev.year, month));
+    // Using a timeout to prevent the event from propagating to day cells
+    setTimeout(() => {
+      setCurrentView(prev => getBikramMonth(prev.year, month));
+    }, 50);
   };
 
   // Handler for year change from dropdown
@@ -156,12 +157,12 @@ export function useCalendarState() {
       // Update year input based on language setting
       setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
 
-      // If we're outside the precomputed data range, show a toast notification
+      // If we're outside the precomputed data range, show information about approximation
       if (year < BS_START_YEAR || year > BS_END_YEAR) {
-        toast.info(useNepaliLanguage ? `${getNepaliDigits(BS_START_YEAR)}–${getNepaliDigits(BS_END_YEAR)} भन्दा बाहिरको मिति अनुमानित हो` : `Calendar data outside ${BS_START_YEAR}–${BS_END_YEAR} is approximated`);
+        console.log(`Calendar data outside ${BS_START_YEAR}–${BS_END_YEAR} is approximated`);
       }
     } else {
-      toast.error(useNepaliLanguage ? "कृपया वैध वर्ष प्रविष्ट गर्नुहोस्" : "Please enter a valid year");
+      console.error("Please enter a valid year");
       setYearInput(useNepaliLanguage ? getNepaliDigits(currentView.year) : currentView.year.toString());
     }
   };

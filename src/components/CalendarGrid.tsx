@@ -1,9 +1,9 @@
-
 import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
 import { CalendarEvent } from '../types/events';
 import { hasEvents, getAllEventText, isHoliday } from '../utils/events';
+
 interface CalendarGridProps {
   year: number;
   month: number; // 1-12
@@ -115,7 +115,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       {/* Days of week header */}
       <div className="grid grid-cols-7  overflow-hidden">
         {weekDays.map((day, idx) => <div key={idx} className={`text-center py-1 sm:py-2 px-1 font-bold text-xs sm:text-sm ${idx === 0 ? 'bg-blue-800 text-white' : idx === 6 ? 'bg-red-700 text-white' : 'bg-blue-700 text-white'}`}>
-            <span className={useNepaliLanguage ? "nepali-text" : ""}>
+            <span className={useNepaliLanguage ? "font-laila" : ""}>
               {day}
             </span>
             <div className="text-[7px] sm:text-xs font-normal hidden sm:block">
@@ -191,7 +191,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                         {/* Bikram date - larger and bold */}
                         <span className={`text-xl sm:text-2xl lg:text-3xl font-bold 
                           ${dayIsHoliday ? 'text-red-600' : isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
-                          ${useNepaliLanguage ? "nepali-text" : ""}
+                          ${useNepaliLanguage ? "font-laila" : ""}
                           ${isCurrentDay ? 'ring-1 ring-red-500 px-0.5 sm:px-1 rounded-full' : ''}`}>
                           {useNepaliLanguage ? getNepaliDigits(day) : day}
                         </span>
@@ -205,21 +205,21 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                     
                     {/* Event display */}
                     {dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-xs text-red-800 rounded-sm mt-0.5 block truncate w-full text-center px-0 py-0 my-0 bg-rose-50">
-                        <span className={useNepaliLanguage ? "nepali-text" : ""}>
+                        <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {eventText}
                         </span>
                       </div>}
                     
                     {/* Special tithi display (purnima/amavasya) */}
                     {specialTithi && !dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 text-yellow-800 rounded-sm mt-0.5 block truncate w-full text-center bg-transparent">
-                        <span className={useNepaliLanguage ? "nepali-text" : ""}>
+                        <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {useNepaliLanguage ? tithi.name : tithi.nameEn}
                         </span>
                       </div>}
                     
                     {/* Regular tithi display */}
                     {!specialTithi && !dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-[10px] text-blue-600 mt-0.5 px-1">
-                        <span className={useNepaliLanguage ? "nepali-text" : ""}>
+                        <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {useNepaliLanguage ? tithi.name : tithi.nameEn}
                         </span>
                       </div>}
@@ -231,7 +231,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       
       {/* Approximation notice */}
       {usingApproximation && <div className="bg-yellow-50 text-yellow-800 text-xs p-2 text-center border-t border-yellow-200">
-          <span className={useNepaliLanguage ? "nepali-text" : ""}>
+          <span className={useNepaliLanguage ? "font-laila" : ""}>
             {useNepaliLanguage ? 'यो मिति अनुमानित गणनाबाट प्राप्त गरिएको हो।' : 'This calendar data is calculated using approximation.'}
           </span>
         </div>}

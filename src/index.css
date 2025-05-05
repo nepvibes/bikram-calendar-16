@@ -1,6 +1,6 @@
 
 /* Add Font Import */
-@import url('https://fonts.googleapis.com/css2?family=Lohit+Devanagari&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Laila:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -20,8 +20,9 @@ code {
     monospace;
 }
 
-.nepali-text {
-  font-family: 'Lohit Devanagari', sans-serif;
+.nepali-text,
+.font-laila {
+  font-family: 'Laila', sans-serif;
 }
 
 .beautiful-calendar-grid {
