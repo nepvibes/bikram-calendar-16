@@ -1,10 +1,10 @@
-
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
 import { loadEventsForYear } from '../utils/events';
 import { BS_START_YEAR, BS_END_YEAR } from '../utils/bikram';
 import { calculateTithi } from '../utils/tithiCalculation';
+import { getAllEventText, getAllEventDetails } from '../utils/events';
 
 export function useCalendarState() {
   // Today's date in Bikram Sambat
@@ -174,7 +174,7 @@ export function useCalendarState() {
     }
   };
 
-  // Handle date selection
+  // Handle date selection - Updated to properly get event details
   const handleDateSelect = (day: number): void => {
     // Get the English date for the selected day
     const englishDate = new Date(currentView.englishStartDate);
@@ -183,6 +183,38 @@ export function useCalendarState() {
     // Get tithi data for the selected date
     const tithiData = calculateTithi(englishDate);
     
+    // Get the Gregorian date components
+    const gregorianYear = englishDate.getFullYear();
+    const gregorianMonth = englishDate.getMonth() + 1; // JavaScript months are 0-based
+    const gregorianDay = englishDate.getDate();
+    
+    // Get event text and detail from our event data
+    const eventText = getAllEventText(
+      events.bikramFixedEvents,
+      events.gregorianEvents,
+      events.bikramRecurringEvents,
+      currentView.year,
+      currentView.month,
+      day,
+      gregorianYear,
+      gregorianMonth,
+      gregorianDay,
+      useNepaliLanguage
+    );
+    
+    const eventDetail = getAllEventDetails(
+      events.bikramFixedEvents,
+      events.gregorianEvents,
+      events.bikramRecurringEvents,
+      currentView.year,
+      currentView.month,
+      day,
+      gregorianYear,
+      gregorianMonth,
+      gregorianDay,
+      useNepaliLanguage
+    );
+    
     const newSelectedDate: EventModalData = {
       year: currentView.year,
       month: currentView.month,
@@ -190,8 +222,8 @@ export function useCalendarState() {
       englishDate,
       tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
       tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
-      eventText: '',
-      eventDetail: ''
+      eventText,
+      eventDetail
     };
     
     setSelectedDate(newSelectedDate);
