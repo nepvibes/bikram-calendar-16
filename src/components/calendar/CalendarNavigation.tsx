@@ -93,7 +93,7 @@ const CalendarNavigation = ({
               className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
               title={useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
             >
-              <span className="mr-1 text-lg  hover:bg-blue-50 text-blue-700 font-semibold">🗘</span>
+              <span className="mr-1 text-lg  hover:bg-blue-50 text-blue-700 font-semibold">&#128472;</span>
               <span className="hidden sm:inline">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Convert'}</span>
             </Button>
           </DialogTrigger>
