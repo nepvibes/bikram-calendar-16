@@ -1,8 +1,7 @@
-
 import React from 'react';
-import { Calendar as CalIcon, Printer, CalendarDays } from 'lucide-react';
+import { CalendarDays, Printer } from 'lucide-react';
 import { Button } from '../ui/button';
-import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
+import { nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
 import DateConverter from '../DateConverter';
 import LanguageToggle from '../LanguageToggle';
@@ -34,96 +33,87 @@ const CalendarNavigation = ({
   onPrint,
   onToggleLanguage
 }: CalendarNavigationProps) => {
-  // Handle month change with stopPropagation to prevent clicks on calendar days
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
     onMonthChange(e.target.value);
   };
-  
+
   return (
-    <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-1 sm:mb-2 md:mb-4 no-print bg-blue-600 p-2 sm:p-3 rounded-t-lg">
-      {/* Left controls - Year input, Month selection, Today button, Date converter */}
-      <div className="flex flex-wrap items-center gap-2">
+    <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between items-center gap-3 p-3 sm:p-4 bg-blue-600 text-white  shadow-md no-print">
+      {/* Left Controls */}
+      <div className="flex flex-wrap justify-center sm:justify-start items-center gap-3">
         {/* Year Input */}
         <form onSubmit={onYearSubmit} className="flex items-center">
           <input
             type="text"
             value={yearInput}
             onChange={onYearInputChange}
-            className={`h-8 sm:h-9 w-16 sm:w-20 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium shadow-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-300 text-center ${useNepaliLanguage ? "font-laila" : ""}`}
-            aria-label={useNepaliLanguage ? "साल" : "Year"}
             onClick={(e) => e.stopPropagation()}
+            className={`h-9 w-20 rounded-lg border border-gray-300 bg-white text-sm text-center font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none px-3 py-1 text-blue-800 ${useNepaliLanguage ? 'font-laila' : ''}`}
+            aria-label={useNepaliLanguage ? 'साल' : 'Year'}
           />
         </form>
-        
+
         {/* Month Dropdown */}
-        <div 
-          className="relative"
-          onClick={(e) => e.stopPropagation()} 
-          onTouchStart={(e) => e.stopPropagation()}
-        >
-          <select 
-            value={currentMonth} 
-            onChange={handleMonthChange} 
-            className="h-8 sm:h-9 rounded-md border border-gray-300 bg-white text-sm font-medium shadow-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-300 appearance-none pl-3 pr-8 py-0"
-            onClick={(e) => e.stopPropagation()}
-            onTouchStart={(e) => e.stopPropagation()}
+        <div className="relative" onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+          <select
+            value={currentMonth}
+            onChange={handleMonthChange}
+            className="h-9 rounded-lg border border-gray-300 bg-white text-sm font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 px-3 pr-8 text-blue-800 appearance-none"
           >
             {(useNepaliLanguage ? nepaliMonthsNp : nepaliMonthsEn).map((month, idx) => (
-              <option key={idx} value={idx + 1} className={useNepaliLanguage ? "font-laila" : ""}>
+              <option key={idx} value={idx + 1} className={useNepaliLanguage ? 'font-laila' : ''}>
                 {month}
               </option>
             ))}
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-blue-600">
+            <svg className="h-4 w-4 fill-current" viewBox="0 0 20 20">
+              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+            </svg>
           </div>
         </div>
-        
+
         {/* Today Button */}
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={onTodayClick}
+          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg"
         >
-          <CalIcon className="mr-1 h-4 w-4" />
-          <span>{useNepaliLanguage ? 'आज' : 'Today'}</span>
+          {useNepaliLanguage ? 'आज' : 'Today'}
         </Button>
-        
-        {/* Date Converter Dialog */}
+
+        {/* Date Converter */}
         <Dialog>
           <DialogTrigger asChild>
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               size="sm"
-              className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md flex items-center"
-              title={useNepaliLanguage ? "मिति परिवर्तक" : "Date Converter"}
+              className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
+              title={useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
             >
-              <CalendarDays className="mr-1 h-4 w-4" />
+              <span className="mr-1 text-lg  hover:bg-blue-50 text-blue-700 font-semibold">🗘</span>
               <span className="hidden sm:inline">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Convert'}</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] rounded-lg">
+          <DialogContent className="sm:max-w-[500px] rounded-xl">
             <DateConverter useNepaliLanguage={useNepaliLanguage} />
           </DialogContent>
         </Dialog>
       </div>
-      
-      {/* Right controls - Language toggle and Print */}
-      <div className="flex items-center justify-end gap-2">
-        <LanguageToggle 
-          useNepaliLanguage={useNepaliLanguage} 
-          onToggle={onToggleLanguage} 
-        />
-        
-        <Button 
-          variant="outline" 
+
+      {/* Right Controls */}
+      <div className="flex items-center justify-center sm:justify-end gap-3">
+        <LanguageToggle useNepaliLanguage={useNepaliLanguage} onToggle={onToggleLanguage} />
+
+        <Button
+          variant="outline"
           size="sm"
-          className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md"
           onClick={onPrint}
+          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
         >
-          <Printer className="mr-1 h-4 w-4" />
+          <Printer className="h-4 w-4 mr-1" />
           <span className="hidden sm:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
         </Button>
       </div>
