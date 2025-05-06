@@ -9,6 +9,7 @@ import { useCalendarState } from '@/hooks/useCalendarState';
 import { Card } from './ui/card';
 import CalendarHeader from './calendar/CalendarHeader';
 import CalendarNavigation from './calendar/CalendarNavigation';
+import { DialogClose } from './ui/dialog';
 
 const BikramCalendar: React.FC = () => {
   const calendarState = useCalendarState();
@@ -48,6 +49,21 @@ const BikramCalendar: React.FC = () => {
     
     // Update the selected date
     calendarState.setSelectedDate(selectedDate);
+  };
+
+  // Handle date navigation from converter
+  const handleDateNavigate = (year: number, month: number, day: number) => {
+    calendarState.setCurrentView(prev => ({
+      ...prev,
+      year,
+      month
+    }));
+    
+    setTimeout(() => {
+      if (calendarState.handleDateSelect) {
+        calendarState.handleDateSelect(day);
+      }
+    }, 100);
   };
   
   return (

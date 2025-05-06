@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { Calendar as CalIcon, Printer, Languages, CalendarSearch } from 'lucide-react';
+import { Calendar as CalIcon, Printer, CalendarDays } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
 import DateConverter from '../DateConverter';
+import LanguageToggle from '../LanguageToggle';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;
@@ -40,17 +41,33 @@ const CalendarNavigation = ({
   };
   
   return (
-    <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-1 sm:mb-2 md:mb-4 no-print bg-blue-500 p-2 rounded-t-lg">
-      {/* Left controls - Month selection only (removed prev/next buttons) */}
-      <div className="flex items-center gap-1 sm:gap-2">
+    <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-1 sm:mb-2 md:mb-4 no-print bg-blue-600 p-2 sm:p-3 rounded-t-lg">
+      {/* Left controls - Year input, Month selection, Today button, Date converter */}
+      <div className="flex flex-wrap items-center gap-2">
+        {/* Year Input */}
+        <form onSubmit={onYearSubmit} className="flex items-center">
+          <input
+            type="text"
+            value={yearInput}
+            onChange={onYearInputChange}
+            className={`h-8 sm:h-9 w-16 sm:w-20 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium shadow-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-300 text-center ${useNepaliLanguage ? "font-laila" : ""}`}
+            aria-label={useNepaliLanguage ? "साल" : "Year"}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </form>
+        
+        {/* Month Dropdown */}
         <div 
           className="relative"
-          onClick={(e) => e.stopPropagation()} // Stop propagation on the container
+          onClick={(e) => e.stopPropagation()} 
+          onTouchStart={(e) => e.stopPropagation()}
         >
           <select 
             value={currentMonth} 
             onChange={handleMonthChange} 
-            className="h-8 sm:h-9 rounded-md border border-gray-300 bg-white text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 appearance-none pl-3 pr-8 py-0"
+            className="h-8 sm:h-9 rounded-md border border-gray-300 bg-white text-sm font-medium shadow-sm focus:border-blue-300 focus:ring-1 focus:ring-blue-300 appearance-none pl-3 pr-8 py-0"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
           >
             {(useNepaliLanguage ? nepaliMonthsNp : nepaliMonthsEn).map((month, idx) => (
               <option key={idx} value={idx + 1} className={useNepaliLanguage ? "font-laila" : ""}>
@@ -63,33 +80,11 @@ const CalendarNavigation = ({
           </div>
         </div>
         
+        {/* Today Button */}
         <Button 
           variant="outline" 
           size="sm" 
-          className="h-8 sm:h-9 hidden sm:flex bg-white"
-          onClick={onTodayClick}
-        >
-          <CalIcon className="mr-1 h-4 w-4" />
-          <span>{useNepaliLanguage ? 'आज' : 'Today'}</span>
-        </Button>
-      </div>
-      
-      {/* Right controls - Year input, today (on mobile), date converter, print, language */}
-      <div className="flex items-center justify-between sm:justify-end gap-1 sm:gap-2 mt-2 sm:mt-0">
-        <form onSubmit={onYearSubmit} className="flex items-center">
-          <input
-            type="text"
-            value={yearInput}
-            onChange={onYearInputChange}
-            className={`h-8 sm:h-9 w-16 sm:w-20 rounded-md border border-gray-300 bg-white px-3 py-1 text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-center ${useNepaliLanguage ? "font-laila" : ""}`}
-            aria-label={useNepaliLanguage ? "साल" : "Year"}
-          />
-        </form>
-        
-        <Button 
-          variant="outline" 
-          size="sm" 
-          className="h-8 sm:h-9 sm:hidden bg-white"
+          className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md"
           onClick={onTodayClick}
         >
           <CalIcon className="mr-1 h-4 w-4" />
@@ -101,37 +96,35 @@ const CalendarNavigation = ({
           <DialogTrigger asChild>
             <Button 
               variant="outline" 
-              size="icon" 
-              className="h-8 w-8 sm:h-9 sm:w-9 bg-white"
+              size="sm"
+              className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md flex items-center"
               title={useNepaliLanguage ? "मिति परिवर्तक" : "Date Converter"}
             >
-              <CalendarSearch className="h-4 w-4 sm:h-5 sm:w-5" />
-              <span className="sr-only">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}</span>
+              <CalendarDays className="mr-1 h-4 w-4" />
+              <span className="hidden sm:inline">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Convert'}</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px]">
+          <DialogContent className="sm:max-w-[500px] rounded-lg">
             <DateConverter useNepaliLanguage={useNepaliLanguage} />
           </DialogContent>
         </Dialog>
+      </div>
+      
+      {/* Right controls - Language toggle and Print */}
+      <div className="flex items-center justify-end gap-2">
+        <LanguageToggle 
+          useNepaliLanguage={useNepaliLanguage} 
+          onToggle={onToggleLanguage} 
+        />
         
         <Button 
           variant="outline" 
-          size="icon" 
-          className="h-8 w-8 sm:h-9 sm:w-9 bg-white"
+          size="sm"
+          className="h-8 sm:h-9 bg-white hover:bg-blue-50 text-blue-700 rounded-md"
           onClick={onPrint}
         >
-          <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="sr-only">{useNepaliLanguage ? 'प्रिन्ट गर्नुहोस्' : 'Print'}</span>
-        </Button>
-        
-        <Button 
-          variant={useNepaliLanguage ? "default" : "outline"} 
-          size="icon" 
-          className={`h-8 w-8 sm:h-9 sm:w-9 ${!useNepaliLanguage ? "bg-white" : ""}`}
-          onClick={onToggleLanguage}
-        >
-          <Languages className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="sr-only">{useNepaliLanguage ? 'Switch to English' : 'नेपालीमा हेर्नुहोस्'}</span>
+          <Printer className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>
         </Button>
       </div>
     </div>
