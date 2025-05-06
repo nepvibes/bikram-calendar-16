@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { BikramDateObj, convertToBikram, convertToEnglish, getToday, nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '../utils/bikramConverter';
+import { DialogTitle, DialogDescription } from './ui/dialog';
 
 interface DateConverterProps {
   useNepaliLanguage: boolean;
@@ -38,10 +39,13 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage }) => {
   };
 
   return (
-    <div className="mt-8 p-4 border border-nepali-yellow/30 rounded-lg bg-white/50">
-      <h3 className="text-lg font-bold mb-4">
+    <div className="p-2">
+      <DialogTitle className="text-xl font-bold mb-2">
         {useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
-      </h3>
+      </DialogTitle>
+      <DialogDescription className="mb-4">
+        {useNepaliLanguage ? 'बिक्रम सम्वत र ग्रेगोरियन बीच मिति परिवर्तन गर्नुहोस्।' : 'Convert dates between Bikram Sambat and Gregorian calendars.'}
+      </DialogDescription>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Bikram Date Inputs */}
@@ -119,8 +123,8 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage }) => {
       </div>
 
       {/* Display Result */}
-      <div className="mt-4 p-2 bg-nepali-yellow/10 border border-nepali-yellow/20 rounded text-center">
-        <p>
+      <div className="mt-4 p-3 bg-blue-50 border border-blue-100 rounded text-center">
+        <p className="text-blue-800 font-medium">
           {useNepaliLanguage ? 
             `${getNepaliDigits(bikramDate.day)} ${nepaliMonthsNp[bikramDate.month - 1]} ${getNepaliDigits(bikramDate.year)} बि.सं. = ${englishDate.toLocaleDateString()}` :
             `${bikramDate.day} ${nepaliMonthsEn[bikramDate.month - 1]} ${bikramDate.year} BS = ${englishDate.toLocaleDateString()}`}

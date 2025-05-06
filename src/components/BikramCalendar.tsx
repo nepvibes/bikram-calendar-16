@@ -74,7 +74,6 @@ const BikramCalendar: React.FC = () => {
           onYearSubmit={calendarState.handleYearSubmit}
           onPrint={handlePrint}
           onToggleLanguage={calendarState.toggleLanguage}
-          onEnglishDateSelect={calendarState.handleEnglishDateSelect}
         />
         
         {/* Calendar Grid */}

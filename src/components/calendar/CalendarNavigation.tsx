@@ -1,8 +1,10 @@
 
 import React from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalIcon, Printer, Languages } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Calendar as CalIcon, Printer, Languages, CalendarSearch } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
+import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
+import DateConverter from '../DateConverter';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;
@@ -16,7 +18,6 @@ interface CalendarNavigationProps {
   onYearSubmit: (e: React.FormEvent) => void;
   onPrint: () => void;
   onToggleLanguage: () => void;
-  onEnglishDateSelect?: (date: Date) => void;
 }
 
 const CalendarNavigation = ({
@@ -93,7 +94,7 @@ const CalendarNavigation = ({
         </Button>
       </div>
       
-      {/* Right controls - Year input, today (on mobile), print, language */}
+      {/* Right controls - Year input, today (on mobile), date converter, print, language */}
       <div className="flex items-center justify-between sm:justify-end gap-1 sm:gap-2 mt-2 sm:mt-0">
         <form onSubmit={onYearSubmit} className="flex items-center">
           <input
@@ -114,6 +115,24 @@ const CalendarNavigation = ({
           <CalIcon className="mr-1 h-4 w-4" />
           <span>{useNepaliLanguage ? 'आज' : 'Today'}</span>
         </Button>
+        
+        {/* Date Converter Dialog */}
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button 
+              variant="outline" 
+              size="icon" 
+              className="h-8 w-8 sm:h-9 sm:w-9"
+              title={useNepaliLanguage ? "मिति परिवर्तक" : "Date Converter"}
+            >
+              <CalendarSearch className="h-4 w-4 sm:h-5 sm:w-5" />
+              <span className="sr-only">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-[500px]">
+            <DateConverter useNepaliLanguage={useNepaliLanguage} />
+          </DialogContent>
+        </Dialog>
         
         <Button 
           variant="outline" 
