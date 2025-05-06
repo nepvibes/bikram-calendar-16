@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ChevronLeft, ChevronRight, Calendar as CalIcon, Printer, Languages, CalendarSearch } from 'lucide-react';
+import { Calendar as CalIcon, Printer, Languages, CalendarSearch } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
@@ -40,19 +40,9 @@ const CalendarNavigation = ({
   };
   
   return (
-    <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-1 sm:mb-2 md:mb-4 no-print">
-      {/* Left controls - Month selection and navigation */}
+    <div className="flex flex-col sm:flex-row gap-2 sm:items-center justify-between mb-1 sm:mb-2 md:mb-4 no-print bg-blue-500 p-2 rounded-t-lg">
+      {/* Left controls - Month selection only (removed prev/next buttons) */}
       <div className="flex items-center gap-1 sm:gap-2">
-        <Button 
-          variant="outline" 
-          size="icon" 
-          className="h-8 w-8 sm:h-9 sm:w-9"
-          onClick={onPrevMonth}
-        >
-          <ChevronLeft className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="sr-only">Previous Month</span>
-        </Button>
-        
         <div 
           className="relative"
           onClick={(e) => e.stopPropagation()} // Stop propagation on the container
@@ -75,18 +65,8 @@ const CalendarNavigation = ({
         
         <Button 
           variant="outline" 
-          size="icon" 
-          className="h-8 w-8 sm:h-9 sm:w-9"
-          onClick={onNextMonth}
-        >
-          <ChevronRight className="h-4 w-4 sm:h-5 sm:w-5" />
-          <span className="sr-only">Next Month</span>
-        </Button>
-        
-        <Button 
-          variant="outline" 
           size="sm" 
-          className="h-8 sm:h-9 hidden sm:flex"
+          className="h-8 sm:h-9 hidden sm:flex bg-white"
           onClick={onTodayClick}
         >
           <CalIcon className="mr-1 h-4 w-4" />
@@ -109,7 +89,7 @@ const CalendarNavigation = ({
         <Button 
           variant="outline" 
           size="sm" 
-          className="h-8 sm:h-9 sm:hidden"
+          className="h-8 sm:h-9 sm:hidden bg-white"
           onClick={onTodayClick}
         >
           <CalIcon className="mr-1 h-4 w-4" />
@@ -122,7 +102,7 @@ const CalendarNavigation = ({
             <Button 
               variant="outline" 
               size="icon" 
-              className="h-8 w-8 sm:h-9 sm:w-9"
+              className="h-8 w-8 sm:h-9 sm:w-9 bg-white"
               title={useNepaliLanguage ? "मिति परिवर्तक" : "Date Converter"}
             >
               <CalendarSearch className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -137,7 +117,7 @@ const CalendarNavigation = ({
         <Button 
           variant="outline" 
           size="icon" 
-          className="h-8 w-8 sm:h-9 sm:w-9"
+          className="h-8 w-8 sm:h-9 sm:w-9 bg-white"
           onClick={onPrint}
         >
           <Printer className="h-4 w-4 sm:h-5 sm:w-5" />
@@ -147,7 +127,7 @@ const CalendarNavigation = ({
         <Button 
           variant={useNepaliLanguage ? "default" : "outline"} 
           size="icon" 
-          className="h-8 w-8 sm:h-9 sm:w-9"
+          className={`h-8 w-8 sm:h-9 sm:w-9 ${!useNepaliLanguage ? "bg-white" : ""}`}
           onClick={onToggleLanguage}
         >
           <Languages className="h-4 w-4 sm:h-5 sm:w-5" />
