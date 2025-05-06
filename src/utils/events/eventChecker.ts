@@ -95,7 +95,7 @@ export function isHoliday(
     });
   }
   
-  // If not found in gregorian events, check bikram recurring events
+  // If not found in bikram recurring events, check bikram recurring events
   if (!holiday) {
     bikramRecurringEvents.forEach(event => {
       if ((event.startYear && bikramYear < event.startYear) || 

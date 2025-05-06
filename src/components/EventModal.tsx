@@ -24,7 +24,10 @@ const EventModal: React.FC<EventModalProps> = ({
     }
   }, [isOpen]);
 
-  const bikramDateFormatted = useNepaliLanguage ? `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}` : `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
+  const bikramDateFormatted = useNepaliLanguage ? 
+    `${getNepaliDigits(eventData.day)} ${nepaliMonthsNp[eventData.month - 1]} ${getNepaliDigits(eventData.year)}` : 
+    `${eventData.day} ${nepaliMonthsEn[eventData.month - 1]} ${eventData.year}`;
+  
   const gregorianDateFormatted = format(eventData.englishDate, 'PPP');
   const weekday = format(eventData.englishDate, 'EEEE');
 
@@ -33,7 +36,8 @@ const EventModal: React.FC<EventModalProps> = ({
     setTimeout(onClose, 300); // Wait for exit animation
   };
 
-  return <Dialog open={isOpen} onOpenChange={() => handleClose()}>
+  return (
+    <Dialog open={isOpen} onOpenChange={() => handleClose()}>
       <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0">
         <div className={`bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           <DialogTitle className="text-center">
@@ -87,7 +91,8 @@ const EventModal: React.FC<EventModalProps> = ({
           </div>
         </DialogFooter>
       </DialogContent>
-    </Dialog>;
+    </Dialog>
+  );
 };
 
 export default EventModal;

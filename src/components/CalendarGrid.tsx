@@ -2,7 +2,7 @@ import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
 import { CalendarEvent } from '../types/events';
-import { hasEvents, getAllEventText, isHoliday } from '../utils/events';
+import { hasEvents, getAllEventText, getAllEventDetails, isHoliday } from '../utils/events';
 
 interface CalendarGridProps {
   year: number;
@@ -37,6 +37,7 @@ interface CalendarGridProps {
   }) => void;
   usingApproximation?: boolean;
 }
+
 const CalendarGrid: React.FC<CalendarGridProps> = ({
   year,
   month,
@@ -111,80 +112,95 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       pakshaEn: tithiData.pakshaEn
     };
   };
-  return <div className="beautiful-calendar-grid overflow-hidden  shadow-md">
+  
+  return (
+    <div className="beautiful-calendar-grid overflow-hidden shadow-md">
       {/* Days of week header */}
-      <div className="grid grid-cols-7  overflow-hidden">
-        {weekDays.map((day, idx) => <div key={idx} className={`text-center py-1 sm:py-2 px-1 font-bold text-xs sm:text-sm ${idx === 0 ? 'bg-blue-800 text-white' : idx === 6 ? 'bg-red-700 text-white' : 'bg-blue-700 text-white'}`}>
+      <div className="grid grid-cols-7 overflow-hidden">
+        {weekDays.map((day, idx) => (
+          <div key={idx} className={`text-center py-1 sm:py-2 px-1 font-bold text-xs sm:text-sm ${idx === 0 ? 'bg-blue-800 text-white' : idx === 6 ? 'bg-red-700 text-white' : 'bg-blue-700 text-white'}`}>
             <span className={useNepaliLanguage ? "font-laila" : ""}>
               {day}
             </span>
             <div className="text-[7px] sm:text-xs font-normal hidden sm:block">
               {useNepaliLanguage ? '' : idx === 0 ? 'Sunday' : idx === 1 ? 'Monday' : idx === 2 ? 'Tuesday' : idx === 3 ? 'Wednesday' : idx === 4 ? 'Thursday' : idx === 5 ? 'Friday' : 'Saturday'}
             </div>
-          </div>)}
+          </div>
+        ))}
       </div>
       
       {/* Calendar grid */}
       <div className="bg-white grid grid-cols-7 divide-x divide-y divide-gray-300">
-        {weeks.map((week, weekIdx) => <React.Fragment key={weekIdx}>
+        {weeks.map((week, weekIdx) => (
+          <React.Fragment key={weekIdx}>
             {week.map((day, dayIdx) => {
-          // Check if this is current day, selected day
-          const isCurrentDay = currentDate && day === currentDate.day && month === currentDate.month && year === currentDate.year;
-          const isSelectedDay = selectedDate && day === selectedDate.day && month === selectedDate.month && year === selectedDate.year;
+              // Check if this is current day, selected day
+              const isCurrentDay = currentDate && day === currentDate.day && month === currentDate.month && year === currentDate.year;
+              const isSelectedDay = selectedDate && day === selectedDate.day && month === selectedDate.month && year === selectedDate.year;
 
-          // Whether it's a weekend (Saturday or Sunday)
-          const isSaturday = dayIdx === 6;
-          const isSunday = dayIdx === 0;
-          if (day === null) {
-            return <div key={dayIdx} className="min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 bg-gray-100"></div>;
-          }
+              // Whether it's a weekend (Saturday or Sunday)
+              const isSaturday = dayIdx === 6;
+              const isSunday = dayIdx === 0;
+              
+              if (day === null) {
+                return <div key={dayIdx} className="min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 bg-gray-100"></div>;
+              }
 
-          // Get English date for this day
-          const englishDate = getEnglishDate(day);
-          const englishDay = englishDate.getDate();
-          const englishMonth = englishDate.getMonth() + 1;
-          const englishYear = englishDate.getFullYear();
+              // Get English date for this day
+              const englishDate = getEnglishDate(day);
+              const englishDay = englishDate.getDate();
+              const englishMonth = englishDate.getMonth() + 1;
+              const englishYear = englishDate.getFullYear();
 
-          // Get tithi for this day
-          const tithi = getTithiForDay(day);
+              // Get tithi for this day
+              const tithi = getTithiForDay(day);
 
-          // Format English date
-          const englishDateStr = englishDate.getDate() === 1 ? englishDate.toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric'
-          }) : englishDate.getDate().toString();
+              // Format English date
+              const englishDateStr = englishDate.getDate() === 1 ? englishDate.toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+              }) : englishDate.getDate().toString();
 
-          // Check for events
-          const dayHasEvents = hasEvents(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
+              // Check for events
+              const dayHasEvents = hasEvents(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
 
-          // Check if this day is a holiday
-          const dayIsHoliday = isHoliday(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
+              // Check if this day is a holiday
+              const dayIsHoliday = isHoliday(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
 
-          // Get event text if there's an event
-          const eventText = dayHasEvents ? getAllEventText(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
+              // Get event text if there's an event
+              const eventText = dayHasEvents ? getAllEventText(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
+              
+              // Get event detail if there's an event
+              const eventDetail = dayHasEvents ? getAllEventDetails(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
 
-          // Special rendering for purnima and amavasya
-          const isPurnima = tithi.nameEn === 'Purnima';
-          const isAmavasya = tithi.nameEn === 'Amavasya';
-          const specialTithi = isPurnima || isAmavasya;
-          return <div key={dayIdx} className={`min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 
+              // Special rendering for purnima and amavasya
+              const isPurnima = tithi.nameEn === 'Purnima';
+              const isAmavasya = tithi.nameEn === 'Amavasya';
+              const specialTithi = isPurnima || isAmavasya;
+              
+              return (
+                <div 
+                  key={dayIdx} 
+                  className={`min-h-[50px] sm:min-h-[80px] relative p-0 sm:p-0.5 md:p-1 
                     cursor-pointer hover:bg-gray-50 beautiful-calendar-day
                     ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''} 
-                    ${isCurrentDay ? 'bg-yellow-50' : ''}`} onClick={() => {
-            onDateSelect(day);
+                    ${isCurrentDay ? 'bg-yellow-50' : ''}`} 
+                  onClick={() => {
+                    onDateSelect(day);
 
-            // If there's an event and onEventClick handler
-            if (dayHasEvents && onEventClick) {
-              onEventClick({
-                day,
-                tithiName: useNepaliLanguage ? tithi.name : tithi.nameEn,
-                tithiPaksha: useNepaliLanguage ? tithi.paksha : tithi.pakshaEn,
-                englishDate: englishDate,
-                eventText,
-                eventDetail: dayHasEvents ? getAllEventText(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay) : ''
-              });
-            }
-          }}>
+                    // If there's an event and onEventClick handler
+                    if (dayHasEvents && onEventClick) {
+                      onEventClick({
+                        day,
+                        tithiName: useNepaliLanguage ? tithi.name : tithi.nameEn,
+                        tithiPaksha: useNepaliLanguage ? tithi.paksha : tithi.pakshaEn,
+                        englishDate: englishDate,
+                        eventText,
+                        eventDetail
+                      });
+                    }
+                  }}
+                >
                   <div className="h-full relative rounded-none">
                     <div className={`flex justify-between ${isSelectedDay ? 'bg-yellow-100 rounded-sm' : ''}`}>
                       <div className="flex flex-col items-start p-0.5 sm:p-1">
@@ -204,37 +220,49 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                     </div>
                     
                     {/* Event display */}
-                    {dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-xs text-red-800 rounded-sm mt-0.5 block truncate w-full text-center px-0 py-0 my-0 bg-rose-50">
+                    {dayHasEvents && (
+                      <div className="text-[7px] sm:text-[8px] md:text-xs text-red-800 rounded-sm mt-0.5 block truncate w-full text-center px-0 py-0 my-0 bg-rose-50">
                         <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {eventText}
                         </span>
-                      </div>}
+                      </div>
+                    )}
                     
                     {/* Special tithi display (purnima/amavasya) */}
-                    {specialTithi && !dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 text-yellow-800 rounded-sm mt-0.5 block truncate w-full text-center bg-transparent">
+                    {specialTithi && !dayHasEvents && (
+                      <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 text-yellow-800 rounded-sm mt-0.5 block truncate w-full text-center bg-transparent">
                         <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {useNepaliLanguage ? tithi.name : tithi.nameEn}
                         </span>
-                      </div>}
+                      </div>
+                    )}
                     
                     {/* Regular tithi display */}
-                    {!specialTithi && !dayHasEvents && <div className="text-[7px] sm:text-[8px] md:text-[10px] text-blue-600 mt-0.5 px-1">
+                    {!specialTithi && !dayHasEvents && (
+                      <div className="text-[7px] sm:text-[8px] md:text-[10px] text-blue-600 mt-0.5 px-1">
                         <span className={useNepaliLanguage ? "font-laila" : ""}>
                           {useNepaliLanguage ? tithi.name : tithi.nameEn}
                         </span>
-                      </div>}
+                      </div>
+                    )}
                   </div>
-                </div>;
-        })}
-          </React.Fragment>)}
+                </div>
+              );
+            })}
+          </React.Fragment>
+        ))}
       </div>
       
       {/* Approximation notice */}
-      {usingApproximation && <div className="bg-yellow-50 text-yellow-800 text-xs p-2 text-center border-t border-yellow-200">
+      {usingApproximation && (
+        <div className="bg-yellow-50 text-yellow-800 text-xs p-2 text-center border-t border-yellow-200">
           <span className={useNepaliLanguage ? "font-laila" : ""}>
             {useNepaliLanguage ? 'यो मिति अनुमानित गणनाबाट प्राप्त गरिएको हो।' : 'This calendar data is calculated using approximation.'}
           </span>
-        </div>}
-    </div>;
+        </div>
+      )}
+    </div>
+  );
 };
+
 export default CalendarGrid;

@@ -24,16 +24,18 @@ export function getEventText(
       const [eventYear, eventMonth, eventDay] = event.date.split('/').map(Number);
       if (year === eventYear && month === eventMonth && day === eventDay) {
         eventText += useNepaliLanguage ? event.event : (event.eventEn || event.event);
+        eventText += ' ';
       }
     } else if (dateType === 'gregorian' || dateType === 'recurring') {
       const [eventMonth, eventDay] = event.date.split('/').map(Number);
       if (month === eventMonth && day === eventDay) {
         eventText += useNepaliLanguage ? event.event : (event.eventEn || event.event);
+        eventText += ' ';
       }
     }
   });
   
-  return eventText;
+  return eventText.trim();
 }
 
 // Function to get event detail for a date
@@ -57,17 +59,25 @@ export function getEventDetail(
     if (dateType === 'bikram') {
       const [eventYear, eventMonth, eventDay] = event.date.split('/').map(Number);
       if (year === eventYear && month === eventMonth && day === eventDay) {
-        eventDetail += useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
+        const detail = useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
+        if (detail) {
+          eventDetail += detail;
+          eventDetail += ' ';
+        }
       }
     } else if (dateType === 'gregorian' || dateType === 'recurring') {
       const [eventMonth, eventDay] = event.date.split('/').map(Number);
       if (month === eventMonth && day === eventDay) {
-        eventDetail += useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
+        const detail = useNepaliLanguage ? event.detail : (event.detailEn || event.detail);
+        if (detail) {
+          eventDetail += detail;
+          eventDetail += ' ';
+        }
       }
     }
   });
   
-  return eventDetail;
+  return eventDetail.trim();
 }
 
 // Function to get all event text for a date (across all event types)
@@ -83,12 +93,13 @@ export function getAllEventText(
   gregorianDay: number,
   useNepaliLanguage: boolean = true
 ): string {
-  let eventText = 
-    getEventText(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage) ||
-    getEventText(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage) ||
-    getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage);
+  const texts = [
+    getEventText(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage),
+    getEventText(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage),
+    getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage)
+  ].filter(text => text.length > 0);
   
-  return eventText;
+  return texts.join(', ');
 }
 
 // Function to get all event details for a date (across all event types)
@@ -104,10 +115,11 @@ export function getAllEventDetails(
   gregorianDay: number,
   useNepaliLanguage: boolean = true
 ): string {
-  let eventDetail = 
-    getEventDetail(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage) ||
-    getEventDetail(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage) ||
-    getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage);
+  const details = [
+    getEventDetail(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage),
+    getEventDetail(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage),
+    getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage)
+  ].filter(detail => detail.length > 0);
   
-  return eventDetail;
+  return details.join('\n\n');
 }
