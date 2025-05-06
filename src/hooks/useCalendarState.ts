@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
+import { CalendarEvent } from '../types/events';
 import { loadEventsForYear } from '../utils/events';
 import { BS_START_YEAR, BS_END_YEAR } from '../utils/bikram';
 import { calculateTithi } from '../utils/tithiCalculation';
@@ -24,15 +25,16 @@ export function useCalendarState() {
   // Custom year input
   const [yearInput, setYearInput] = useState<string>(useNepaliLanguage ? getNepaliDigits(today.year) : today.year.toString());
 
-  // Event data
-  const [events, setEvents] = useState<{
-    bikramFixedEvents: any[];
-    gregorianEvents: any[];
-    bikramRecurringEvents: any[];
-  }>({
+  interface EventsState {
+    bikramFixedEvents: CalendarEvent[];
+    gregorianEvents: CalendarEvent[];
+    bikramRecurringEvents: CalendarEvent[];
+  }
+  
+  const [events, setEvents] = useState<EventsState>({
     bikramFixedEvents: [],
     gregorianEvents: [],
-    bikramRecurringEvents: []
+    bikramRecurringEvents: [],
   });
 
   // Event modal state
