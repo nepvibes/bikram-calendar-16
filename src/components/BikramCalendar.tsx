@@ -4,7 +4,7 @@ import { EventData } from '@/types/events';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
 import EventModal from './EventModal';
-import UpcomingEvents from './UpcomingEvents';
+import UpcomingEvents from './upcoming-events';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { Card } from './ui/card';
 import CalendarHeader from './calendar/CalendarHeader';
