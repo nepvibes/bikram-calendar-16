@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
@@ -160,6 +159,13 @@ export function useCalendarState() {
     selectedDateObj.englishDate.setDate(currentView.englishStartDate.getDate() + (day - 1));
     setSelectedDate(selectedDateObj);
 
+    // Get English date for this day
+    const englishDate = new Date(currentView.englishStartDate);
+    englishDate.setDate(currentView.englishStartDate.getDate() + (day - 1));
+    
+    // Get tithi for this day
+    const tithiData = calculateTithi(englishDate);
+    
     // Check for events
     const hasEvents = events.bikramFixedEvents.some(event => {
       if (event.date === `${currentView.year}/${currentView.month}/${day}`) {
@@ -177,57 +183,47 @@ export function useCalendarState() {
       return false;
     });
 
-    // If the day has events, show event modal
-    if (hasEvents) {
-      // Get English date for this day
-      const englishDate = new Date(currentView.englishStartDate);
-      englishDate.setDate(currentView.englishStartDate.getDate() + (day - 1));
-      
-      // Get tithi for this day
-      const tithiData = calculateTithi(englishDate);
-      
-      // Get event text
-      const eventText = getAllEventText(
-        events.bikramFixedEvents,
-        events.gregorianEvents,
-        events.bikramRecurringEvents,
-        currentView.year,
-        currentView.month,
-        day,
-        englishDate.getFullYear(),
-        englishDate.getMonth() + 1,
-        englishDate.getDate(),
-        useNepaliLanguage
-      );
-      
-      // Get event detail
-      const eventDetail = getAllEventDetails(
-        events.bikramFixedEvents,
-        events.gregorianEvents,
-        events.bikramRecurringEvents,
-        currentView.year,
-        currentView.month,
-        day,
-        englishDate.getFullYear(),
-        englishDate.getMonth() + 1,
-        englishDate.getDate()
-      );
-      
-      // Set event modal data
-      setEventModalData({
-        day,
-        year: currentView.year,
-        month: currentView.month,
-        tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
-        tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
-        englishDate,
-        eventText,
-        eventDetail
-      });
-      
-      // Open event modal
-      setEventModalOpen(true);
-    }
+    // Get event text (empty if no events)
+    const eventText = hasEvents ? getAllEventText(
+      events.bikramFixedEvents,
+      events.gregorianEvents,
+      events.bikramRecurringEvents,
+      currentView.year,
+      currentView.month,
+      day,
+      englishDate.getFullYear(),
+      englishDate.getMonth() + 1,
+      englishDate.getDate(),
+      useNepaliLanguage
+    ) : '';
+    
+    // Get event detail (empty if no events)
+    const eventDetail = hasEvents ? getAllEventDetails(
+      events.bikramFixedEvents,
+      events.gregorianEvents,
+      events.bikramRecurringEvents,
+      currentView.year,
+      currentView.month,
+      day,
+      englishDate.getFullYear(),
+      englishDate.getMonth() + 1,
+      englishDate.getDate()
+    ) : '';
+    
+    // Set event modal data for all days, not just those with events
+    setEventModalData({
+      day,
+      year: currentView.year,
+      month: currentView.month,
+      tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
+      tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
+      englishDate,
+      eventText,
+      eventDetail
+    });
+    
+    // Always open the event modal, even if there are no events
+    setEventModalOpen(true);
   };
 
   // Toggle language

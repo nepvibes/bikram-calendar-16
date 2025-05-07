@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
@@ -102,9 +103,9 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       englishDate.getDate()
     );
 
-    // If there's an event and onEventClick handler
-    if (dayHasEvents && onEventClick) {
-      const eventText = getAllEventText(
+    // Always call onEventClick for any day, whether it has events or not
+    if (onEventClick) {
+      const eventText = dayHasEvents ? getAllEventText(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,
@@ -113,9 +114,9 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         englishDate.getMonth() + 1,
         englishDate.getDate(),
         useNepaliLanguage
-      );
+      ) : '';
       
-      const eventDetail = getAllEventDetails(
+      const eventDetail = dayHasEvents ? getAllEventDetails(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,
@@ -124,7 +125,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
         englishDate.getMonth() + 1,
         englishDate.getDate(),
         useNepaliLanguage
-      );
+      ) : '';
       
       onEventClick({
         day,
