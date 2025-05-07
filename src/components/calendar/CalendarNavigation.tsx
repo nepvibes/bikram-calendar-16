@@ -3,7 +3,7 @@ import React from 'react';
 import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
-import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
+import { Dialog, DialogTrigger, DialogContent, DialogClose } from '../ui/dialog';
 import DateConverter from '../DateConverter';
 import LanguageToggle from '../LanguageToggle';
 
@@ -108,11 +108,15 @@ const CalendarNavigation = ({
                 window.dispatchEvent(event);
                 
                 // Close the dialog
-                document.querySelector('.dialog-close-button')?.dispatchEvent(
-                  new MouseEvent('click', { bubbles: true })
-                );
+                const closeButton = document.querySelector('[data-state="open"][aria-label="Close"]');
+                if (closeButton) {
+                  (closeButton as HTMLButtonElement).click();
+                }
               }}
             />
+            <DialogClose className="dialog-close-button absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <span className="sr-only">Close</span>
+            </DialogClose>
           </DialogContent>
         </Dialog>
       </div>

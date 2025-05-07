@@ -75,6 +75,68 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     daysArray.push(null);
   }
 
+  // Function to handle the day click
+  const handleDayClick = (day: number | null, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (day === null) return;
+    
+    console.log("Day clicked:", day);
+    onDateSelect(day);
+
+    // Get English date for this day
+    const englishDate = getEnglishDate(day);
+    
+    // Get tithi for this day
+    const tithi = getTithiForDay(day);
+    
+    // Check for events
+    const dayHasEvents = hasEvents(
+      events.bikramFixedEvents, 
+      events.gregorianEvents, 
+      events.bikramRecurringEvents, 
+      year, month, day, 
+      englishDate.getFullYear(), 
+      englishDate.getMonth() + 1, 
+      englishDate.getDate()
+    );
+
+    // If there's an event and onEventClick handler
+    if (dayHasEvents && onEventClick) {
+      const eventText = getAllEventText(
+        events.bikramFixedEvents,
+        events.gregorianEvents,
+        events.bikramRecurringEvents,
+        year, month, day,
+        englishDate.getFullYear(),
+        englishDate.getMonth() + 1,
+        englishDate.getDate(),
+        useNepaliLanguage
+      );
+      
+      const eventDetail = getAllEventDetails(
+        events.bikramFixedEvents,
+        events.gregorianEvents,
+        events.bikramRecurringEvents,
+        year, month, day,
+        englishDate.getFullYear(),
+        englishDate.getMonth() + 1,
+        englishDate.getDate(),
+        useNepaliLanguage
+      );
+      
+      onEventClick({
+        day,
+        tithiName: useNepaliLanguage ? tithi.name : tithi.nameEn,
+        tithiPaksha: useNepaliLanguage ? tithi.paksha : tithi.pakshaEn,
+        englishDate,
+        eventText,
+        eventDetail
+      });
+    }
+  };
+
   // Split into weeks
   const weeks = [];
   for (let i = 0; i < daysArray.length; i += 7) {
@@ -185,19 +247,13 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                     cursor-pointer hover:bg-gray-50 beautiful-calendar-day
                     ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''} 
                     ${isCurrentDay ? 'bg-yellow-50' : ''}`} 
-                  onClick={() => {
-                    onDateSelect(day);
-
-                    // If there's an event and onEventClick handler
-                    if (dayHasEvents && onEventClick) {
-                      onEventClick({
-                        day,
-                        tithiName: useNepaliLanguage ? tithi.name : tithi.nameEn,
-                        tithiPaksha: useNepaliLanguage ? tithi.paksha : tithi.pakshaEn,
-                        englishDate: englishDate,
-                        eventText,
-                        eventDetail
-                      });
+                  onClick={(e) => handleDayClick(day, e)}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Day ${day}`}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      handleDayClick(day, e as unknown as React.MouseEvent);
                     }
                   }}
                 >
