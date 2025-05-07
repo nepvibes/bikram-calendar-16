@@ -75,6 +75,7 @@ export default {
 				'devanagari': ['"Lohit Devanagari"', 'sans-serif'],
 				'laila': ['"Laila"', 'sans-serif'],
 				'nepali': ['"Laila"', 'sans-serif'],
+				'mukta-mahi': ['"Mukta Mahi"', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

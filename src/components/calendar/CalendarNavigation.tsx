@@ -40,7 +40,7 @@ const CalendarNavigation = ({
   };
 
   return (
-    <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between items-center gap-3 p-3 sm:p-4 bg-blue-600 text-white  shadow-md no-print">
+    <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between items-center gap-3 p-3 sm:p-4 bg-blue-600 text-white shadow-md no-print font-mukta-mahi">
       {/* Left Controls */}
       <div className="flex flex-wrap justify-center sm:justify-start items-center gap-3">
         {/* Year Input */}
@@ -50,7 +50,7 @@ const CalendarNavigation = ({
             value={yearInput}
             onChange={onYearInputChange}
             onClick={(e) => e.stopPropagation()}
-            className={`h-9 w-20 rounded-lg border border-gray-300 bg-white text-sm text-center font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none px-3 py-1 text-blue-800 ${useNepaliLanguage ? 'font-laila' : ''}`}
+            className={`h-9 w-20 rounded-xl border border-gray-300 bg-white text-sm text-center font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none px-3 py-1 text-blue-800 ${useNepaliLanguage ? 'font-mukta-mahi' : 'font-mukta-mahi'}`}
             aria-label={useNepaliLanguage ? 'साल' : 'Year'}
           />
         </form>
@@ -60,10 +60,10 @@ const CalendarNavigation = ({
           <select
             value={currentMonth}
             onChange={handleMonthChange}
-            className="h-9 rounded-lg border border-gray-300 bg-white text-sm font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 px-3 pr-8 text-blue-800 appearance-none"
+            className="h-9 rounded-xl border border-gray-300 bg-white text-sm font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 px-3 pr-8 text-blue-800 appearance-none font-mukta-mahi"
           >
             {(useNepaliLanguage ? nepaliMonthsNp : nepaliMonthsEn).map((month, idx) => (
-              <option key={idx} value={idx + 1} className={useNepaliLanguage ? 'font-laila' : ''}>
+              <option key={idx} value={idx + 1} className="font-mukta-mahi">
                 {month}
               </option>
             ))}
@@ -80,7 +80,7 @@ const CalendarNavigation = ({
           variant="outline"
           size="sm"
           onClick={onTodayClick}
-          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg"
+          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl font-mukta-mahi"
         >
           {useNepaliLanguage ? 'आज' : 'Today'}
         </Button>
@@ -91,7 +91,7 @@ const CalendarNavigation = ({
             <Button
               variant="outline"
               size="sm"
-              className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
+              className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl flex items-center font-mukta-mahi"
               title={useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
             >
               <RefreshCw className="mr-1 h-4 w-4 text-blue-700" />
@@ -114,9 +114,6 @@ const CalendarNavigation = ({
                 }
               }}
             />
-            <DialogClose className="dialog-close-button absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-              <span className="sr-only">Close</span>
-            </DialogClose>
           </DialogContent>
         </Dialog>
       </div>
@@ -129,7 +126,7 @@ const CalendarNavigation = ({
           variant="outline"
           size="sm"
           onClick={onPrint}
-          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
+          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl flex items-center font-mukta-mahi"
         >
           <Printer className="h-4 w-4 mr-1" />
           <span className="hidden sm:inline">{useNepaliLanguage ? 'प्रिन्ट' : 'Print'}</span>

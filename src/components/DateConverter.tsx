@@ -9,7 +9,7 @@ import {
   nepaliMonthsNp,
   getNepaliDigits,
 } from '../utils/bikramConverter';
-import { DialogTitle, DialogDescription, DialogClose } from './ui/dialog';
+import { DialogTitle, DialogDescription } from './ui/dialog';
 import { Button } from './ui/button';
 import { Calendar, X } from 'lucide-react';
 
@@ -55,7 +55,7 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
   const formatDay = (day: number) => useNepaliLanguage ? getNepaliDigits(day) : day;
 
   return (
-    <div className="bg-gradient-to-b from-blue-50 to-white">
+    <div className="bg-gradient-to-b from-blue-50 to-white font-mukta-mahi">
       {/* Header with close button */}
       <div className="bg-gradient-to-r from-blue-700 to-blue-600 px-4 py-3 rounded-t-xl flex justify-between items-center">
         <div>
@@ -66,9 +66,9 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
             {useNepaliLanguage ? 'बिक्रम सम्वत र ग्रेगोरियन बीच' : 'Between Bikram Sambat & Gregorian'}
           </DialogDescription>
         </div>
-        <DialogClose className="rounded-full h-8 w-8 flex items-center justify-center bg-blue-800 hover:bg-blue-900 text-white transition-colors">
+        <button className="rounded-full h-8 w-8 flex items-center justify-center bg-blue-800 hover:bg-blue-900 text-white transition-colors" aria-label="Close">
           <X className="h-4 w-4" />
-        </DialogClose>
+        </button>
       </div>
 
       <div className="p-4">
