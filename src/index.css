@@ -1,6 +1,6 @@
-
 /* Add Font Import */
 @import url('https://fonts.googleapis.com/css2?family=Laila:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Mukta+Mahi:wght@300;400;500;600;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,6 +23,10 @@ code {
 .nepali-text,
 .font-laila {
   font-family: 'Laila', sans-serif;
+}
+
+.font-mukta-mahi {
+  font-family: 'Mukta Mahi', sans-serif;
 }
 
 .beautiful-calendar-grid {

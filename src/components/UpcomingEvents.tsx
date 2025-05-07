@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { CalendarEvent } from '@/types/events';
 import { getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
@@ -158,7 +159,7 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
   };
 
   return <div className={`mt-4 sm:mt-6 ${eventItemBgColor} ${borderRadius} border border-gray-300 overflow-hidden beautiful-card no-print ${boxShadow} font-mukta-mahi`}>
-      <h3 className={`py-2 px-4 ${headerBgColor} ${headerTextColor} font-bold flex justify-between items-center`}>
+      <h3 className={`py-2 px-4 ${headerBgColor} ${headerTextColor} font-bold flex justify-between items-center font-mukta-mahi`}>
         <span>
           {useNepaliLanguage ? 'आगामी कार्यक्रमहरू' : 'Upcoming Events'}
         </span>
@@ -175,10 +176,10 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
               className={`w-full flex items-start p-3 h-auto justify-between text-center text-sm font-light ${eventItemBgColor}`}
             >
               <div className="flex flex-col">
-                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : eventTextColor} upcoming-event-text`}>
+                <span className={`font-bold text-sm ${event.isHoliday ? 'text-red-600' : eventTextColor} upcoming-event-text font-mukta-mahi`}>
                   {event.eventText}
                 </span>
-                <span className={`text-xs ${eventDateColor}`}>
+                <span className={`text-xs ${eventDateColor} font-mukta-mahi`}>
                   {formatDate(event.month, event.day, event.year)}
                 </span>
               </div>
@@ -187,7 +188,7 @@ const UpcomingEvents: React.FC<UpcomingEventProps> = ({
                   event.daysRemaining === 0 
                     ? `${todayBadgeBgColor} ${todayBadgeTextColor}` 
                     : `${futureBadgeBgColor} ${futureBadgeTextColor}`
-                } py-1 px-2 rounded`}>
+                } py-1 px-2 rounded font-mukta-mahi`}>
                   {formatDaysRemaining(event.daysRemaining)}
                 </span>
                 <CalendarIcon className="h-4 w-4 text-gray-500" />

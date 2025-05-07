@@ -50,7 +50,7 @@ const CalendarNavigation = ({
             value={yearInput}
             onChange={onYearInputChange}
             onClick={(e) => e.stopPropagation()}
-            className={`h-9 w-20 rounded-xl border border-gray-300 bg-white text-sm text-center font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none px-3 py-1 text-blue-800 ${useNepaliLanguage ? 'font-mukta-mahi' : 'font-mukta-mahi'}`}
+            className={`h-9 w-20 rounded-xl border border-gray-300 bg-white text-sm text-center font-semibold shadow-sm focus:border-blue-400 focus:ring focus:ring-blue-300 focus:outline-none px-3 py-1 text-blue-800 font-mukta-mahi`}
             aria-label={useNepaliLanguage ? 'साल' : 'Year'}
           />
         </form>
@@ -120,7 +120,14 @@ const CalendarNavigation = ({
 
       {/* Right Controls */}
       <div className="flex items-center justify-center sm:justify-end gap-3">
-        <LanguageToggle useNepaliLanguage={useNepaliLanguage} onToggle={onToggleLanguage} />
+        <Button 
+          onClick={onToggleLanguage} 
+          variant="outline"
+          size="sm"
+          className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl font-mukta-mahi"
+        >
+          {useNepaliLanguage ? 'English' : 'नेपाली'}
+        </Button>
 
         <Button
           variant="outline"

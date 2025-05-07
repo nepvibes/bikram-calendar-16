@@ -9,7 +9,7 @@ import {
   nepaliMonthsNp,
   getNepaliDigits,
 } from '../utils/bikramConverter';
-import { DialogTitle, DialogDescription } from './ui/dialog';
+import { DialogTitle, DialogDescription, DialogClose } from './ui/dialog';
 import { Button } from './ui/button';
 import { Calendar, X } from 'lucide-react';
 
@@ -59,28 +59,29 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
       {/* Header with close button */}
       <div className="bg-gradient-to-r from-blue-700 to-blue-600 px-4 py-3 rounded-t-xl flex justify-between items-center">
         <div>
-          <DialogTitle className="text-xl font-semibold text-white">
+          <DialogTitle className="text-xl font-semibold text-white font-mukta-mahi">
             {useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
           </DialogTitle>
-          <DialogDescription className="text-sm text-blue-100">
+          <DialogDescription className="text-sm text-blue-100 font-mukta-mahi">
             {useNepaliLanguage ? 'बिक्रम सम्वत र ग्रेगोरियन बीच' : 'Between Bikram Sambat & Gregorian'}
           </DialogDescription>
         </div>
-        <button className="rounded-full h-8 w-8 flex items-center justify-center bg-blue-800 hover:bg-blue-900 text-white transition-colors" aria-label="Close">
+        <DialogClose className="rounded-full h-8 w-8 flex items-center justify-center bg-blue-800 hover:bg-blue-900 text-white transition-colors">
           <X className="h-4 w-4" />
-        </button>
+          <span className="sr-only">Close</span>
+        </DialogClose>
       </div>
 
       <div className="p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {/* Bikram Date Section */}
           <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-3 rounded-lg border border-blue-200 shadow-inner">
-            <h4 className="font-medium mb-2 text-blue-700 text-base">
+            <h4 className="font-medium mb-2 text-blue-700 text-base font-mukta-mahi">
               {useNepaliLanguage ? 'बिक्रम सम्बत' : 'Bikram Sambat (BS)'}
             </h4>
             <div className="grid grid-cols-3 gap-2">
               <div>
-                <label className="block text-xs text-gray-700 mb-1">
+                <label className="block text-xs text-gray-700 mb-1 font-mukta-mahi">
                   {useNepaliLanguage ? 'वर्ष' : 'Year'}
                 </label>
                 <input
@@ -90,28 +91,28 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
                   max="2100"
                   value={bikramDate.year}
                   onChange={(e) => handleBikramDateChange('year', parseInt(e.target.value) || 2000)}
-                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm"
+                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm font-mukta-mahi"
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-700 mb-1">
+                <label className="block text-xs text-gray-700 mb-1 font-mukta-mahi">
                   {useNepaliLanguage ? 'महिना' : 'Month'}
                 </label>
                 <select
                   ref={monthSelectRef}
                   value={bikramDate.month}
                   onChange={(e) => handleBikramDateChange('month', parseInt(e.target.value))}
-                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm"
+                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm font-mukta-mahi"
                 >
                   {Array.from({ length: 12 }).map((_, i) => (
-                    <option key={i} value={i + 1}>
+                    <option key={i} value={i + 1} className="font-mukta-mahi">
                       {useNepaliLanguage ? nepaliMonthsNp[i] : nepaliMonthsEn[i]}
                     </option>
                   ))}
                 </select>
               </div>
               <div>
-                <label className="block text-xs text-gray-700 mb-1">
+                <label className="block text-xs text-gray-700 mb-1 font-mukta-mahi">
                   {useNepaliLanguage ? 'दिन' : 'Day'}
                 </label>
                 <input
@@ -121,7 +122,7 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
                   max="32"
                   value={bikramDate.day}
                   onChange={(e) => handleBikramDateChange('day', parseInt(e.target.value) || 1)}
-                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm"
+                  className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm font-mukta-mahi"
                 />
               </div>
             </div>
@@ -129,21 +130,21 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
 
           {/* Gregorian Date Section */}
           <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-3 rounded-lg border border-gray-200 shadow-inner">
-            <h4 className="font-medium mb-2 text-gray-700 text-base">
+            <h4 className="font-medium mb-2 text-gray-700 text-base font-mukta-mahi">
               {useNepaliLanguage ? 'ग्रेगोरियन' : 'Gregorian (AD)'}
             </h4>
             <div>
-              <label className="block text-xs text-gray-700 mb-1">
+              <label className="block text-xs text-gray-700 mb-1 font-mukta-mahi">
                 {useNepaliLanguage ? 'मिति' : 'Date'}
               </label>
               <input
                 type="date"
                 value={englishDate.toISOString().split('T')[0]}
                 onChange={handleEnglishDateChange}
-                className="w-full px-2 py-1 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400 text-gray-800 text-sm"
+                className="w-full px-2 py-1 rounded-md border border-gray-300 focus:ring-2 focus:ring-blue-400 text-gray-800 text-sm font-mukta-mahi"
               />
             </div>
-            <p className="mt-2 text-xs text-gray-500">
+            <p className="mt-2 text-xs text-gray-500 font-mukta-mahi">
               {englishDate.toLocaleDateString()}
             </p>
           </div>
@@ -151,7 +152,7 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
 
         {/* Results Section */}
         <div className="mt-4 p-3 text-center bg-gradient-to-r from-blue-100 via-blue-50 to-blue-100 border border-blue-200 rounded-lg">
-          <p className="text-blue-800 font-medium text-sm md:text-base">
+          <p className="text-blue-800 font-medium text-sm md:text-base font-mukta-mahi">
             {useNepaliLanguage ?
               `${getNepaliDigits(bikramDate.day)} ${nepaliMonthsNp[bikramDate.month - 1]} ${getNepaliDigits(bikramDate.year)} बि.सं.` :
               `${bikramDate.day} ${nepaliMonthsEn[bikramDate.month - 1]} ${bikramDate.year} BS`}
@@ -165,7 +166,7 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
           <div className="mt-4 flex justify-center">
             <Button 
               onClick={handleOpenCalendar} 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center gap-2 transition-colors font-mukta-mahi"
             >
               <Calendar className="h-4 w-4" />
               {useNepaliLanguage ? 'क्यालेन्डरमा देखाउनुहोस्' : 'Show in Calendar'}
