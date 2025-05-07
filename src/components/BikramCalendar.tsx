@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { EventData } from '@/types/events';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
@@ -9,7 +9,8 @@ import { useCalendarState } from '@/hooks/useCalendarState';
 import { Card } from './ui/card';
 import CalendarHeader from './calendar/CalendarHeader';
 import CalendarNavigation from './calendar/CalendarNavigation';
-import { DialogClose } from './ui/dialog';
+import DateConverter from './DateConverter';
+import { DialogClose, DialogContent, DialogTrigger, Dialog } from './ui/dialog';
 
 const BikramCalendar: React.FC = () => {
   const calendarState = useCalendarState();
@@ -65,6 +66,20 @@ const BikramCalendar: React.FC = () => {
       }
     }, 100);
   };
+  
+  // Listen for bikramDateSelected events
+  useEffect(() => {
+    const handleBikramDateSelected = (event: CustomEvent) => {
+      const { year, month, day } = event.detail;
+      handleDateNavigate(year, month, day);
+    };
+    
+    window.addEventListener('bikramDateSelected', handleBikramDateSelected as EventListener);
+    
+    return () => {
+      window.removeEventListener('bikramDateSelected', handleBikramDateSelected as EventListener);
+    };
+  }, [calendarState]);
   
   return (
     <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">

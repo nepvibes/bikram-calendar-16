@@ -1,5 +1,6 @@
+
 import React from 'react';
-import { CalendarDays, Printer } from 'lucide-react';
+import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
@@ -93,12 +94,25 @@ const CalendarNavigation = ({
               className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-lg flex items-center"
               title={useNepaliLanguage ? 'मिति परिवर्तक' : 'Date Converter'}
             >
-              <span className="fontFamily: 'sans-serif' mr-1 text-lg  hover:bg-blue-50 text-blue-700 font-semibold">&#128472;</span>
+              <RefreshCw className="mr-1 h-4 w-4 text-blue-700" />
               <span className="hidden sm:inline">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Convert'}</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] rounded-xl">
-            <DateConverter useNepaliLanguage={useNepaliLanguage} />
+          <DialogContent className="sm:max-w-[500px] p-0 rounded-xl">
+            <DateConverter 
+              useNepaliLanguage={useNepaliLanguage} 
+              onDateSelect={(year, month, day) => {
+                const event = new CustomEvent('bikramDateSelected', { 
+                  detail: { year, month, day } 
+                });
+                window.dispatchEvent(event);
+                
+                // Close the dialog
+                document.querySelector('.dialog-close-button')?.dispatchEvent(
+                  new MouseEvent('click', { bubbles: true })
+                );
+              }}
+            />
           </DialogContent>
         </Dialog>
       </div>

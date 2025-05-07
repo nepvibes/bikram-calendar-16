@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
@@ -111,181 +112,179 @@ export function useCalendarState() {
   // Handler for year change from dropdown
   const handleYearChange = (value: string) => {
     const year = parseInt(value);
-    setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
-    setCurrentView(prev => getBikramMonth(year, prev.month));
+    if (!isNaN(year)) {
+      setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
+      setCurrentView(prev => getBikramMonth(year, prev.month));
+    }
   };
 
-  // Handler for direct year input
+  // Handler for year input change
   const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    
-    // Always set the input value directly for immediate feedback
+    // For Nepali digits, convert to English digits first
     setYearInput(inputValue);
-    
-    // If using Nepali language and input contains English digits, convert them on-the-fly
-    if (useNepaliLanguage && /[0-9]/.test(inputValue)) {
-      // Convert all English digits to Nepali digits
-      const convertedInput = inputValue.split('').map(char => {
-        if (/[0-9]/.test(char)) {
-          return getNepaliDigits(parseInt(char));
-        }
-        return char;
-      }).join('');
-      
-      setYearInput(convertedInput);
-    }
-    
-    // If not using Nepali language and input contains Nepali digits, convert them on-the-fly
-    if (!useNepaliLanguage && containsNepaliDigits(inputValue)) {
-      const englishDigits = getEnglishDigits(inputValue);
-      setYearInput(englishDigits);
-    }
   };
 
-  // Handle year input submit
+  // Handler for year submission
   const handleYearSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!yearInput || yearInput.trim() === '') {
-      setYearInput(useNepaliLanguage ? getNepaliDigits(currentView.year) : currentView.year.toString());
-      return;
-    }
+    let year: number;
 
-    // If using Nepali digits, convert back to English digits for processing
-    let processedInput = yearInput;
-    
     if (containsNepaliDigits(yearInput)) {
-      processedInput = getEnglishDigits(yearInput);
-    }
-    
-    const year = parseInt(processedInput);
-    
-    if (!isNaN(year)) {
-      setCurrentView(prev => getBikramMonth(year, prev.month));
-      
-      // Update year input based on language setting
-      setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
-
-      // If we're outside the precomputed data range, show information about approximation
-      if (year < BS_START_YEAR || year > BS_END_YEAR) {
-        console.log(`Calendar data outside ${BS_START_YEAR}–${BS_END_YEAR} is approximated`);
-      }
+      // Convert Nepali digits to English digits
+      const englishDigits = getEnglishDigits(yearInput);
+      year = parseInt(englishDigits);
     } else {
-      console.error("Please enter a valid year");
+      // Input is already in English digits
+      year = parseInt(yearInput);
+    }
+
+    if (!isNaN(year) && year >= 1900 && year <= 2200) {
+      setCurrentView(prev => getBikramMonth(year, prev.month));
+    } else {
+      // Reset year input if invalid
       setYearInput(useNepaliLanguage ? getNepaliDigits(currentView.year) : currentView.year.toString());
     }
   };
 
-  // Handle date selection - Updated to properly get event details
-  const handleDateSelect = (day: number): void => {
-    // Get the English date for the selected day
-    const englishDate = new Date(currentView.englishStartDate);
-    englishDate.setDate(englishDate.getDate() + (day - 1));
-    
-    // Get tithi data for the selected date
-    const tithiData = calculateTithi(englishDate);
-    
-    // Get the Gregorian date components
-    const gregorianYear = englishDate.getFullYear();
-    const gregorianMonth = englishDate.getMonth() + 1; // JavaScript months are 0-based
-    const gregorianDay = englishDate.getDate();
-    
-    // Get event text and detail from our event data
-    const eventText = getAllEventText(
-      events.bikramFixedEvents,
-      events.gregorianEvents,
-      events.bikramRecurringEvents,
-      currentView.year,
-      currentView.month,
-      day,
-      gregorianYear,
-      gregorianMonth,
-      gregorianDay,
-      useNepaliLanguage
-    );
-    
-    const eventDetail = getAllEventDetails(
-      events.bikramFixedEvents,
-      events.gregorianEvents,
-      events.bikramRecurringEvents,
-      currentView.year,
-      currentView.month,
-      day,
-      gregorianYear,
-      gregorianMonth,
-      gregorianDay,
-      useNepaliLanguage
-    );
-    
-    const newSelectedDate: EventModalData = {
+  // Handler for date selection
+  const handleDateSelect = (day: number) => {
+    const selectedDateObj: BikramDateObj = {
       year: currentView.year,
       month: currentView.month,
-      day,
-      englishDate,
-      tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
-      tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
-      eventText,
-      eventDetail
+      day: day,
+      englishDate: new Date(currentView.englishStartDate)
     };
-    
-    setSelectedDate(newSelectedDate);
-    setEventModalData(newSelectedDate);
-    setEventModalOpen(true);
+
+    // Adjust the English date to match the day
+    selectedDateObj.englishDate.setDate(currentView.englishStartDate.getDate() + (day - 1));
+    setSelectedDate(selectedDateObj);
+
+    // Check for events
+    const hasEvents = events.bikramFixedEvents.some(event => {
+      if (event.date === `${currentView.year}/${currentView.month}/${day}`) {
+        return true;
+      }
+      return false;
+    }) || events.bikramRecurringEvents.some(event => {
+      if (event.date === `${currentView.month}/${day}`) {
+        // Check if the event has startYear and endYear restrictions
+        if (event.startYear && event.endYear) {
+          return currentView.year >= event.startYear && currentView.year <= event.endYear;
+        }
+        return true;
+      }
+      return false;
+    });
+
+    // If the day has events, show event modal
+    if (hasEvents) {
+      // Get English date for this day
+      const englishDate = new Date(currentView.englishStartDate);
+      englishDate.setDate(currentView.englishStartDate.getDate() + (day - 1));
+      
+      // Get tithi for this day
+      const tithiData = calculateTithi(englishDate);
+      
+      // Get event text
+      const eventText = getAllEventText(
+        events.bikramFixedEvents,
+        events.gregorianEvents,
+        events.bikramRecurringEvents,
+        currentView.year,
+        currentView.month,
+        day,
+        englishDate.getFullYear(),
+        englishDate.getMonth() + 1,
+        englishDate.getDate(),
+        useNepaliLanguage
+      );
+      
+      // Get event detail
+      const eventDetail = getAllEventDetails(
+        events.bikramFixedEvents,
+        events.gregorianEvents,
+        events.bikramRecurringEvents,
+        currentView.year,
+        currentView.month,
+        day,
+        englishDate.getFullYear(),
+        englishDate.getMonth() + 1,
+        englishDate.getDate()
+      );
+      
+      // Set event modal data
+      setEventModalData({
+        day,
+        year: currentView.year,
+        month: currentView.month,
+        tithiName: useNepaliLanguage ? tithiData.tithiName : tithiData.tithiNameEn,
+        tithiPaksha: useNepaliLanguage ? tithiData.paksha : tithiData.pakshaEn,
+        englishDate,
+        eventText,
+        eventDetail
+      });
+      
+      // Open event modal
+      setEventModalOpen(true);
+    }
   };
 
   // Toggle language
   const toggleLanguage = () => {
-    setUseNepaliLanguage(prev => {
-      const newValue = !prev;
-      // Update yearInput format based on language
-      if (newValue) {
-        setYearInput(getNepaliDigits(currentView.year));
+    setUseNepaliLanguage(prev => !prev);
+
+    // Update year input to reflect language change
+    setYearInput(prev => {
+      if (containsNepaliDigits(prev)) {
+        // Convert from Nepali to English digits
+        return getEnglishDigits(prev);
       } else {
-        setYearInput(currentView.year.toString());
+        // Convert from English to Nepali digits
+        return getNepaliDigits(parseInt(prev));
       }
-      return newValue;
     });
   };
 
-  // Handle direct date selection from English calendar
-  const handleEnglishDateSelect = (date: Date | undefined) => {
-    if (date) {
-      const todayDate = getToday();
-      const bikramDate = {
-        year: todayDate.year,
-        month: todayDate.month,
-        day: todayDate.day,
-        englishDate: date
-      };
-      setCurrentView(getBikramMonth(bikramDate.year, bikramDate.month));
-      setSelectedDate(bikramDate);
-      setYearInput(useNepaliLanguage ? getNepaliDigits(bikramDate.year) : bikramDate.year.toString());
-    }
+  // Handle date navigation from converter
+  const handleDateNavigate = (year: number, month: number, day: number) => {
+    // Update current view
+    setCurrentView(getBikramMonth(year, month));
+    
+    // Create selected date object
+    const selectedDateObj: BikramDateObj = {
+      year,
+      month,
+      day,
+      englishDate: new Date() // This will be updated internally
+    };
+    
+    // Update selected date
+    setSelectedDate(selectedDateObj);
   };
 
   return {
     today,
     currentView,
     selectedDate,
-    useNepaliLanguage,
-    yearInput,
     events,
-    eventModalOpen,
-    eventModalData,
-    usingApproximation,
+    setCurrentView,
+    setSelectedDate,
     handlePrevMonth,
     handleNextMonth,
     handleTodayClick,
     handleMonthChange,
-    handleYearChange,
+    handleDateSelect,
     handleYearInputChange,
     handleYearSubmit,
-    handleDateSelect,
+    yearInput,
     toggleLanguage,
-    handleEnglishDateSelect,
-    setSelectedDate,
-    setEventModalData,
+    useNepaliLanguage,
+    usingApproximation,
+    eventModalOpen,
     setEventModalOpen,
-    setCurrentView
+    eventModalData,
+    setEventModalData,
+    handleDateNavigate,
   };
 }
