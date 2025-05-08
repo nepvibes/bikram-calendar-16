@@ -1,8 +1,8 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
-import { nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
+import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, getEnglishDigits, containsNepaliDigits } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent, DialogClose } from '../ui/dialog';
 import DateConverter from '../DateConverter';
 import LanguageToggle from '../LanguageToggle';
@@ -106,9 +106,6 @@ const CalendarNavigation = ({
                   detail: { year, month, day } 
                 });
                 window.dispatchEvent(event);
-                
-                // Close the dialog - using DialogClose
-                document.querySelector('[data-radix-focus-guard]')?.parentElement?.querySelector('[data-state="open"][data-radix-collection-item]')?.dispatchEvent(new MouseEvent('click'));
               }}
             />
           </DialogContent>

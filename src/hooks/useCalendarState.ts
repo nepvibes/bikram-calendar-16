@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
@@ -117,11 +118,26 @@ export function useCalendarState() {
     }
   };
 
-  // Handler for year input change
+  // Handler for year input change with real-time Nepali digit handling
   const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
-    // For Nepali digits, convert to English digits first
     setYearInput(inputValue);
+    
+    // Only try to update the year if we have a meaningful value
+    if (inputValue.trim().length > 0) {
+      // Convert to number (handling Nepali digits)
+      let year: number;
+      if (containsNepaliDigits(inputValue)) {
+        year = parseInt(getEnglishDigits(inputValue));
+      } else {
+        year = parseInt(inputValue);
+      }
+      
+      // Only update if we have a valid year
+      if (!isNaN(year) && year >= 1900 && year <= 2200) {
+        // Don't update view yet, wait for submit
+      }
+    }
   };
 
   // Handler for year submission
@@ -242,7 +258,7 @@ export function useCalendarState() {
     });
   };
 
-  // Handle date navigation from converter
+  // Update the view when navigating from the converter to a specific date
   const handleDateNavigate = (year: number, month: number, day: number) => {
     // Update current view
     setCurrentView(getBikramMonth(year, month));
@@ -257,6 +273,11 @@ export function useCalendarState() {
     
     // Update selected date
     setSelectedDate(selectedDateObj);
+    
+    // Use setTimeout to ensure the day is selected after the calendar view is updated
+    setTimeout(() => {
+      handleDateSelect(day);
+    }, 200);
   };
 
   return {

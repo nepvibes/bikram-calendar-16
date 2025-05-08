@@ -1,5 +1,5 @@
 
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   BikramDateObj,
   convertToBikram,
@@ -8,6 +8,8 @@ import {
   nepaliMonthsEn,
   nepaliMonthsNp,
   getNepaliDigits,
+  getEnglishDigits,
+  containsNepaliDigits,
 } from '../utils/bikramConverter';
 import { DialogTitle, DialogDescription, DialogClose } from './ui/dialog';
 import { Button } from './ui/button';
@@ -27,32 +29,96 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
   const monthSelectRef = useRef<HTMLSelectElement>(null);
   const dayInputRef = useRef<HTMLInputElement>(null);
 
+  // For handling Nepali digit conversion in year input
+  const [yearInputText, setYearInputText] = useState<string>(
+    useNepaliLanguage ? getNepaliDigits(bikramDate.year) : bikramDate.year.toString()
+  );
+  
+  // Update year input text when language changes
+  useEffect(() => {
+    setYearInputText(useNepaliLanguage ? getNepaliDigits(bikramDate.year) : bikramDate.year.toString());
+  }, [useNepaliLanguage, bikramDate.year]);
+
+  // Handle Bikram date field changes
   const handleBikramDateChange = (field: 'year' | 'month' | 'day', value: number) => {
     setBikramDate(prev => {
       const newDate = { ...prev, [field]: value };
       const convertedDate = convertToEnglish(newDate);
       setEnglishDate(convertedDate);
+      
+      // Update year input text if the year field is changed
+      if (field === 'year') {
+        setYearInputText(useNepaliLanguage ? getNepaliDigits(value) : value.toString());
+      }
+      
       return { ...newDate, englishDate: convertedDate };
     });
   };
 
-  const handleEnglishDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle year input change with Nepali digit conversion
+  const handleYearInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const inputValue = e.target.value;
+    setYearInputText(inputValue);
+    
+    let yearValue: number;
+    
+    // Convert to number (handling Nepali digits)
+    if (containsNepaliDigits(inputValue)) {
+      yearValue = parseInt(getEnglishDigits(inputValue)) || bikramDate.year;
+    } else {
+      yearValue = parseInt(inputValue) || bikramDate.year;
+    }
+    
+    if (!isNaN(yearValue) && yearValue >= 1900 && yearValue <= 2100) {
+      handleBikramDateChange('year', yearValue);
+    }
+  };
+
+  // Handle English date change
+  const handleEnglishDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newDate = new Date(e.target.value);
     if (!isNaN(newDate.getTime())) {
       setEnglishDate(newDate);
       const newBikramDate = convertToBikram(newDate);
       setBikramDate(newBikramDate);
+      setYearInputText(useNepaliLanguage ? getNepaliDigits(newBikramDate.year) : newBikramDate.year.toString());
     }
   };
 
+  // Handle "Show in Calendar" button click
   const handleOpenCalendar = () => {
     if (onDateSelect) {
-      onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
+      // Close the dialog first
+      const closeButton = document.querySelector('[data-radix-focus-guard]')?.parentElement?.querySelector('[data-state="open"][data-radix-collection-item]');
+      if (closeButton) {
+        closeButton.dispatchEvent(new MouseEvent('click'));
+      }
+      
+      // Wait a moment for the dialog to close, then navigate to the selected date
+      setTimeout(() => {
+        onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
+      }, 100);
     }
   };
 
   const formatDay = (day: number) => useNepaliLanguage ? getNepaliDigits(day) : day;
+
+  // Handle day input change with Nepali digit conversion
+  const handleDayInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    let dayValue: number;
+    
+    // Convert to number (handling Nepali digits)
+    if (containsNepaliDigits(inputValue)) {
+      dayValue = parseInt(getEnglishDigits(inputValue)) || 1;
+    } else {
+      dayValue = parseInt(inputValue) || 1;
+    }
+    
+    if (!isNaN(dayValue) && dayValue >= 1 && dayValue <= 32) {
+      handleBikramDateChange('day', dayValue);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-b from-blue-50 to-white font-mukta-mahi">
@@ -86,11 +152,9 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
                 </label>
                 <input
                   ref={yearInputRef}
-                  type="number"
-                  min="1900"
-                  max="2100"
-                  value={bikramDate.year}
-                  onChange={(e) => handleBikramDateChange('year', parseInt(e.target.value) || 2000)}
+                  type="text"
+                  value={yearInputText}
+                  onChange={handleYearInputChange}
                   className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm font-mukta-mahi"
                 />
               </div>
@@ -117,11 +181,11 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
                 </label>
                 <input
                   ref={dayInputRef}
-                  type="number"
+                  type="text"
                   min="1"
                   max="32"
-                  value={bikramDate.day}
-                  onChange={(e) => handleBikramDateChange('day', parseInt(e.target.value) || 1)}
+                  value={useNepaliLanguage ? getNepaliDigits(bikramDate.day) : bikramDate.day}
+                  onChange={handleDayInputChange}
                   className="w-full px-2 py-1 rounded-md border border-blue-300 focus:ring-2 focus:ring-blue-400 text-blue-800 text-sm font-mukta-mahi"
                 />
               </div>

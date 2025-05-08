@@ -54,20 +54,22 @@ const BikramCalendar: React.FC = () => {
 
   // Handle date navigation from converter
   const handleDateNavigate = (year: number, month: number, day: number) => {
+    // Update the calendar view to the selected date
     calendarState.setCurrentView(prev => ({
       ...prev,
       year,
       month
     }));
     
+    // Wait for the view to update, then select the day
     setTimeout(() => {
       if (calendarState.handleDateSelect) {
         calendarState.handleDateSelect(day);
       }
-    }, 100);
+    }, 200);
   };
   
-  // Listen for bikramDateSelected events
+  // Listen for bikramDateSelected events from the DateConverter component
   useEffect(() => {
     const handleBikramDateSelected = (event: CustomEvent) => {
       const { year, month, day } = event.detail;
