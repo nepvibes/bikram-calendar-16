@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+
+import React from 'react';
 import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, getEnglishDigits, containsNepaliDigits } from '@/utils/bikramConverter';
-import { Dialog, DialogTrigger, DialogContent, DialogClose } from '../ui/dialog';
+import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
 import DateConverter from '../DateConverter';
-import LanguageToggle from '../LanguageToggle';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;
@@ -41,12 +41,13 @@ const CalendarNavigation = ({
   // Handle date selection from converter with dialog closing
   const handleDateSelect = (year: number, month: number, day: number) => {
     // Create a custom event to navigate to the selected date
+    console.log(`Date selected in converter: ${year}-${month}-${day}`);
     const event = new CustomEvent('bikramDateSelected', {
       detail: { year, month, day }
     });
     window.dispatchEvent(event);
     
-    // The dialog closing is now handled within the DateConverter component
+    // The dialog closing is handled within the DateConverter component
   };
 
   return (

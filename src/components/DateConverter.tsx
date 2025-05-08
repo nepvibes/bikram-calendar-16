@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import {
   BikramDateObj,
@@ -68,7 +69,8 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
       yearValue = parseInt(inputValue) || bikramDate.year;
     }
     
-    if (!isNaN(yearValue) && yearValue >= 1900 && yearValue <= 2100) {
+    // No year input limit, we'll use fallback calculation for any year
+    if (!isNaN(yearValue)) {
       handleBikramDateChange('year', yearValue);
     }
   };
@@ -87,26 +89,32 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
   // Handle "Show in Calendar" button click
   const handleOpenCalendar = () => {
     if (onDateSelect) {
-      // First, trigger the date selection
+      // First, trigger the date selection directly - this will update the calendar
       onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
       
-      // Find and click the dialog close button programmatically
-      const closeButton = document.querySelector('[data-radix-dialog-close]');
-      if (closeButton) {
-        (closeButton as HTMLElement).click();
-      } else {
-        // Fallback - close any open dialogs
-        const dialogOverlay = document.querySelector('[role="dialog"]');
-        if (dialogOverlay) {
-          const parent = dialogOverlay.parentElement;
-          if (parent) {
-            // Try to find a close button within the dialog's parent
-            const closeBtn = parent.querySelector('button');
-            if (closeBtn) {
-              closeBtn.click();
-            }
+      // Then force close the dialog - try multiple approaches
+      // 1. Try the DialogClose component programmatically
+      const dialogCloseBtn = document.querySelector('[data-radix-dialog-close]');
+      if (dialogCloseBtn) {
+        console.log('Found dialog close button, clicking it');
+        (dialogCloseBtn as HTMLElement).click();
+        return;
+      }
+      
+      // 2. Try closing by simulating Escape key
+      document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+      
+      // 3. Find any close button within the dialog
+      const dialogOverlay = document.querySelector('[role="dialog"]');
+      if (dialogOverlay) {
+        console.log('Found dialog overlay, looking for close button');
+        const closeButtons = dialogOverlay.querySelectorAll('button');
+        closeButtons.forEach(btn => {
+          if (btn.innerHTML.includes('X') || btn.classList.contains('close')) {
+            console.log('Found potential close button, clicking it');
+            btn.click();
           }
-        }
+        });
       }
     }
   };
