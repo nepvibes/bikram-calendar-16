@@ -13,7 +13,7 @@ const EventsHeader: React.FC<EventsHeaderProps> = ({
   useNepaliLanguage,
 }) => {
   return (
-    <h3 className={`py-2 px-4 ${headerBgColor} ${headerTextColor} font-bold flex justify-between items-center font-mukta-mahi`}>
+    <h3 className={`py-2 px-4 ${headerBgColor} ${headerTextColor} font-bold flex justify-between items-center font-mukta-mahi rounded-t-lg`}>
       <span>
         {useNepaliLanguage ? 'आगामी कार्यक्रमहरू' : 'Upcoming Events'}
       </span>

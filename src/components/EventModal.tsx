@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "./ui/dialog";
 import { Button } from './ui/button';
 import { format } from 'date-fns';
@@ -38,7 +38,7 @@ const EventModal: React.FC<EventModalProps> = ({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => handleClose()}>
-      <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0">
+      <DialogContent className="max-w-md overflow-hidden rounded-xl bg-white dark:bg-slate-900 p-0 font-mukta-mahi">
         <div className={`bg-gradient-to-br from-blue-700 to-blue-600 dark:from-blue-900 dark:to-blue-800 p-6 text-white transition-all duration-300 rounded-t-xl ${isAnimating ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
           <DialogTitle className="text-center">
             <span className={`inline-block text-2xl font-bold font-laila transition-transform duration-500 ease-spring ${isAnimating ? 'scale-100' : 'scale-90'}`}>
@@ -85,7 +85,7 @@ const EventModal: React.FC<EventModalProps> = ({
         
         <DialogFooter className="p-4 border-t border-gray-200 dark:border-gray-800 bg-gray-50 dark:bg-gray-900 px-0 py-0">
           <div className="w-full transition-transform duration-200 hover:scale-[1.02] active:scale-[0.98]">
-            <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 shadow-md rounded-md">
+            <Button onClick={handleClose} className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-800 dark:hover:bg-blue-700 shadow-md rounded-md font-mukta-mahi">
               {useNepaliLanguage ? "बन्द गर्नुहोस्" : "Close"}
             </Button>
           </div>

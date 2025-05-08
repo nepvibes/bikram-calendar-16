@@ -98,7 +98,7 @@ const CalendarNavigation = ({
               <span className="hidden sm:inline">{useNepaliLanguage ? 'मिति परिवर्तक' : 'Convert'}</span>
             </Button>
           </DialogTrigger>
-          <DialogContent className="sm:max-w-[500px] p-0 rounded-xl">
+          <DialogContent className="sm:max-w-[500px] p-0 rounded-xl font-mukta-mahi">
             <DateConverter 
               useNepaliLanguage={useNepaliLanguage} 
               onDateSelect={(year, month, day) => {
@@ -107,11 +107,8 @@ const CalendarNavigation = ({
                 });
                 window.dispatchEvent(event);
                 
-                // Close the dialog
-                const closeButton = document.querySelector('[data-state="open"][aria-label="Close"]');
-                if (closeButton) {
-                  (closeButton as HTMLButtonElement).click();
-                }
+                // Close the dialog - using DialogClose
+                document.querySelector('[data-radix-focus-guard]')?.parentElement?.querySelector('[data-state="open"][data-radix-collection-item]')?.dispatchEvent(new MouseEvent('click'));
               }}
             />
           </DialogContent>

@@ -80,6 +80,20 @@ const BikramCalendar: React.FC = () => {
       window.removeEventListener('bikramDateSelected', handleBikramDateSelected as EventListener);
     };
   }, [calendarState]);
+
+  // Update calendar view when event modal data changes
+  useEffect(() => {
+    if (calendarState.eventModalData) {
+      const { year, month } = calendarState.eventModalData;
+      if (year !== calendarState.currentView.year || month !== calendarState.currentView.month) {
+        calendarState.setCurrentView(prev => ({
+          ...prev,
+          year,
+          month
+        }));
+      }
+    }
+  }, [calendarState.eventModalData]);
   
   return (
     <div className="min-h-screen bg-[url('/subtle-pattern.png')] pt-2 md:pt-4">
