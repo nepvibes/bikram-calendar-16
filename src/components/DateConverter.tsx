@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from 'react';
 import {
   BikramDateObj,
@@ -88,16 +87,14 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
   // Handle "Show in Calendar" button click
   const handleOpenCalendar = () => {
     if (onDateSelect) {
-      // Close the dialog first
-      const closeButton = document.querySelector('[data-radix-focus-guard]')?.parentElement?.querySelector('[data-state="open"][data-radix-collection-item]');
-      if (closeButton) {
-        closeButton.dispatchEvent(new MouseEvent('click'));
-      }
+      // First, trigger the date selection
+      onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
       
-      // Wait a moment for the dialog to close, then navigate to the selected date
-      setTimeout(() => {
-        onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
-      }, 100);
+      // Find and click the dialog close button
+      const closeButton = document.querySelector('[data-radix-dialog-close]');
+      if (closeButton) {
+        (closeButton as HTMLElement).click();
+      }
     }
   };
 

@@ -61,7 +61,12 @@ const BikramCalendar: React.FC = () => {
       month
     }));
     
-    // Wait for the view to update, then select the day
+    // Also update the year input to match the selected year
+    calendarState.setYearInput(
+      calendarState.useNepaliLanguage ? getNepaliDigits(year) : year.toString()
+    );
+    
+    // Select the day after the view is updated
     setTimeout(() => {
       if (calendarState.handleDateSelect) {
         calendarState.handleDateSelect(day);

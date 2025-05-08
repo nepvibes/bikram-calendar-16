@@ -39,6 +39,15 @@ const CalendarNavigation = ({
     onMonthChange(e.target.value);
   };
 
+  // Handle date selection from converter
+  const handleDateSelect = (year: number, month: number, day: number) => {
+    // Create a custom event to navigate to the selected date
+    const event = new CustomEvent('bikramDateSelected', {
+      detail: { year, month, day }
+    });
+    window.dispatchEvent(event);
+  };
+
   return (
     <div className="flex flex-col sm:flex-row flex-wrap justify-center sm:justify-between items-center gap-3 p-3 sm:p-4 bg-blue-600 text-white shadow-md no-print font-mukta-mahi">
       {/* Left Controls */}
@@ -101,12 +110,7 @@ const CalendarNavigation = ({
           <DialogContent className="sm:max-w-[500px] p-0 rounded-xl font-mukta-mahi">
             <DateConverter 
               useNepaliLanguage={useNepaliLanguage} 
-              onDateSelect={(year, month, day) => {
-                const event = new CustomEvent('bikramDateSelected', { 
-                  detail: { year, month, day } 
-                });
-                window.dispatchEvent(event);
-              }}
+              onDateSelect={handleDateSelect}
             />
           </DialogContent>
         </Dialog>

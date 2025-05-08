@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { BikramDateObj, BikramMonth, getToday, getBikramMonth, getNepaliDigits, containsNepaliDigits, getEnglishDigits } from '../utils/bikramConverter';
 import { EventModalData } from '../types/events';
@@ -93,7 +92,7 @@ export function useCalendarState() {
     setYearInput(useNepaliLanguage ? getNepaliDigits(todayDate.year) : todayDate.year.toString());
   };
 
-  // Handler for month change from dropdown - Fixed to prevent automatic day selection
+  // Handler for month change from dropdown
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement> | string) => {
     // Stop event propagation to prevent clicking on days beneath the dropdown
     if (typeof e !== 'string' && e.stopPropagation) {
@@ -263,6 +262,9 @@ export function useCalendarState() {
     // Update current view
     setCurrentView(getBikramMonth(year, month));
     
+    // Update year input to match the selected year
+    setYearInput(useNepaliLanguage ? getNepaliDigits(year) : year.toString());
+    
     // Create selected date object
     const selectedDateObj: BikramDateObj = {
       year,
@@ -295,6 +297,7 @@ export function useCalendarState() {
     handleYearInputChange,
     handleYearSubmit,
     yearInput,
+    setYearInput,
     toggleLanguage,
     useNepaliLanguage,
     usingApproximation,
