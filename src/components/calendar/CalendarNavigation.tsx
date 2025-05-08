@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -39,13 +38,15 @@ const CalendarNavigation = ({
     onMonthChange(e.target.value);
   };
 
-  // Handle date selection from converter
+  // Handle date selection from converter with dialog closing
   const handleDateSelect = (year: number, month: number, day: number) => {
     // Create a custom event to navigate to the selected date
     const event = new CustomEvent('bikramDateSelected', {
       detail: { year, month, day }
     });
     window.dispatchEvent(event);
+    
+    // The dialog closing is now handled within the DateConverter component
   };
 
   return (
@@ -94,7 +95,7 @@ const CalendarNavigation = ({
           {useNepaliLanguage ? 'आज' : 'Today'}
         </Button>
 
-        {/* Date Converter */}
+        {/* Date Converter with improved dialog handling */}
         <Dialog>
           <DialogTrigger asChild>
             <Button

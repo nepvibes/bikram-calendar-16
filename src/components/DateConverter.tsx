@@ -90,10 +90,23 @@ const DateConverter: React.FC<DateConverterProps> = ({ useNepaliLanguage, onDate
       // First, trigger the date selection
       onDateSelect(bikramDate.year, bikramDate.month, bikramDate.day);
       
-      // Find and click the dialog close button
+      // Find and click the dialog close button programmatically
       const closeButton = document.querySelector('[data-radix-dialog-close]');
       if (closeButton) {
         (closeButton as HTMLElement).click();
+      } else {
+        // Fallback - close any open dialogs
+        const dialogOverlay = document.querySelector('[role="dialog"]');
+        if (dialogOverlay) {
+          const parent = dialogOverlay.parentElement;
+          if (parent) {
+            // Try to find a close button within the dialog's parent
+            const closeBtn = parent.querySelector('button');
+            if (closeBtn) {
+              closeBtn.click();
+            }
+          }
+        }
       }
     }
   };
