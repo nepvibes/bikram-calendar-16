@@ -1,5 +1,6 @@
 
 import { BikramDate, BS_START_YEAR, BS_END_YEAR } from './bikram';
+import { getDateInNepalTimezone } from '../src/utils/timezone';
 
 export type BikramDateObj = {
   year: number;
@@ -63,13 +64,15 @@ export const nepaliHolidays: {[key: string]: string} = {
 
 // Get Today's Bikram Date
 export const getToday = (): BikramDateObj => {
-  const bikramDate = new BikramDate();
+  // Use Nepal's timezone for consistent date calculation regardless of user location
+  const nepalDate = getDateInNepalTimezone();
+  const bikramDate = BikramDate.fromDate(nepalDate);
   
   return {
     year: bikramDate.getYear(),
     month: bikramDate.getMonth(),
     day: bikramDate.getDate(),
-    englishDate: bikramDate.toJsDate(),
+    englishDate: nepalDate,
   };
 };
 
