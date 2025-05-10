@@ -110,7 +110,7 @@ export default {
 				'fade-in': 'fade-in 0.5s ease-out forwards'
 			},
 			backgroundImage: {
-				'nepali-pattern': "url('/nepali-pattern.png')"
+				'nepali-pattern': "url('./nepali-pattern.png')"
 			}
 		}
 	},

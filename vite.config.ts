@@ -23,4 +23,9 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    outDir: process.env.GITHUB_PAGES ? "docs" : "dist",
+    emptyOutDir: true,
+    assetsDir: 'assets',
+  },
 }));
