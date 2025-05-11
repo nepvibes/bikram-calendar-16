@@ -1,9 +1,10 @@
+
 /**
  * TypeScript implementation of Bikram calendar conversion
  * Converted from C++ implementation
  */
 
-import { convertToNepalTimezone } from "../src/utils/timezone";
+import { convertToNepalTimezone } from "./timezone";
 
 // Precomputed Data (starting from 2000 BS)
 export const BS_START_YEAR = 2000;

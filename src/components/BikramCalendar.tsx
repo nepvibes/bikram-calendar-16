@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import { EventData } from '@/types/events';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
@@ -12,7 +11,7 @@ import CalendarNavigation from './calendar/CalendarNavigation';
 import DateConverter from './DateConverter';
 import { DialogClose, DialogContent, DialogTrigger, Dialog } from './ui/dialog';
 
-// Import the background image to ensure it's included in the build
+// Import the background image from assets directory
 import subtlePatternBg from '../assets/subtle-pattern.png';
 
 const BikramCalendar: React.FC = () => {

@@ -1,20 +1,11 @@
-
 import { BikramDate, BS_START_YEAR, BS_END_YEAR } from './bikram';
-import { getDateInNepalTimezone } from '../src/utils/timezone';
+import { getDateInNepalTimezone } from './timezone';
 
 export type BikramDateObj = {
   year: number;
   month: number; // 1-12
   day: number; // 1-32
   englishDate: Date;
-}
-
-export type BikramMonth = {
-  year: number;
-  month: number; // 1-12
-  days: number;
-  startWeekDay: number; // 0-6, where 0 is Sunday
-  englishStartDate: Date;
 }
 
 // Month names in Nepali
