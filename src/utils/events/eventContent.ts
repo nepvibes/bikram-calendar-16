@@ -1,5 +1,6 @@
 
 import { CalendarEvent } from "../../types/events";
+import { getEventsForDate } from "../panchanga";
 
 // Function to get event text for a date
 export function getEventText(
@@ -93,11 +94,23 @@ export function getAllEventText(
   gregorianDay: number,
   useNepaliLanguage: boolean = true
 ): string {
+  // Get events from existing functions
   const texts = [
     getEventText(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage),
     getEventText(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage),
     getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage)
   ].filter(text => text.length > 0);
+
+  // Get additional events from panchanga calculations
+  const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
+  const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
+  
+  // Add panchanga events that aren't already included
+  panchangaEvents.forEach(event => {
+    if (!texts.some(text => text.includes(event.name))) {
+      texts.push(event.name);
+    }
+  });
   
   return texts.join(', ');
 }
@@ -115,11 +128,23 @@ export function getAllEventDetails(
   gregorianDay: number,
   useNepaliLanguage: boolean = true
 ): string {
+  // Get details from existing functions
   const details = [
     getEventDetail(bikramFixedEvents, bikramYear, bikramMonth, bikramDay, 'bikram', useNepaliLanguage),
     getEventDetail(gregorianEvents, gregorianYear, gregorianMonth, gregorianDay, 'gregorian', useNepaliLanguage),
     getEventDetail(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage)
   ].filter(detail => detail.length > 0);
+
+  // Get additional event details from panchanga calculations
+  const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
+  const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
+  
+  // Add panchanga event details
+  panchangaEvents.forEach(event => {
+    if (event.detail && !details.some(detail => detail.includes(event.detail))) {
+      details.push(event.detail);
+    }
+  });
   
   return details.join('\n\n');
 }

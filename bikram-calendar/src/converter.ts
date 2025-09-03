@@ -8,6 +8,14 @@ export type BikramDateObj = {
   englishDate: Date;
 }
 
+export type BikramMonth = {
+  year: number;
+  month: number; // 1-12
+  days: number;
+  startWeekDay: number; // 0-6, where 0 is Sunday
+  englishStartDate: Date;
+}
+
 // Month names in Nepali
 export const nepaliMonthsNp = [
   'बैशाख', 'जेठ', 'असार', 'श्रावण', 

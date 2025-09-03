@@ -1,10 +1,11 @@
 
 import React from 'react';
-import { CalendarDays, Printer, RefreshCw } from 'lucide-react';
+import { CalendarDays, Printer, RefreshCw, Calendar } from 'lucide-react';
 import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, getEnglishDigits, containsNepaliDigits } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
 import DateConverter from '../DateConverter';
+import GregorianCalendar from '../GregorianCalendar';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;
@@ -33,6 +34,7 @@ const CalendarNavigation = ({
   onPrint,
   onToggleLanguage
 }: CalendarNavigationProps) => {
+  const [showGregorianCalendar, setShowGregorianCalendar] = React.useState(false);
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
     onMonthChange(e.target.value);
@@ -113,6 +115,27 @@ const CalendarNavigation = ({
             <DateConverter 
               useNepaliLanguage={useNepaliLanguage} 
               onDateSelect={handleDateSelect}
+            />
+          </DialogContent>
+        </Dialog>
+
+        {/* Gregorian Calendar Toggle */}
+        <Dialog open={showGregorianCalendar} onOpenChange={setShowGregorianCalendar}>
+          <DialogTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl flex items-center font-mukta-mahi"
+              title={useNepaliLanguage ? 'अंग्रेजी क्यालेन्डर' : 'Gregorian Calendar'}
+            >
+              <Calendar className="mr-1 h-4 w-4 text-blue-700" />
+              <span className="hidden sm:inline">{useNepaliLanguage ? 'अंग्रेजी' : 'Gregorian'}</span>
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-5xl p-0 rounded-xl font-mukta-mahi">
+            <GregorianCalendar 
+              useNepaliLanguage={useNepaliLanguage}
+              onClose={() => setShowGregorianCalendar(false)}
             />
           </DialogContent>
         </Dialog>
