@@ -11,8 +11,6 @@ import CalendarNavigation from './calendar/CalendarNavigation';
 import DateConverter from './DateConverter';
 import { DialogClose, DialogContent, DialogTrigger, Dialog } from './ui/dialog';
 
-// Import the background image from assets directory
-import subtlePatternBg from '../assets/subtle-pattern.png';
 
 const BikramCalendar: React.FC = () => {
   const calendarState = useCalendarState();
@@ -105,7 +103,7 @@ const BikramCalendar: React.FC = () => {
   }, [calendarState.eventModalData]);
   
   return (
-    <div className="min-h-screen" style={{ backgroundImage: `url(${subtlePatternBg})` }} >
+    <div className="min-h-screen" style={{ backgroundImage: `url(/subtle-pattern.png)` }} >
       {/* Calendar Container */}
       <div className="mx-auto px-2 sm:px-4 max-w-sm sm:max-w-md md:max-w-lg lg:max-w-4xl">
         {/* Top header with month/year */}
