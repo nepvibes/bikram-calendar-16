@@ -5,7 +5,6 @@ import { Button } from '../ui/button';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits, getEnglishDigits, containsNepaliDigits } from '@/utils/bikramConverter';
 import { Dialog, DialogTrigger, DialogContent } from '../ui/dialog';
 import DateConverter from '../DateConverter';
-import GregorianCalendar from '../GregorianCalendar';
 
 interface CalendarNavigationProps {
   useNepaliLanguage: boolean;
@@ -19,6 +18,9 @@ interface CalendarNavigationProps {
   onYearSubmit: (e: React.FormEvent) => void;
   onPrint: () => void;
   onToggleLanguage: () => void;
+  calendarMode?: 'bikram' | 'gregorian';
+  onCalendarModeToggle?: () => void;
+  gregorianDate?: Date;
 }
 
 const CalendarNavigation = ({
@@ -32,9 +34,11 @@ const CalendarNavigation = ({
   onYearInputChange,
   onYearSubmit,
   onPrint,
-  onToggleLanguage
+  onToggleLanguage,
+  calendarMode = 'bikram',
+  onCalendarModeToggle,
+  gregorianDate
 }: CalendarNavigationProps) => {
-  const [showGregorianCalendar, setShowGregorianCalendar] = React.useState(false);
   const handleMonthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     e.stopPropagation();
     onMonthChange(e.target.value);
@@ -119,26 +123,26 @@ const CalendarNavigation = ({
           </DialogContent>
         </Dialog>
 
-        {/* Gregorian Calendar Toggle */}
-        <Dialog open={showGregorianCalendar} onOpenChange={setShowGregorianCalendar}>
-          <DialogTrigger asChild>
-            <Button
-              variant="outline"
-              size="sm"
-              className="h-9 bg-white hover:bg-blue-50 text-blue-700 font-semibold rounded-xl flex items-center font-mukta-mahi"
-              title={useNepaliLanguage ? 'अंग्रेजी क्यालेन्डर' : 'Gregorian Calendar'}
-            >
-              <Calendar className="mr-1 h-4 w-4 text-blue-700" />
-              <span className="hidden sm:inline">{useNepaliLanguage ? 'अंग्रेजी' : 'Gregorian'}</span>
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-5xl p-0 rounded-xl font-mukta-mahi">
-            <GregorianCalendar 
-              useNepaliLanguage={useNepaliLanguage}
-              onClose={() => setShowGregorianCalendar(false)}
-            />
-          </DialogContent>
-        </Dialog>
+        {/* Calendar Mode Toggle */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={onCalendarModeToggle}
+          className={`h-9 font-semibold rounded-xl flex items-center font-mukta-mahi
+            ${calendarMode === 'gregorian' 
+              ? 'bg-blue-600 text-white hover:bg-blue-700' 
+              : 'bg-white hover:bg-blue-50 text-blue-700'
+            }`}
+          title={useNepaliLanguage ? 'अंग्रेजी क्यालेन्डर' : 'Gregorian Calendar'}
+        >
+          <Calendar className="mr-1 h-4 w-4" />
+          <span className="hidden sm:inline">
+            {calendarMode === 'gregorian' 
+              ? (useNepaliLanguage ? 'बिक्रम' : 'Bikram')
+              : (useNepaliLanguage ? 'अंग्रेजी' : 'Gregorian')
+            }
+          </span>
+        </Button>
       </div>
 
       {/* Right Controls */}

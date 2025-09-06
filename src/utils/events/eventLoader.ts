@@ -33,19 +33,33 @@ export async function loadEventsForYear(year: number): Promise<{
       );
     };
     
+    // Get common events with safety checks
+    const commonEvents = commonModule.default || { 
+      bikramFixedEvents: [], 
+      gregorianEvents: [], 
+      bikramRecurringEvents: [] 
+    };
+    
+    // Get year-specific events with safety checks
+    const yearEvents = yearModule.default || { 
+      bikramFixedEvents: [], 
+      gregorianEvents: [], 
+      bikramRecurringEvents: [] 
+    };
+    
     // Merge year-specific and common events
     return {
       bikramFixedEvents: [
-        ...filterByYearRange(commonModule.default.bikramFixedEvents || []),
-        ...filterByYearRange(yearModule.default.bikramFixedEvents || [])
+        ...filterByYearRange(commonEvents.bikramFixedEvents || []),
+        ...filterByYearRange(yearEvents.bikramFixedEvents || [])
       ],
       gregorianEvents: [
-        ...filterByYearRange(commonModule.default.gregorianEvents || []),
-        ...filterByYearRange(yearModule.default.gregorianEvents || [])
+        ...filterByYearRange(commonEvents.gregorianEvents || []),
+        ...filterByYearRange(yearEvents.gregorianEvents || [])
       ],
       bikramRecurringEvents: [
-        ...filterByYearRange(commonModule.default.bikramRecurringEvents || []),
-        ...filterByYearRange(yearModule.default.bikramRecurringEvents || [])
+        ...filterByYearRange(commonEvents.bikramRecurringEvents || []),
+        ...filterByYearRange(yearEvents.bikramRecurringEvents || [])
       ]
     };
   } catch (error) {

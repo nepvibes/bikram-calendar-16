@@ -1,9 +1,11 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { EventData } from '@/types/events';
 import { nepaliMonthsEn, nepaliMonthsNp, getNepaliDigits } from '@/utils/bikramConverter';
 import CalendarGrid from './CalendarGrid';
+import GregorianCalendarGrid from './GregorianCalendarGrid';
 import EventModal from './EventModal';
 import UpcomingEvents from './upcoming-events';
+import EventsPanel from './EventsPanel';
 import { useCalendarState } from '@/hooks/useCalendarState';
 import { Card } from './ui/card';
 import CalendarHeader from './calendar/CalendarHeader';
@@ -14,6 +16,8 @@ import { DialogClose, DialogContent, DialogTrigger, Dialog } from './ui/dialog';
 
 const BikramCalendar: React.FC = () => {
   const calendarState = useCalendarState();
+  const [calendarMode, setCalendarMode] = useState<'bikram' | 'gregorian'>('bikram');
+  const [gregorianDate, setGregorianDate] = useState(new Date());
   
   // Handle event click
   const handleEventClick = (eventData: EventData): void => {
@@ -50,6 +54,32 @@ const BikramCalendar: React.FC = () => {
     
     // Update the selected date
     calendarState.setSelectedDate(selectedDate);
+  };
+
+  // Handle calendar mode toggle
+  const handleCalendarModeToggle = () => {
+    setCalendarMode(prev => prev === 'bikram' ? 'gregorian' : 'bikram');
+  };
+
+  // Handle Gregorian calendar navigation
+  const handleGregorianPrevMonth = () => {
+    setGregorianDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() - 1);
+      return newDate;
+    });
+  };
+
+  const handleGregorianNextMonth = () => {
+    setGregorianDate(prev => {
+      const newDate = new Date(prev);
+      newDate.setMonth(newDate.getMonth() + 1);
+      return newDate;
+    });
+  };
+
+  const handleGregorianToday = () => {
+    setGregorianDate(new Date());
   };
 
   // Handle date navigation from converter
@@ -118,32 +148,47 @@ const BikramCalendar: React.FC = () => {
           useNepaliLanguage={calendarState.useNepaliLanguage}
           currentMonth={calendarState.currentView.month}
           yearInput={calendarState.yearInput}
-          onPrevMonth={calendarState.handlePrevMonth}
-          onNextMonth={calendarState.handleNextMonth}
-          onTodayClick={calendarState.handleTodayClick}
+          onPrevMonth={calendarMode === 'bikram' ? calendarState.handlePrevMonth : handleGregorianPrevMonth}
+          onNextMonth={calendarMode === 'bikram' ? calendarState.handleNextMonth : handleGregorianNextMonth}
+          onTodayClick={calendarMode === 'bikram' ? calendarState.handleTodayClick : handleGregorianToday}
           onMonthChange={calendarState.handleMonthChange}
           onYearInputChange={calendarState.handleYearInputChange}
           onYearSubmit={calendarState.handleYearSubmit}
           onPrint={handlePrint}
           onToggleLanguage={calendarState.toggleLanguage}
+          calendarMode={calendarMode}
+          onCalendarModeToggle={handleCalendarModeToggle}
+          gregorianDate={gregorianDate}
         />
         
         {/* Calendar Grid */}
         <div className="border-l border-r border-b border-gray-300 bg-white rounded-b-xl overflow-hidden shadow-lg beautiful-calendar-grid">
-          <CalendarGrid 
-            year={calendarState.currentView.year} 
-            month={calendarState.currentView.month} 
-            days={calendarState.currentView.days} 
-            startWeekDay={calendarState.currentView.startWeekDay} 
-            englishStartDate={calendarState.currentView.englishStartDate} 
-            currentDate={calendarState.today.year === calendarState.currentView.year && calendarState.today.month === calendarState.currentView.month ? calendarState.today : undefined} 
-            selectedDate={calendarState.selectedDate || undefined} 
-            onDateSelect={calendarState.handleDateSelect} 
-            useNepaliLanguage={calendarState.useNepaliLanguage} 
-            events={calendarState.events} 
-            onEventClick={handleEventClick} 
-            usingApproximation={calendarState.usingApproximation} 
-          />
+          {calendarMode === 'bikram' ? (
+            <CalendarGrid 
+              year={calendarState.currentView.year} 
+              month={calendarState.currentView.month} 
+              days={calendarState.currentView.days} 
+              startWeekDay={calendarState.currentView.startWeekDay} 
+              englishStartDate={calendarState.currentView.englishStartDate} 
+              currentDate={calendarState.today.year === calendarState.currentView.year && calendarState.today.month === calendarState.currentView.month ? calendarState.today : undefined} 
+              selectedDate={calendarState.selectedDate || undefined} 
+              onDateSelect={calendarState.handleDateSelect} 
+              useNepaliLanguage={calendarState.useNepaliLanguage} 
+              events={calendarState.events} 
+              onEventClick={handleEventClick} 
+              usingApproximation={calendarState.usingApproximation} 
+            />
+          ) : (
+            <GregorianCalendarGrid
+              currentDate={gregorianDate}
+              useNepaliLanguage={calendarState.useNepaliLanguage}
+              events={calendarState.events}
+              onDateSelect={(date) => {
+                // Handle Gregorian date selection if needed
+                console.log('Gregorian date selected:', date);
+              }}
+            />
+          )}
         </div>
         
         {/* Upcoming Events List with customizable UI properties */}
@@ -180,6 +225,20 @@ const BikramCalendar: React.FC = () => {
         onClose={() => calendarState.setEventModalOpen(false)} 
         eventData={calendarState.eventModalData} 
         useNepaliLanguage={calendarState.useNepaliLanguage} 
+      />
+      
+      {/* Events Panel */}
+      <EventsPanel
+        currentDate={calendarMode === 'bikram' 
+          ? new Date(calendarState.currentView.englishStartDate) 
+          : gregorianDate
+        }
+        useNepaliLanguage={calendarState.useNepaliLanguage}
+        events={calendarState.events}
+        onEventClick={(date) => {
+          console.log('Event clicked for date:', date);
+          // Handle event click navigation if needed
+        }}
       />
     </div>
   );
