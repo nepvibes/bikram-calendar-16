@@ -2,7 +2,7 @@ import React from 'react';
 import { convertToBikram, getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
 import { calculate as calculatePanchanga } from '@/utils/panchanga';
 import { CalendarEvent } from '@/types/events';
-import { hasEvents, getAllEventText, getAllEventDetails, isHoliday } from '@/utils/events';
+import { hasEventsWithLunar, isHolidayWithLunar, getEventTextWithLunar } from '@/utils/events/eventUtils';
 
 interface GregorianCalendarGridProps {
   currentDate: Date;
@@ -69,8 +69,8 @@ const GregorianCalendarGrid: React.FC<GregorianCalendarGridProps> = ({
       // Get panchanga data
       const panchangaData = calculatePanchanga(cellDate);
       
-      // Check for events
-      const dayHasEvents = hasEvents(
+      // Check for events (including lunar events)
+      const dayHasEvents = hasEventsWithLunar(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,
@@ -78,7 +78,7 @@ const GregorianCalendarGrid: React.FC<GregorianCalendarGridProps> = ({
         cellDate.getFullYear(), cellDate.getMonth() + 1, day
       );
 
-      const dayIsHoliday = isHoliday(
+      const dayIsHoliday = isHolidayWithLunar(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,
@@ -86,7 +86,7 @@ const GregorianCalendarGrid: React.FC<GregorianCalendarGridProps> = ({
         cellDate.getFullYear(), cellDate.getMonth() + 1, day
       );
 
-      const eventText = dayHasEvents ? getAllEventText(
+      const eventText = dayHasEvents ? getEventTextWithLunar(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,
@@ -101,8 +101,8 @@ const GregorianCalendarGrid: React.FC<GregorianCalendarGridProps> = ({
       days.push(
         <div
           key={day}
-          className={`min-h-[60px] sm:min-h-[80px] border border-border/20 p-1 relative cursor-pointer hover:bg-accent/50 transition-colors
-            ${isToday ? 'bg-primary/10 border-primary' : ''}
+          className={`min-h-[50px] sm:min-h-[80px] border border-border/20 p-0 sm:p-0.5 md:p-1 relative cursor-pointer hover:bg-accent/50 transition-colors beautiful-calendar-day
+            ${isToday ? 'bg-yellow-50 border-primary' : ''}
             ${isSelected ? 'bg-yellow-100 border-yellow-400' : ''}
             ${dayHasEvents ? 'bg-orange-50 dark:bg-orange-950/30' : ''}
             ${isSaturday ? 'bg-red-50' : isSunday ? 'bg-blue-50' : ''}
@@ -110,9 +110,9 @@ const GregorianCalendarGrid: React.FC<GregorianCalendarGridProps> = ({
           onClick={() => onDateSelect(cellDate)}
         >
           {/* Gregorian day number (main) */}
-          <div className={`text-xl sm:text-2xl font-bold mb-1
+          <div className={`text-base sm:text-lg font-bold mb-0.5
             ${dayIsHoliday ? 'text-red-600' : isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
-            ${isToday ? 'ring-1 ring-red-500 px-1 rounded-full' : ''}
+            ${isToday ? 'bg-red-500 text-white px-1 rounded-full' : ''}
             ${useNepaliLanguage ? "font-laila" : ""}
           `}>
             {useNepaliLanguage ? getNepaliDigits(day) : day}

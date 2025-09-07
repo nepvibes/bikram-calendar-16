@@ -78,6 +78,7 @@ export function getEventDetail(
     }
   });
   
+  
   return eventDetail.trim();
 }
 
@@ -101,7 +102,7 @@ export function getAllEventText(
     getEventText(bikramRecurringEvents, bikramYear, bikramMonth, bikramDay, 'recurring', useNepaliLanguage)
   ].filter(text => text.length > 0);
 
-  // Get additional events from panchanga calculations
+  // Get additional events from panchanga calculations (including lunar events)
   const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
   const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
   

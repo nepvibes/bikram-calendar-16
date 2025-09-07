@@ -4,7 +4,8 @@ import { Button } from './ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { CalendarEvent } from '@/types/events';
 import { convertToBikram, getNepaliDigits, nepaliMonthsEn, nepaliMonthsNp } from '@/utils/bikramConverter';
-import { hasEvents, getAllEventText, getAllEventDetails } from '@/utils/events';
+import { hasEventsWithLunar, getEventTextWithLunar, isHolidayWithLunar } from '@/utils/events/eventUtils';
+import { getAllEventText, getAllEventDetails } from '@/utils/events/eventContent';
 
 interface EventsPanelProps {
   currentDate: Date;
@@ -39,7 +40,7 @@ const EventsPanel: React.FC<EventsPanelProps> = ({
       const cellDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
       const bikramDate = convertToBikram(cellDate);
       
-      const dayHasEvents = hasEvents(
+      const dayHasEvents = hasEventsWithLunar(
         events.bikramFixedEvents,
         events.gregorianEvents,
         events.bikramRecurringEvents,

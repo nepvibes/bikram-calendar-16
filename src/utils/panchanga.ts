@@ -574,7 +574,7 @@ export function getEventsForDate(date: Date, bsYear: number, bsMonthIndex: numbe
     }
   }
 
-  // Handle Lunar events
+// Handle Lunar events
   if (EventsData.lunarEvents) {
     const todayInfo = _getPanchangaBasics(date);
     if (todayInfo.isAdhika) {
@@ -616,8 +616,8 @@ export function getEventsForDate(date: Date, bsYear: number, bsMonthIndex: numbe
       }
     }
   }
-  return events;
 }
+
 
 // Main Calculation Function
 export function calculate(date: Date, lat?: number, lon?: number, tz?: number) {

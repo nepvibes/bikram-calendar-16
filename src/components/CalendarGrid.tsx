@@ -3,7 +3,8 @@ import React from 'react';
 import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
 import { calculateTithi } from '../utils/tithiCalculation';
 import { CalendarEvent } from '../types/events';
-import { hasEvents, getAllEventText, getAllEventDetails, isHoliday } from '../utils/events';
+import { hasEventsWithLunar, isHolidayWithLunar, getEventTextWithLunar } from '../utils/events/eventUtils';
+import { getAllEventText, getAllEventDetails } from '../utils/events/eventContent';
 
 interface CalendarGridProps {
   year: number;
@@ -93,7 +94,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     const tithi = getTithiForDay(day);
     
     // Check for events
-    const dayHasEvents = hasEvents(
+    const dayHasEvents = hasEventsWithLunar(
       events.bikramFixedEvents, 
       events.gregorianEvents, 
       events.bikramRecurringEvents, 
@@ -224,17 +225,17 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 day: 'numeric'
               }) : englishDate.getDate().toString();
 
-              // Check for events
-              const dayHasEvents = hasEvents(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
+              // Check for events (including lunar events)
+              const dayHasEvents = hasEventsWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
 
               // Check if this day is a holiday
-              const dayIsHoliday = isHoliday(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
+              const dayIsHoliday = isHolidayWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
 
               // Get event text if there's an event
-              const eventText = dayHasEvents ? getAllEventText(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
+              const eventText = dayHasEvents ? getEventTextWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
               
-              // Get event detail if there's an event
-              const eventDetail = dayHasEvents ? getAllEventDetails(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
+              // Get event detail - we'll use a placeholder for now since we made it async
+              const eventDetail = dayHasEvents ? eventText : '';
 
               // Special rendering for purnima and amavasya
               const isPurnima = tithi.nameEn === 'Purnima';

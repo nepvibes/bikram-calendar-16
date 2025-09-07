@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
-import { hasEvents, getAllEventText, getAllEventDetails, isHoliday } from '@/utils/events';
+import { hasEventsWithLunar, getEventTextWithLunar, isHolidayWithLunar } from '@/utils/events/eventUtils';
+import { getAllEventText, getAllEventDetails } from '@/utils/events/eventContent';
 import { BikramDateObj } from '@/utils/bikramConverter';
 import { CalendarEvent } from '@/types/events';
 import { UpcomingEventItem } from './types';
@@ -53,13 +54,13 @@ export const useUpcomingEvents = (
         }
 
         // Check if this date has any events
-        if (hasEvents(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay)) {
+        if (hasEventsWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay)) {
           // Get the event text and detail
           const eventText = getAllEventText(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay, useNepaliLanguage);
           const eventDetail = getAllEventDetails(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay);
 
           // Check if the event is a holiday
-          const isEventHoliday = isHoliday(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay);
+          const isEventHoliday = isHolidayWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, currentBikramYear, currentBikramMonth, currentBikramDay, checkGregorianYear, checkGregorianMonth, checkGregorianDay);
           eventsList.push({
             year: currentBikramYear,
             month: currentBikramMonth,
