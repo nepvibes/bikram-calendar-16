@@ -646,6 +646,7 @@ export function calculate(date: Date, lat?: number, lon?: number, tz?: number) {
   const lunarMonthDisplayName = lunarMonthInfo.isAdhika ? "अधिक " + lunarMonthInfo.monthName : lunarMonthInfo.monthName;
   const sunriseSunset = getSunriseSunset(date, lat, lon, tz);
   const isComputed = bsInfo.isComputed;
+  const adhikaMasa = calculateAdhikaMasa(ahar);
 
   const gregorianOptions: Intl.DateTimeFormatOptions = { 
     weekday: 'long', 
@@ -676,7 +677,7 @@ export function calculate(date: Date, lat?: number, lon?: number, tz?: number) {
     moonRashi: rashis[Math.floor(moonLong / 30)],
     events: events,
     isComputed: isComputed,
-    adhikaMasa: lunarMonthInfo.isAdhika ? lunarMonthInfo.monthName : "छैन"
+    adhikaMasa: adhikaMasa
   };
   calculationCache[cacheKey] = result;
   return result;
