@@ -103,15 +103,21 @@ export function getAllEventText(
   ].filter(text => text.length > 0);
 
   // Get additional events from panchanga calculations (including lunar events)
-  const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
-  const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
-  
-  // Add panchanga events that aren't already included
-  panchangaEvents.forEach(event => {
-    if (!texts.some(text => text.includes(event.name))) {
-      texts.push(event.name);
+  try {
+    const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
+    const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
+    
+    // Add panchanga events that aren't already included (with null check)
+    if (panchangaEvents && Array.isArray(panchangaEvents)) {
+      panchangaEvents.forEach(event => {
+        if (event && event.name && !texts.some(text => text.includes(event.name))) {
+          texts.push(event.name);
+        }
+      });
     }
-  });
+  } catch (error) {
+    console.warn('Error getting panchanga events:', error);
+  }
   
   return texts.join(', ');
 }
@@ -137,15 +143,21 @@ export function getAllEventDetails(
   ].filter(detail => detail.length > 0);
 
   // Get additional event details from panchanga calculations
-  const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
-  const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
-  
-  // Add panchanga event details
-  panchangaEvents.forEach(event => {
-    if (event.detail && !details.some(detail => detail.includes(event.detail))) {
-      details.push(event.detail);
+  try {
+    const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
+    const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
+    
+    // Add panchanga event details (with null check)
+    if (panchangaEvents && Array.isArray(panchangaEvents)) {
+      panchangaEvents.forEach(event => {
+        if (event && event.detail && !details.some(detail => detail.includes(event.detail))) {
+          details.push(event.detail);
+        }
+      });
     }
-  });
+  } catch (error) {
+    console.warn('Error getting panchanga event details:', error);
+  }
   
   return details.join('\n\n');
 }

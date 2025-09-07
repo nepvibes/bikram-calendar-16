@@ -531,7 +531,7 @@ function _getPanchangaBasics(date: Date) {
   };
 }
 
-export function getEventsForDate(date: Date, bsYear: number, bsMonthIndex: number, bsDay: number) {
+export function getEventsForDate(date: Date, bsYear: number, bsMonthIndex: number, bsDay: number): Array<{name: string, detail: string, category: string, holiday: boolean}> {
   const events: Array<{name: string, detail: string, category: string, holiday: boolean}> = [];
   const gregorianYear = date.getUTCFullYear();
   const gregorianMonth = date.getUTCMonth() + 1;

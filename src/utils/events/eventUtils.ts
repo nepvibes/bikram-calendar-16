@@ -55,7 +55,7 @@ export function hasEventsWithLunar(
   try {
     const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
     const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
-    return panchangaEvents.length > 0;
+    return panchangaEvents && Array.isArray(panchangaEvents) && panchangaEvents.length > 0;
   } catch (error) {
     console.warn('Failed to check lunar events:', error);
     return false;
@@ -118,11 +118,13 @@ export function getEventTextWithLunar(
   try {
     const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
     const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
-    panchangaEvents.forEach(event => {
-      if (!texts.some(text => text.includes(event.name))) {
-        texts.push(event.name);
-      }
-    });
+    if (panchangaEvents && Array.isArray(panchangaEvents)) {
+      panchangaEvents.forEach(event => {
+        if (event && event.name && !texts.some(text => text.includes(event.name))) {
+          texts.push(event.name);
+        }
+      });
+    }
   } catch (error) {
     console.warn('Failed to get lunar event text:', error);
   }
@@ -183,7 +185,7 @@ export function isHolidayWithLunar(
   try {
     const gregorianDate = new Date(Date.UTC(gregorianYear, gregorianMonth - 1, gregorianDay));
     const panchangaEvents = getEventsForDate(gregorianDate, bikramYear, bikramMonth - 1, bikramDay);
-    return panchangaEvents.some(event => event.holiday);
+    return panchangaEvents && Array.isArray(panchangaEvents) && panchangaEvents.some(event => event && event.holiday);
   } catch (error) {
     console.warn('Failed to check lunar holidays:', error);
     return false;
