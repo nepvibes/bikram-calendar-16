@@ -1,10 +1,8 @@
 
 import React from 'react';
-import { nepaliDaysEn, nepaliDaysNp, getNepaliDigits } from '../utils/bikramConverter';
-import { calculateTithi } from '../utils/tithiCalculation';
+import { nepaliDaysEn, nepaliDaysNp } from '../utils/bikramConverter';
+import { calculate as calculatePanchanga, getEventsForDate, toDevanagari, fromBikramSambat } from '../utils/panchanga';
 import { CalendarEvent } from '../types/events';
-import { hasEventsWithLunar, isHolidayWithLunar, getEventTextWithLunar } from '../utils/events/eventUtils';
-import { getAllEventText, getAllEventDetails } from '../utils/events/eventContent';
 
 interface CalendarGridProps {
   year: number;
@@ -93,40 +91,14 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
     // Get tithi for this day
     const tithi = getTithiForDay(day);
     
-    // Check for events
-    const dayHasEvents = hasEventsWithLunar(
-      events.bikramFixedEvents, 
-      events.gregorianEvents, 
-      events.bikramRecurringEvents, 
-      year, month, day, 
-      englishDate.getFullYear(), 
-      englishDate.getMonth() + 1, 
-      englishDate.getDate()
-    );
+    // Get events from panchanga
+    const dayEvents = getEventsForDate(englishDate, year, month - 1, day);
+    const dayHasEvents = dayEvents.length > 0;
 
     // Always call onEventClick for any day, whether it has events or not
     if (onEventClick) {
-      const eventText = dayHasEvents ? getAllEventText(
-        events.bikramFixedEvents,
-        events.gregorianEvents,
-        events.bikramRecurringEvents,
-        year, month, day,
-        englishDate.getFullYear(),
-        englishDate.getMonth() + 1,
-        englishDate.getDate(),
-        useNepaliLanguage
-      ) : '';
-      
-      const eventDetail = dayHasEvents ? getAllEventDetails(
-        events.bikramFixedEvents,
-        events.gregorianEvents,
-        events.bikramRecurringEvents,
-        year, month, day,
-        englishDate.getFullYear(),
-        englishDate.getMonth() + 1,
-        englishDate.getDate(),
-        useNepaliLanguage
-      ) : '';
+      const eventText = dayEvents.map(e => e.name).join(', ');
+      const eventDetail = dayEvents.map(e => e.detail).join('\n');
       
       onEventClick({
         day,
@@ -148,10 +120,7 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
 
   // Function to get English date for a specific Bikram day
   const getEnglishDate = (day: number): Date => {
-    // Clone the start date and add days
-    const dayDate = new Date(englishStartDate);
-    dayDate.setDate(englishStartDate.getDate() + (day - 1));
-    return dayDate;
+    return fromBikramSambat(year, month - 1, day);
   };
 
   // Function to get tithi for a given day
@@ -168,12 +137,12 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
       pakshaEn: ''
     };
     const englishDate = getEnglishDate(day);
-    const tithiData = calculateTithi(englishDate);
+    const panchangaData = calculatePanchanga(englishDate);
     return {
-      name: tithiData.tithiName,
-      nameEn: tithiData.tithiNameEn,
-      paksha: tithiData.paksha,
-      pakshaEn: tithiData.pakshaEn
+      name: panchangaData?.tithi || '',
+      nameEn: panchangaData?.tithi || '',
+      paksha: panchangaData?.paksha || '',
+      pakshaEn: panchangaData?.paksha || ''
     };
   };
   
@@ -225,21 +194,16 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                 day: 'numeric'
               }) : englishDate.getDate().toString();
 
-              // Check for events (including lunar events)
-              const dayHasEvents = hasEventsWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
-
-              // Check if this day is a holiday
-              const dayIsHoliday = isHolidayWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay);
-
-              // Get event text if there's an event
-              const eventText = dayHasEvents ? getEventTextWithLunar(events.bikramFixedEvents, events.gregorianEvents, events.bikramRecurringEvents, year, month, day, englishYear, englishMonth, englishDay, useNepaliLanguage) : '';
-              
-              // Get event detail - we'll use a placeholder for now since we made it async
-              const eventDetail = dayHasEvents ? eventText : '';
+              // Get events from panchanga
+              const dayEvents = getEventsForDate(englishDate, year, month - 1, day);
+              const dayHasEvents = dayEvents.length > 0;
+              const dayIsHoliday = dayEvents.some(e => e.holiday);
+              const eventText = dayEvents.map(e => e.name).join(', ');
+              const eventDetail = dayEvents.map(e => e.detail).join('\n');
 
               // Special rendering for purnima and amavasya
-              const isPurnima = tithi.nameEn === 'Purnima';
-              const isAmavasya = tithi.nameEn === 'Amavasya';
+              const isPurnima = tithi.name === 'पूर्णिमा';
+              const isAmavasya = tithi.name === 'अमावस्या';
               const specialTithi = isPurnima || isAmavasya;
               
               return (
@@ -263,43 +227,32 @@ const CalendarGrid: React.FC<CalendarGridProps> = ({
                     <div className={`flex justify-between ${isSelectedDay ? 'bg-yellow-100 rounded-sm' : ''}`}>
                       <div className="flex flex-col items-start p-0.5 sm:p-1">
                         {/* Bikram date - larger and bold */}
-                        <span className={`text-xl sm:text-2xl lg:text-3xl font-bold 
+                        <span className={`main-number noto-sans-devanagari
                           ${dayIsHoliday ? 'text-red-600' : isSaturday ? 'text-red-600' : isSunday ? 'text-blue-700' : 'text-gray-800'}
-                          ${useNepaliLanguage ? "font-laila" : ""}
-                          ${isCurrentDay ? 'ring-1 ring-red-500 px-0.5 sm:px-1 rounded-full' : ''}`}>
-                          {useNepaliLanguage ? getNepaliDigits(day) : day}
+                          ${isCurrentDay ? 'today' : ''}`}>
+                          {toDevanagari(day)}
                         </span>
                       </div>
                       
                       {/* English date - smaller and lighter */}
-                      <span className="text-[6px] sm:text-[8px] md:text-xs text-gray-500 p-0.5">
+                      <span className="sub-number">
                         {englishDateStr}
                       </span>
                     </div>
                     
-                    {/* Event display */}
-                    {dayHasEvents && (
-                      <div className="text-[7px] sm:text-[8px] md:text-xs text-red-800 rounded-sm mt-0.5 block truncate w-full text-center px-0 py-0 my-0 bg-rose-50">
-                        <span className={useNepaliLanguage ? "font-laila" : ""}>
+                    {/* Tithi display */}
+                    <span className={`tithi-display noto-sans-devanagari ${specialTithi ? 'special' : ''}`}>
+                      {isPurnima ? `🌕 ${tithi.name}` : isAmavasya ? `🌑 ${tithi.name}` : tithi.name}
+                    </span>
+                    
+                    {/* Event dot */}
+                    {dayHasEvents && <div className="event-dot"></div>}
+                    
+                    {/* Event text */}
+                    {dayHasEvents && eventText && (
+                      <div className="event-text">
+                        <span className="noto-sans-devanagari">
                           {eventText}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {/* Special tithi display (purnima/amavasya) */}
-                    {specialTithi && !dayHasEvents && (
-                      <div className="text-[7px] sm:text-[8px] md:text-xs px-1 py-0.5 text-yellow-800 rounded-sm mt-0.5 block truncate w-full text-center bg-transparent">
-                        <span className={useNepaliLanguage ? "font-laila" : ""}>
-                          {useNepaliLanguage ? tithi.name : tithi.nameEn}
-                        </span>
-                      </div>
-                    )}
-                    
-                    {/* Regular tithi display */}
-                    {!specialTithi && !dayHasEvents && (
-                      <div className="text-[7px] sm:text-[8px] md:text-[10px] text-blue-600 mt-0.5 px-1">
-                        <span className={useNepaliLanguage ? "font-laila" : ""}>
-                          {useNepaliLanguage ? tithi.name : tithi.nameEn}
                         </span>
                       </div>
                     )}
